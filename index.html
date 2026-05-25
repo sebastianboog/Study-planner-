@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Studio — Study Tracker</title>
-<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlN0dWRpbyAtIFN0dWR5IFRyYWNrZXIiLAogICJzaG9ydF9uYW1lIjogIlN0dWRpbyIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzFmMjAyNCIsCiAgInRoZW1lX2NvbG9yIjogIiMxZjIwMjQiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7dXRmOCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IGZpbGw9JyMxZjIwMjQnIHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJy8+PGNpcmNsZSBjeD0nMjU2JyBjeT0nMjU2JyByPSc4MCcgZmlsbD0nJWUyMDQ1NDUnLz48L3N2Zz4iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
 <meta name="theme-color" content="#1f2024">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,843 +18,266 @@
   --ink-mute: #6a6862;
   --accent: #e87545;
   --accent-soft: rgba(232, 117, 69, 0.15);
+  --gold: #c9a558;
+  --sage: #7eb185;
   --line: rgba(255, 255, 255, 0.06);
   --line-strong: rgba(255, 255, 255, 0.12);
   --display: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Inter', -apple-system, system-ui, sans-serif;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; padding-bottom: 80px; overflow-x: hidden; }
+.container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
 
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--ink);
-  min-height: 100vh;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  -webkit-font-smoothing: antialiased;
-  padding-bottom: 80px;
-  overflow-x: hidden;
-}
-
-.container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
-
-/* ============== AUTH SCREEN ============== */
-.auth-screen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  position: relative;
-}
-
-.auth-screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(232, 117, 69, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(232, 117, 69, 0.05) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.auth-card {
-  background: var(--bg-card);
-  border: 1px solid var(--line);
-  padding: 48px;
-  max-width: 440px;
-  width: 100%;
-  position: relative;
-  z-index: 2;
-}
-
-.auth-numeral {
-  position: absolute;
-  font-family: var(--display);
-  font-size: 200px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.03);
-  line-height: 1;
-  top: -40px;
-  right: -20px;
-  pointer-events: none;
-  letter-spacing: -0.05em;
-}
-
-.auth-eyebrow {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 24px;
-}
-
-.auth-title {
-  font-family: var(--display);
-  font-size: 56px;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-}
+.auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; }
+.auth-screen::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 30%, rgba(232, 117, 69, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(232, 117, 69, 0.05) 0%, transparent 50%); pointer-events: none; }
+.auth-card { background: var(--bg-card); border: 1px solid var(--line); padding: 48px; max-width: 440px; width: 100%; position: relative; z-index: 2; }
+.auth-numeral { position: absolute; font-family: var(--display); font-size: 200px; font-weight: 300; color: rgba(255, 255, 255, 0.03); line-height: 1; top: -40px; right: -20px; pointer-events: none; letter-spacing: -0.05em; }
+.auth-eyebrow { font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 24px; }
+.auth-title { font-family: var(--display); font-size: 56px; font-weight: 400; line-height: 1; letter-spacing: -0.02em; margin-bottom: 12px; }
 .auth-title em { font-style: italic; font-weight: 300; }
-
-.auth-sub {
-  font-family: var(--sans);
-  font-size: 14px;
-  color: var(--ink-soft);
-  font-weight: 300;
-  margin-bottom: 32px;
-}
-
-.auth-toggle {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 32px;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 12px;
-}
-
-.auth-toggle button {
-  background: none;
-  border: none;
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  color: var(--ink-mute);
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-}
-
+.auth-sub { font-family: var(--sans); font-size: 14px; color: var(--ink-soft); font-weight: 300; margin-bottom: 32px; }
+.auth-toggle { display: flex; gap: 24px; margin-bottom: 32px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.auth-toggle button { background: none; border: none; font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--ink-mute); cursor: pointer; padding: 0; transition: color 0.2s; }
 .auth-toggle button.active { color: var(--ink); }
-.auth-toggle button.active::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 1px;
-  background: var(--accent);
-  margin-top: 12px;
-  margin-bottom: -13px;
-}
-
-.auth-error {
-  background: rgba(232, 117, 69, 0.1);
-  border-left: 2px solid var(--accent);
-  padding: 12px 16px;
-  font-family: var(--sans);
-  font-size: 13px;
-  color: var(--ink);
-  margin-bottom: 16px;
-  display: none;
-}
+.auth-toggle button.active::after { content: ''; display: block; width: 100%; height: 1px; background: var(--accent); margin-top: 12px; margin-bottom: -13px; }
+.auth-error { background: rgba(232, 117, 69, 0.1); border-left: 2px solid var(--accent); padding: 12px 16px; font-family: var(--sans); font-size: 13px; margin-bottom: 16px; display: none; }
 .auth-error.show { display: block; }
 
-/* ============== TOP NAV ============== */
-nav {
-  background: var(--bg-soft);
-  padding: 22px 0;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  border-bottom: 1px solid var(--line);
-}
-
-.nav-inner {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.brand {
-  font-family: var(--sans);
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.01em;
-}
-
-.nav-links {
-  display: flex;
-  gap: 40px;
-}
-
-.nav-link {
-  background: none;
-  border: none;
-  color: var(--ink-soft);
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 400;
-  cursor: pointer;
-  padding: 4px 0;
-  position: relative;
-  transition: color 0.2s;
-}
-
+nav { background: var(--bg-soft); padding: 22px 0; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); }
+.nav-inner { max-width: 1240px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { font-family: var(--sans); font-weight: 700; font-size: 18px; }
+.nav-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.nav-link { background: none; border: none; color: var(--ink-soft); font-family: var(--sans); font-size: 14px; cursor: pointer; padding: 4px 0; position: relative; transition: color 0.2s; }
 .nav-link:hover { color: var(--ink); }
 .nav-link.active { color: var(--ink); }
-.nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.sync-indicator {
-  font-family: var(--sans);
-  font-size: 11px;
-  color: var(--ink-mute);
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sync-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ink-mute);
-  transition: background 0.3s;
-}
-.sync-dot.synced { background: #7eb185; }
+.nav-link.active::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.sync-indicator { font-family: var(--sans); font-size: 11px; color: var(--ink-mute); display: flex; align-items: center; gap: 6px; }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-mute); transition: background 0.3s; }
+.sync-dot.synced { background: var(--sage); }
 .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
 .sync-dot.error { background: #d44; }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.signout-btn {
-  background: none;
-  border: none;
-  color: var(--ink-mute);
-  font-family: var(--sans);
-  font-size: 12px;
-  cursor: pointer;
-  letter-spacing: 0.05em;
-  transition: color 0.2s;
-}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.signout-btn { background: none; border: none; color: var(--ink-mute); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: color 0.2s; }
 .signout-btn:hover { color: var(--accent); }
 
-/* ============== HERO / TODAY ============== */
-.hero {
-  position: relative;
-  padding: 80px 0 60px;
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 80px;
-  align-items: start;
-  min-height: 70vh;
-}
-
-.hero-numeral {
-  position: absolute;
-  left: -20px;
-  top: 40px;
-  font-family: var(--display);
-  font-size: 320px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.025);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  letter-spacing: -0.05em;
-}
-
+.hero { position: relative; padding: 80px 0 60px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start; min-height: 60vh; }
+.hero-numeral { position: absolute; left: -20px; top: 40px; font-family: var(--display); font-size: 320px; font-weight: 300; color: rgba(255, 255, 255, 0.025); line-height: 1; pointer-events: none; letter-spacing: -0.05em; }
 .hero-left { position: relative; z-index: 2; }
-
-.eyebrow {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 28px;
-}
-
-.hero-title {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(64px, 9vw, 112px);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  margin-bottom: 36px;
-}
-
+.eyebrow { font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 28px; }
+.hero-title { font-family: var(--display); font-weight: 400; font-size: clamp(56px, 8vw, 96px); line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 32px; }
 .hero-title em { font-style: italic; font-weight: 300; }
-
-.hero-desc {
-  font-family: var(--sans);
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--ink-soft);
-  max-width: 320px;
-  margin-bottom: 40px;
-  font-weight: 300;
-}
-
-.read-more {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  transition: gap 0.2s;
-}
-
-.read-more::after {
-  content: '';
-  width: 24px;
-  height: 1px;
-  background: var(--accent);
-  transition: width 0.2s;
-}
-
-.read-more:hover { gap: 14px; }
-.read-more:hover::after { width: 32px; }
-
-.hero-right {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-}
-
-.stat-label {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin-bottom: 12px;
-}
-
-.stat-value {
-  font-family: var(--display);
-  font-size: 64px;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
+.hero-desc { font-family: var(--sans); font-size: 14px; line-height: 1.8; color: var(--ink-soft); max-width: 360px; margin-bottom: 32px; font-weight: 300; }
+.hero-right { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 36px; }
+.stat-label { font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 12px; }
+.stat-value { font-family: var(--display); font-size: 64px; font-weight: 400; line-height: 1; letter-spacing: -0.02em; }
 .stat-value em { font-style: italic; font-weight: 300; color: var(--accent); }
+.stat-sub { font-family: var(--sans); font-size: 13px; color: var(--ink-soft); margin-top: 10px; font-weight: 300; }
 
-.stat-sub {
-  font-family: var(--sans);
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin-top: 10px;
-  font-weight: 300;
-}
-
-/* ============== SECTION ============== */
-section.content-section { padding: 60px 0; position: relative; }
-
-.section-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 48px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--line);
-}
-
-.section-title {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: 42px;
-  letter-spacing: -0.02em;
-}
+section.content-section { padding: 40px 0; }
+.section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--line); gap: 16px; }
+.section-title { font-family: var(--display); font-weight: 400; font-size: 42px; letter-spacing: -0.02em; }
 .section-title em { font-style: italic; font-weight: 300; color: var(--accent); }
+.section-meta { font-family: var(--sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); }
 
-.section-meta {
-  font-family: var(--sans);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-}
-
-/* ============== QUEUE LIST ============== */
 .queue { display: flex; flex-direction: column; }
-
-.queue-item {
-  display: grid;
-  grid-template-columns: 60px 1fr auto auto;
-  gap: 24px;
-  align-items: center;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--line);
-  transition: padding 0.2s;
-}
+.queue-item { display: grid; grid-template-columns: 60px 1fr auto auto; gap: 24px; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); transition: padding 0.2s; }
 .queue-item:hover { padding-left: 12px; }
-
-.queue-num {
-  font-family: var(--display);
-  font-size: 32px;
-  font-weight: 300;
-  color: var(--ink-mute);
-  font-style: italic;
-}
-
-.queue-content .queue-tag {
-  display: inline-block;
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 8px;
-}
-
-.queue-content .queue-tag.new { color: #7eb185; }
-.queue-content .queue-tag.done { color: var(--ink-mute); }
-
-.queue-name {
-  font-family: var(--display);
-  font-size: 26px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-}
-
-.queue-sub {
-  font-family: var(--sans);
-  font-size: 12px;
-  color: var(--ink-soft);
-  margin-top: 6px;
-  font-weight: 300;
-}
-
+.queue-num { font-family: var(--display); font-size: 32px; font-weight: 300; color: var(--ink-mute); font-style: italic; }
+.queue-tag { display: inline-block; font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.queue-tag.new { color: var(--sage); }
+.queue-tag.done { color: var(--ink-mute); }
+.queue-name { font-family: var(--display); font-size: 26px; font-weight: 400; letter-spacing: -0.01em; }
+.queue-sub { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); margin-top: 6px; font-weight: 300; }
 .queue-confidence { display: flex; gap: 4px; }
-
-.conf-pip {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ink-mute);
-  opacity: 0.3;
-}
+.conf-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-mute); opacity: 0.3; }
 .conf-pip.filled { opacity: 1; background: var(--accent); }
-
-.queue-action {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s, background 0.2s;
-  box-shadow: 0 6px 18px rgba(232, 117, 69, 0.25);
-}
+.queue-action { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); border: none; color: white; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; box-shadow: 0 6px 18px rgba(232, 117, 69, 0.25); }
 .queue-action:hover { transform: scale(1.08); }
-.queue-action.done {
-  background: transparent;
-  border: 1px solid var(--line-strong);
-  color: var(--ink-mute);
-  box-shadow: none;
-}
-.queue-item.done .queue-name { color: var(--ink-mute); text-decoration: line-through; text-decoration-thickness: 1px; }
+.queue-action.done { background: transparent; border: 1px solid var(--line-strong); color: var(--ink-mute); box-shadow: none; }
+.queue-item.done .queue-name { color: var(--ink-mute); text-decoration: line-through; }
 
-/* ============== CARDS GRID ============== */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
-}
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--line);
-  padding: 32px 28px;
-  position: relative;
-  transition: transform 0.2s, border-color 0.2s;
-}
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.card { background: var(--bg-card); border: 1px solid var(--line); padding: 28px 24px; position: relative; transition: transform 0.2s, border-color 0.2s; }
 .card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
-
-.card-eyebrow {
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin-bottom: 16px;
-}
-
-.card-title {
-  font-family: var(--display);
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  margin-bottom: 12px;
-}
+.card.no-hover:hover { transform: none; border-color: var(--line); }
+.card-eyebrow { font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 14px; }
+.card-title { font-family: var(--display); font-size: 26px; font-weight: 400; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 10px; }
 .card-title em { font-style: italic; }
-
-.card-desc {
-  font-family: var(--sans);
-  font-size: 13px;
-  color: var(--ink-soft);
-  font-weight: 300;
-  line-height: 1.6;
-  margin-bottom: 24px;
-  min-height: 40px;
-}
-
-.card-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
-}
-
-.card-days {
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 18px;
-}
+.card-desc { font-family: var(--sans); font-size: 13px; color: var(--ink-soft); font-weight: 300; line-height: 1.6; margin-bottom: 20px; }
+.card-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--line); }
+.card-days { font-family: var(--display); font-style: italic; font-size: 18px; }
 .card-days.urgent { color: var(--accent); }
-
-.card-remove {
-  background: none;
-  border: none;
-  color: var(--ink-mute);
-  font-family: var(--sans);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.2s;
-}
+.card-remove { background: none; border: none; color: var(--ink-mute); font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: color 0.2s; }
 .card-remove:hover { color: var(--accent); }
 
-/* ============== FORM ============== */
-.form-card {
-  background: var(--bg-card);
-  border: 1px solid var(--line);
-  padding: 40px;
-  margin-bottom: 48px;
-}
+.folder-card { background: var(--bg-card); border: 1px solid var(--line); padding: 28px; cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative; overflow: hidden; }
+.folder-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.folder-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+.folder-icon { width: 36px; height: 28px; position: relative; margin-bottom: 16px; }
+.folder-icon::before { content: ''; position: absolute; top: 0; left: 0; width: 16px; height: 6px; background: var(--accent); border-top-left-radius: 2px; border-top-right-radius: 2px; }
+.folder-icon::after { content: ''; position: absolute; top: 4px; left: 0; width: 100%; height: 24px; background: var(--accent); opacity: 0.85; border-radius: 2px; }
+.folder-title { font-family: var(--display); font-size: 24px; font-weight: 400; margin-bottom: 8px; letter-spacing: -0.01em; }
+.folder-meta { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); font-weight: 300; }
 
-.form-card h3 {
-  font-family: var(--display);
-  font-size: 28px;
-  font-weight: 400;
-  margin-bottom: 8px;
-  letter-spacing: -0.01em;
-}
+.file-row { display: grid; grid-template-columns: 40px 1fr auto auto; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.file-icon { font-family: var(--display); font-size: 22px; color: var(--accent); font-style: italic; }
+.file-name { font-family: var(--display); font-size: 18px; font-weight: 400; }
+.file-meta { font-family: var(--sans); font-size: 11px; color: var(--ink-soft); font-weight: 300; margin-top: 4px; }
+.file-size { font-family: var(--sans); font-size: 11px; color: var(--ink-mute); }
+
+.dropzone { border: 2px dashed var(--line-strong); padding: 60px 24px; text-align: center; margin-bottom: 32px; cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.01); }
+.dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: var(--accent-soft); border-style: solid; }
+.dropzone-title { font-family: var(--display); font-size: 26px; font-weight: 400; margin-bottom: 8px; }
+.dropzone-title em { font-style: italic; color: var(--accent); }
+.dropzone-sub { font-family: var(--sans); font-size: 13px; color: var(--ink-soft); font-weight: 300; }
+.dropzone input[type="file"] { display: none; }
+
+.breadcrumb { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; font-family: var(--sans); font-size: 13px; color: var(--ink-soft); }
+.breadcrumb a { color: var(--ink-soft); cursor: pointer; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--ink-mute); }
+.breadcrumb .current { color: var(--ink); font-weight: 500; }
+
+.challenge-card { background: var(--bg-card); border: 1px solid var(--line); padding: 32px; margin-bottom: 20px; position: relative; }
+.challenge-card.completed { opacity: 0.65; }
+.challenge-card.completed::before { content: '✓ Completed'; position: absolute; top: 16px; right: 20px; font-family: var(--sans); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage); }
+.challenge-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 16px; flex-wrap: wrap; }
+.challenge-type-tag { font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); padding: 4px 10px; border: 1px solid var(--accent); }
+.challenge-type-tag.sprint { color: var(--gold); border-color: var(--gold); }
+.challenge-type-tag.task { color: var(--sage); border-color: var(--sage); }
+.challenge-points { font-family: var(--display); font-style: italic; font-size: 22px; color: var(--accent); }
+.challenge-subject { font-family: var(--sans); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 8px; }
+.challenge-title { font-family: var(--display); font-size: 30px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 12px; line-height: 1.2; }
+.challenge-desc { font-family: var(--sans); font-size: 14px; color: var(--ink-soft); line-height: 1.7; font-weight: 300; margin-bottom: 20px; }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.quiz-option { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: rgba(255,255,255,0.02); border: 1px solid var(--line); cursor: pointer; font-family: var(--sans); font-size: 14px; transition: all 0.2s; text-align: left; color: var(--ink); }
+.quiz-option:hover:not(:disabled) { border-color: var(--line-strong); }
+.quiz-option.correct { border-color: var(--sage); background: rgba(126, 177, 133, 0.1); }
+.quiz-option.incorrect { border-color: #d44; background: rgba(212, 68, 68, 0.1); }
+.quiz-option .letter { font-family: var(--display); font-style: italic; color: var(--accent); font-size: 18px; min-width: 20px; }
+.sprint-timer { font-family: var(--display); font-size: 72px; font-weight: 300; text-align: center; margin: 32px 0; letter-spacing: -0.02em; }
+.sprint-timer.running { color: var(--accent); }
+
+.lb-podium { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: end; margin-bottom: 48px; padding: 32px 0; }
+.lb-spot { background: var(--bg-card); border: 1px solid var(--line); padding: 24px 16px; text-align: center; position: relative; }
+.lb-spot.first { transform: translateY(-12px); border-color: var(--gold); padding-top: 32px; padding-bottom: 32px; }
+.lb-spot.first .lb-medal { color: var(--gold); }
+.lb-spot.second .lb-medal { color: #c0c0c0; }
+.lb-spot.third .lb-medal { color: #cd7f32; }
+.lb-medal { font-family: var(--display); font-style: italic; font-size: 36px; margin-bottom: 8px; }
+.lb-name { font-family: var(--display); font-size: 18px; font-weight: 400; margin-bottom: 6px; }
+.lb-points { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); }
+.lb-table { background: var(--bg-card); border: 1px solid var(--line); }
+.lb-row { display: grid; grid-template-columns: 50px 1fr auto; gap: 16px; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--line); }
+.lb-row:last-child { border-bottom: none; }
+.lb-row.me { background: var(--accent-soft); }
+.lb-rank { font-family: var(--display); font-style: italic; font-size: 22px; color: var(--ink-mute); }
+.lb-row.me .lb-rank { color: var(--accent); }
+.lb-username { font-family: var(--display); font-size: 18px; }
+.lb-pts { font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--accent); }
+.lb-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+.lb-tab { background: transparent; border: 1px solid var(--line); color: var(--ink-soft); font-family: var(--sans); font-size: 12px; padding: 8px 16px; cursor: pointer; transition: all 0.2s; }
+.lb-tab:hover { border-color: var(--line-strong); color: var(--ink); }
+.lb-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.form-card { background: var(--bg-card); border: 1px solid var(--line); padding: 40px; margin-bottom: 32px; }
+.form-card h3 { font-family: var(--display); font-size: 28px; font-weight: 400; margin-bottom: 8px; letter-spacing: -0.01em; }
 .form-card h3 em { font-style: italic; color: var(--accent); }
-
-.form-sub {
-  font-family: var(--sans);
-  font-size: 13px;
-  color: var(--ink-soft);
-  font-weight: 300;
-  margin-bottom: 32px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
-}
+.form-sub { font-family: var(--sans); font-size: 13px; color: var(--ink-soft); font-weight: 300; margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
 .form-row.single { grid-template-columns: 1fr; }
-
-label {
-  display: block;
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin-bottom: 10px;
-}
-
-input, select, textarea {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--line-strong);
-  padding: 8px 0 12px;
-  font-family: var(--display);
-  font-size: 20px;
-  color: var(--ink);
-  font-weight: 400;
-  transition: border-color 0.2s;
-}
-
+label { display: block; font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 10px; }
+input, select, textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line-strong); padding: 8px 0 12px; font-family: var(--display); font-size: 20px; color: var(--ink); font-weight: 400; transition: border-color 0.2s; }
 input::placeholder { color: var(--ink-mute); font-style: italic; }
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-bottom-color: var(--accent);
-}
-
-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239a978f' stroke-width='1' fill='none'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right center;
-  padding-right: 24px;
-}
-
+input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--accent); }
+select { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239a978f' stroke-width='1' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right center; padding-right: 24px; }
+select option { background: #ffffff; color: #1a1a1a; font-family: var(--sans); font-size: 14px; padding: 8px; }
+select option:checked, select option:hover { background: #e87545; color: #ffffff; }
 input[type="date"], input[type="time"] { color-scheme: dark; }
-
-button.primary {
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  background: var(--accent);
-  color: white;
-  border: none;
-  padding: 16px 32px;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  margin-top: 12px;
-  width: 100%;
-}
-button.primary:hover { background: #d96638; transform: translateY(-1px); }
+button.primary { font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; background: var(--accent); color: white; border: none; padding: 14px 28px; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+button.primary:hover:not(:disabled) { background: #d96638; transform: translateY(-1px); }
 button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-button.primary.inline { width: auto; }
-
-button.ghost {
-  background: transparent;
-  border: 1px solid var(--line-strong);
-  color: var(--ink);
-}
+button.ghost { background: transparent; border: 1px solid var(--line-strong); color: var(--ink); }
 button.ghost:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
 
-/* ============== NOTIF BAR ============== */
-.notif-bar {
-  background: var(--accent-soft);
-  border: 1px solid rgba(232, 117, 69, 0.3);
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 24px 0;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.notif-bar:hover { background: rgba(232, 117, 69, 0.22); }
+.notif-bar { background: var(--accent-soft); border: 1px solid rgba(232, 117, 69, 0.3); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; margin: 24px 0; cursor: pointer; }
 .notif-bar.granted, .notif-bar.hidden { display: none; }
-
-.notif-bar .nb-text {
-  font-family: var(--sans);
-  font-size: 13px;
-  color: var(--ink);
-}
+.notif-bar .nb-text { font-family: var(--sans); font-size: 13px; }
 .notif-bar .nb-text em { color: var(--accent); font-style: normal; font-weight: 600; }
-.notif-bar .nb-arrow { color: var(--accent); font-size: 20px; }
 
-/* ============== PANELS ============== */
 .panel { display: none; }
-.panel.active { display: block; animation: fadeIn 0.5s ease; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+.panel.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 #app { display: none; }
 #app.show { display: block; }
 
-/* ============== EMPTY ============== */
-.empty {
-  text-align: center;
-  padding: 80px 24px;
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 22px;
-  color: var(--ink-mute);
-  font-weight: 300;
-}
-.empty::before {
-  content: '—';
-  display: block;
-  font-size: 32px;
-  margin-bottom: 16px;
-  color: var(--accent);
-  font-style: normal;
-}
+.empty { text-align: center; padding: 80px 24px; font-family: var(--display); font-style: italic; font-size: 22px; color: var(--ink-mute); font-weight: 300; }
+.empty::before { content: '—'; display: block; font-size: 32px; margin-bottom: 16px; color: var(--accent); font-style: normal; }
 
-/* ============== SETTINGS ============== */
-.setting-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 28px 0;
-  border-bottom: 1px solid var(--line);
-  gap: 24px;
-}
+.setting-row { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); gap: 24px; }
 .setting-row:last-child { border-bottom: none; }
-
-.setting-info h4 {
-  font-family: var(--display);
-  font-size: 22px;
-  font-weight: 400;
-  margin-bottom: 4px;
-}
-.setting-info p {
-  font-family: var(--sans);
-  font-size: 12px;
-  color: var(--ink-soft);
-  font-weight: 300;
-}
-
+.setting-info h4 { font-family: var(--display); font-size: 22px; font-weight: 400; margin-bottom: 4px; }
+.setting-info p { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); font-weight: 300; }
 .setting-row input[type="time"] { width: auto; font-size: 18px; border-bottom: none; }
-.setting-row button { margin: 0; padding: 12px 24px; font-size: 11px; width: auto; }
+.setting-row button { margin: 0; padding: 12px 24px; font-size: 11px; }
 
-/* ============== TOAST ============== */
-.toast {
-  position: fixed;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%) translateY(120px);
-  background: var(--ink);
-  color: var(--bg);
-  padding: 14px 28px;
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: transform 0.4s cubic-bezier(.18,.89,.32,1.28);
-  z-index: 200;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-}
+.toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--ink); color: var(--bg); padding: 14px 28px; font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; transition: transform 0.4s cubic-bezier(.18,.89,.32,1.28); z-index: 200; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
-/* ============== LOADING SPINNER ============== */
-.loading-screen {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  z-index: 1000;
-}
-
+.loading-screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 1000; }
 .loading-screen.hidden { display: none; }
+.spinner { width: 40px; height: 40px; border: 2px solid var(--line-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--line-strong);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ============== MOBILE ============== */
 @media (max-width: 800px) {
   .container, .nav-inner { padding: 0 20px; }
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    padding: 40px 0;
-    min-height: auto;
-  }
+  .hero { grid-template-columns: 1fr; gap: 40px; padding: 40px 0; min-height: auto; }
   .hero-numeral { font-size: 200px; top: -10px; left: -10px; }
-  .nav-links { gap: 20px; }
-  .nav-link { font-size: 13px; }
+  .nav-links { gap: 16px; }
+  .nav-link { font-size: 12px; }
   .nav-right { gap: 12px; }
   .sync-indicator { display: none; }
   .form-row { grid-template-columns: 1fr; }
   .form-card { padding: 24px; }
   .auth-card { padding: 32px 24px; }
   .auth-title { font-size: 42px; }
-  .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .section-header { flex-direction: column; align-items: flex-start; }
   .queue-item { grid-template-columns: 36px 1fr auto; gap: 16px; }
   .queue-confidence { display: none; }
   .queue-name { font-size: 20px; }
   .stat-value { font-size: 48px; }
   .setting-row { flex-direction: column; align-items: flex-start; }
-}
-
-@media (max-width: 480px) {
-  .brand { font-size: 16px; }
-  .nav-links { gap: 14px; }
-  .nav-link { font-size: 12px; }
+  .lb-podium { grid-template-columns: 1fr; gap: 12px; }
+  .lb-spot.first { transform: none; }
+  .challenge-card { padding: 24px; }
+  .challenge-title { font-size: 24px; }
 }
 </style>
 </head>
 <body>
 
-<div class="loading-screen" id="loadingScreen">
-  <div class="spinner"></div>
-</div>
+<div class="loading-screen" id="loadingScreen"><div class="spinner"></div></div>
 
-<!-- ============== AUTH SCREEN ============== -->
 <div class="auth-screen" id="authScreen" style="display:none;">
   <div class="auth-card">
     <div class="auth-numeral">01</div>
     <div class="auth-eyebrow">STUDIO</div>
     <h1 class="auth-title">Welcome <em>back.</em></h1>
     <p class="auth-sub" id="authSub">Sign in to access your study plan from any device.</p>
-    
     <div class="auth-toggle">
       <button class="active" data-mode="signin">Sign in</button>
       <button data-mode="signup">Create account</button>
     </div>
-
     <div class="auth-error" id="authError"></div>
-
     <form id="authForm">
-      <div style="margin-bottom: 24px;">
+      <div style="margin-bottom: 20px; display: none;" id="displayNameField">
+        <label>Display name</label>
+        <input type="text" id="authDisplayName" placeholder="What classmates will see" maxlength="32">
+      </div>
+      <div style="margin-bottom: 20px;">
         <label>Email</label>
         <input type="email" id="authEmail" required autocomplete="email" placeholder="your@email.com">
       </div>
@@ -863,14 +285,12 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
         <label>Password</label>
         <input type="password" id="authPassword" required autocomplete="current-password" placeholder="••••••••" minlength="6">
       </div>
-      <button type="submit" class="primary" id="authSubmit">Sign in →</button>
+      <button type="submit" class="primary" id="authSubmit" style="width:100%;">Sign in →</button>
     </form>
   </div>
 </div>
 
-<!-- ============== APP ============== -->
 <div id="app">
-
 <nav>
   <div class="nav-inner">
     <div class="brand">Studio.</div>
@@ -878,10 +298,13 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <button class="nav-link active" data-tab="today">Today</button>
       <button class="nav-link" data-tab="exams">Exams</button>
       <button class="nav-link" data-tab="topics">Topics</button>
+      <button class="nav-link" data-tab="files">Files</button>
+      <button class="nav-link" data-tab="challenges">Challenges</button>
+      <button class="nav-link" data-tab="leaderboard">Leaderboard</button>
       <button class="nav-link" data-tab="settings">Settings</button>
     </div>
     <div class="nav-right">
-      <div class="sync-indicator" id="syncIndicator">
+      <div class="sync-indicator">
         <span class="sync-dot synced" id="syncDot"></span>
         <span id="syncText">Synced</span>
       </div>
@@ -890,21 +313,18 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </nav>
 
-<!-- TODAY -->
 <div class="panel active" id="panel-today">
   <div class="container">
     <div class="notif-bar" id="notifBar" onclick="requestNotifications()">
       <div class="nb-text">Enable <em>daily notifications</em> to stay on top of your study schedule.</div>
-      <div class="nb-arrow">→</div>
+      <div style="color:var(--accent);font-size:20px;">→</div>
     </div>
-
     <div class="hero">
       <div class="hero-numeral">01</div>
       <div class="hero-left">
         <div class="eyebrow" id="eyebrowDate">TODAY</div>
         <h1 class="hero-title"><em>Study</em><br>Plan.</h1>
-        <p class="hero-desc">A daily companion to keep you focused. Spaced repetition surfaces what needs revising. Priority drives what comes first.</p>
-        <button class="read-more" onclick="document.querySelector('.queue').scrollIntoView({behavior:'smooth'})">Begin today</button>
+        <p class="hero-desc">Welcome back, <em id="userGreeting" style="color:var(--ink);font-style:italic;">friend</em>. Spaced repetition surfaces what needs revising. Priority drives what comes first.</p>
       </div>
       <div class="hero-right">
         <div>
@@ -917,9 +337,13 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
           <div class="stat-value"><em id="statDays">—</em></div>
           <div class="stat-sub" id="statExamName">no exams scheduled yet</div>
         </div>
+        <div>
+          <div class="stat-label">Total Points</div>
+          <div class="stat-value"><em id="statPoints">0</em></div>
+          <div class="stat-sub">earned from daily challenges</div>
+        </div>
       </div>
     </div>
-
     <section class="content-section">
       <div class="section-header">
         <h2 class="section-title">Today's <em>queue</em></h2>
@@ -932,10 +356,9 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<!-- EXAMS -->
 <div class="panel" id="panel-exams">
   <div class="container">
-    <div class="hero" style="min-height:auto;padding:60px 0 40px;">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
       <div class="hero-numeral">02</div>
       <div class="hero-left">
         <div class="eyebrow">EXAMINATIONS</div>
@@ -943,20 +366,18 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
         <p class="hero-desc">Every exam on the horizon. The countdown begins the moment you add one.</p>
       </div>
     </div>
-
     <div class="form-card">
       <h3>Add an <em>exam</em></h3>
       <div class="form-sub">A subject, a date, and any notes you want to remember.</div>
       <div class="form-row">
-        <div><label>Subject</label><input type="text" id="examSubject" placeholder="e.g. Organic Chemistry"></div>
+        <div><label>Subject</label><input type="text" id="examSubject" placeholder="e.g. Chemistry"></div>
         <div><label>Date</label><input type="date" id="examDate"></div>
       </div>
       <div class="form-row single">
-        <div><label>Notes (optional)</label><input type="text" id="examNotes" placeholder="e.g. covers chapters 1–7"></div>
+        <div><label>Notes (optional)</label><input type="text" id="examNotes" placeholder="e.g. covers Unit 3"></div>
       </div>
-      <button class="primary inline" onclick="addExam()">Add exam →</button>
+      <button class="primary" onclick="addExam()">Add exam →</button>
     </div>
-
     <section class="content-section" style="padding-top:0;">
       <div class="section-header">
         <h2 class="section-title">All <em>exams</em></h2>
@@ -967,21 +388,19 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<!-- TOPICS -->
 <div class="panel" id="panel-topics">
   <div class="container">
-    <div class="hero" style="min-height:auto;padding:60px 0 40px;">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
       <div class="hero-numeral">03</div>
       <div class="hero-left">
         <div class="eyebrow">TOPICS</div>
         <h1 class="hero-title">What to<br><em>revise.</em></h1>
-        <p class="hero-desc">Add each topic with a confidence rating. The lower the confidence, the sooner it returns for review.</p>
+        <p class="hero-desc">Add each topic with a confidence rating. The lower the confidence, the sooner it returns.</p>
       </div>
     </div>
-
     <div class="form-card">
       <h3>Add a <em>topic</em></h3>
-      <div class="form-sub">Topics are tied to a subject. Add an exam first if you haven't.</div>
+      <div class="form-sub">Topics are tied to a subject from your exams list.</div>
       <div class="form-row">
         <div><label>Topic name</label><input type="text" id="topicName" placeholder="e.g. SN2 reactions"></div>
         <div><label>Subject</label><select id="topicSubject"><option value="">Choose a subject…</option></select></div>
@@ -1006,9 +425,8 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
           </select>
         </div>
       </div>
-      <button class="primary inline" onclick="addTopic()">Add topic →</button>
+      <button class="primary" onclick="addTopic()">Add topic →</button>
     </div>
-
     <section class="content-section" style="padding-top:0;">
       <div class="section-header">
         <h2 class="section-title">All <em>topics</em></h2>
@@ -1019,30 +437,116 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<!-- SETTINGS -->
+<div class="panel" id="panel-files">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">04</div>
+      <div class="hero-left">
+        <div class="eyebrow">FILES</div>
+        <h1 class="hero-title">Your <em>library.</em></h1>
+        <p class="hero-desc">Create a folder for each subject and drop in practice exams, notes, anything you want to keep close.</p>
+      </div>
+    </div>
+    <div id="folderView">
+      <div class="form-card">
+        <h3>Add a <em>subject folder</em></h3>
+        <div class="form-row single">
+          <div><label>Subject name</label><input type="text" id="newSubjectName" placeholder="e.g. Chemistry"></div>
+        </div>
+        <button class="primary" onclick="addSubject()">Create folder →</button>
+      </div>
+      <section class="content-section" style="padding-top:0;">
+        <div class="section-header">
+          <h2 class="section-title">Your <em>subjects</em></h2>
+          <span class="section-meta" id="subjectCount">0 folders</span>
+        </div>
+        <div class="cards" id="subjectGrid">
+          <div class="empty" style="grid-column:1/-1;">No folders yet.</div>
+        </div>
+      </section>
+    </div>
+    <div id="fileListView" style="display:none;">
+      <div class="breadcrumb">
+        <a onclick="exitFolder()">All subjects</a>
+        <span class="sep">/</span>
+        <span class="current" id="currentFolderName">—</span>
+      </div>
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" multiple>
+        <div class="dropzone-title">Drop files <em>here</em></div>
+        <div class="dropzone-sub">or click to browse · PDFs, images, docs, anything up to 50MB</div>
+      </div>
+      <div id="fileList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-challenges">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">05</div>
+      <div class="hero-left">
+        <div class="eyebrow">DAILY CHALLENGES</div>
+        <h1 class="hero-title">Earn your<br><em>points.</em></h1>
+        <p class="hero-desc">A fresh challenge for each subject every day. Complete them to climb the leaderboard.</p>
+      </div>
+    </div>
+    <section class="content-section" style="padding-top:0;">
+      <div class="section-header">
+        <h2 class="section-title">Today's <em>challenges</em></h2>
+        <span class="section-meta" id="challengeCount">0 available</span>
+      </div>
+      <div id="challengeList">
+        <div class="empty">Loading challenges…</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="panel" id="panel-leaderboard">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">06</div>
+      <div class="hero-left">
+        <div class="eyebrow">LEADERBOARD</div>
+        <h1 class="hero-title">Top of the<br><em>class.</em></h1>
+        <p class="hero-desc">See how everyone is doing. Points come from completing daily challenges.</p>
+      </div>
+    </div>
+    <div class="lb-tabs" id="lbTabs">
+      <button class="lb-tab active" data-subject="all">Overall</button>
+    </div>
+    <div id="lbPodium" class="lb-podium" style="display:none;"></div>
+    <div id="lbTable" class="lb-table"></div>
+  </div>
+</div>
+
 <div class="panel" id="panel-settings">
   <div class="container">
-    <div class="hero" style="min-height:auto;padding:60px 0 40px;">
-      <div class="hero-numeral">04</div>
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">07</div>
       <div class="hero-left">
         <div class="eyebrow">SETTINGS</div>
         <h1 class="hero-title">Make it<br><em>yours.</em></h1>
         <p class="hero-desc">Notifications, account, data management.</p>
       </div>
     </div>
-
     <div class="form-card">
       <h3>Your <em>account</em></h3>
       <div class="form-sub">Signed in as <span id="userEmail" style="color:var(--ink);font-style:italic;">—</span></div>
+      <div class="form-row single">
+        <div><label>Display name</label><input type="text" id="settingsDisplayName" placeholder="Shown on leaderboard"></div>
+      </div>
+      <button class="primary ghost" onclick="updateDisplayName()">Update name</button>
+      <div style="height:16px;"></div>
       <div class="setting-row">
         <div class="setting-info"><h4>Sign out</h4><p>Sign back in anytime from any device</p></div>
         <button class="primary ghost" onclick="signOut()">Sign out</button>
       </div>
     </div>
-
     <div class="form-card">
       <h3>Daily <em>reminder</em></h3>
-      <div class="form-sub">Configure when and how you're notified each day.</div>
+      <div class="form-sub">When you'd like to be reminded each day.</div>
       <div class="setting-row">
         <div class="setting-info"><h4>Notification time</h4><p>When you'd like your daily study reminder</p></div>
         <input type="time" id="notifTime" value="09:00" onchange="saveSettings()">
@@ -1056,75 +560,79 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
         <button class="primary" onclick="testNotification()">Test</button>
       </div>
     </div>
-
     <div class="form-card">
       <h3>Your <em>data</em></h3>
-      <div class="form-sub">Synced to the cloud and tied to your account.</div>
       <div class="setting-row">
-        <div class="setting-info"><h4>Export backup</h4><p>Download all your data as JSON</p></div>
+        <div class="setting-info"><h4>Export backup</h4><p>Download exams + topics as JSON</p></div>
         <button class="primary ghost" onclick="exportData()">Export</button>
       </div>
       <div class="setting-row">
-        <div class="setting-info"><h4>Clear everything</h4><p>This action cannot be undone</p></div>
-        <button class="primary" onclick="clearData()" style="background:#7a3424;">Clear all</button>
+        <div class="setting-info"><h4>Clear study data</h4><p>Removes exams and topics. Not files or points.</p></div>
+        <button class="primary" onclick="clearData()" style="background:#7a3424;">Clear</button>
       </div>
     </div>
   </div>
 </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- ============== SUPABASE ============== -->
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const SUPABASE_URL = 'https://rzvmvmodapvxymzotpsd.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_vkirq2f_ZnfO0TJFrqdROw_HlJAZQ-1';
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-window.supabase = supabase;
 
-// ============== STATE ==============
-let state = {
-  exams: [],
-  topics: [],
-  completions: {},
-  settings: { notifTime: '09:00' }
-};
-let currentUser = null;
-let saveTimer = null;
+let state = { exams: [], topics: [], completions: {}, settings: { notifTime: '09:00' } };
+let currentUser = null, currentProfile = null, saveTimer = null;
+let currentFolderId = null, subjects = [], challenges = [], submissions = [];
+let allProfiles = {}, allSubmissions = [];
+let lbCurrentSubject = 'all';
+let sprintTimers = {};
 
-window.state = state;
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+function daysBetween(s) { const t = new Date(); t.setHours(0,0,0,0); const d = new Date(s); d.setHours(0,0,0,0); return Math.round((d - t) / 86400000); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatBytes(b) { if (!b) return '—'; if (b < 1024) return b + ' B'; if (b < 1048576) return (b/1024).toFixed(1) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2400); }
+function setSyncStatus(s) { const d = document.getElementById('syncDot'); const t = document.getElementById('syncText'); d.classList.remove('synced','syncing','error'); d.classList.add(s); t.textContent = s === 'syncing' ? 'Syncing…' : s === 'error' ? 'Error' : 'Synced'; }
 
-// ============== AUTH FLOW ==============
 async function checkSession() {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
     currentUser = session.user;
-    await enterApp();
-  } else {
-    showAuth();
-  }
+    await loadProfile();
+    if (!currentProfile) {
+      const fallback = currentUser.email.split('@')[0];
+      const { error } = await supabase.from('profiles').insert({ id: currentUser.id, display_name: fallback });
+      if (!error) currentProfile = { id: currentUser.id, display_name: fallback };
+    }
+    if (currentProfile) await enterApp();
+    else showAuth();
+  } else showAuth();
   document.getElementById('loadingScreen').classList.add('hidden');
 }
 
-function showAuth() {
-  document.getElementById('authScreen').style.display = 'flex';
-  document.getElementById('app').classList.remove('show');
+function showAuth() { document.getElementById('authScreen').style.display = 'flex'; document.getElementById('app').classList.remove('show'); }
+
+async function loadProfile() {
+  const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+  if (data) currentProfile = data;
 }
 
 async function enterApp() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('app').classList.add('show');
   document.getElementById('userEmail').textContent = currentUser.email;
-  await loadFromCloud();
-  render();
+  document.getElementById('userGreeting').textContent = currentProfile.display_name;
+  document.getElementById('settingsDisplayName').value = currentProfile.display_name;
+  await Promise.all([loadFromCloud(), loadSubjects(), loadChallenges(), loadAllProfiles(), loadAllSubmissions()]);
+  render(); renderChallenges(); renderLeaderboard(); renderFolderView();
   if ('Notification' in window && Notification.permission === 'granted') scheduleNotification();
 }
 
-// Auth form mode toggle
 let authMode = 'signin';
 document.querySelectorAll('.auth-toggle button').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1133,46 +641,47 @@ document.querySelectorAll('.auth-toggle button').forEach(btn => {
     btn.classList.add('active');
     const isSignup = authMode === 'signup';
     document.querySelector('.auth-title').innerHTML = isSignup ? 'Create your <em>account.</em>' : 'Welcome <em>back.</em>';
-    document.getElementById('authSub').textContent = isSignup
-      ? 'Just an email and password. Your study data syncs across all your devices.'
-      : 'Sign in to access your study plan from any device.';
+    document.getElementById('authSub').textContent = isSignup ? 'Your data and progress syncs across all your devices.' : 'Sign in to access your study plan from any device.';
     document.getElementById('authSubmit').textContent = isSignup ? 'Create account →' : 'Sign in →';
+    document.getElementById('displayNameField').style.display = isSignup ? 'block' : 'none';
     document.getElementById('authError').classList.remove('show');
   });
 });
 
-// Auth form submit
 document.getElementById('authForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
+  const displayName = document.getElementById('authDisplayName').value.trim();
   const errEl = document.getElementById('authError');
   const submitBtn = document.getElementById('authSubmit');
   errEl.classList.remove('show');
+  if (authMode === 'signup' && !displayName) { errEl.textContent = 'Display name required.'; errEl.classList.add('show'); return; }
   submitBtn.disabled = true;
   submitBtn.textContent = 'Please wait…';
-
   try {
-    let result;
     if (authMode === 'signup') {
-      result = await supabase.auth.signUp({ email, password });
-      if (result.error) throw result.error;
-      if (!result.data.session) {
-        errEl.textContent = 'Check your email for a confirmation link, then sign in.';
-        errEl.classList.add('show');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Create account →';
-        return;
-      }
-      currentUser = result.data.user;
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      if (!data.session) { errEl.textContent = 'Account created — please sign in.'; errEl.classList.add('show'); submitBtn.disabled = false; submitBtn.textContent = 'Create account →'; return; }
+      currentUser = data.user;
+      const { error: pErr } = await supabase.from('profiles').insert({ id: currentUser.id, display_name: displayName });
+      if (pErr) throw pErr;
+      currentProfile = { id: currentUser.id, display_name: displayName };
     } else {
-      result = await supabase.auth.signInWithPassword({ email, password });
-      if (result.error) throw result.error;
-      currentUser = result.data.user;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      currentUser = data.user;
+      await loadProfile();
+      if (!currentProfile) {
+        const fallback = email.split('@')[0];
+        const { error: pErr } = await supabase.from('profiles').insert({ id: currentUser.id, display_name: fallback });
+        if (!pErr) currentProfile = { id: currentUser.id, display_name: fallback };
+      }
     }
     await enterApp();
   } catch (err) {
-    errEl.textContent = err.message || 'Something went wrong. Try again.';
+    errEl.textContent = err.message || 'Something went wrong.';
     errEl.classList.add('show');
     submitBtn.disabled = false;
     submitBtn.textContent = authMode === 'signup' ? 'Create account →' : 'Sign in →';
@@ -1181,127 +690,326 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
 
 window.signOut = async function() {
   await supabase.auth.signOut();
-  currentUser = null;
+  currentUser = null; currentProfile = null;
   state = { exams: [], topics: [], completions: {}, settings: { notifTime: '09:00' } };
   showAuth();
 };
 
-// ============== CLOUD SYNC ==============
-function setSyncStatus(status) {
-  const dot = document.getElementById('syncDot');
-  const text = document.getElementById('syncText');
-  dot.classList.remove('synced', 'syncing', 'error');
-  dot.classList.add(status);
-  text.textContent = status === 'syncing' ? 'Syncing…' : status === 'error' ? 'Sync error' : 'Synced';
-}
+window.updateDisplayName = async function() {
+  const name = document.getElementById('settingsDisplayName').value.trim();
+  if (!name) { toast('Name required'); return; }
+  const { error } = await supabase.from('profiles').update({ display_name: name }).eq('id', currentUser.id);
+  if (error) { toast('Error'); return; }
+  currentProfile.display_name = name;
+  document.getElementById('userGreeting').textContent = name;
+  await loadAllProfiles();
+  renderLeaderboard();
+  toast('Name updated');
+};
 
 async function loadFromCloud() {
   if (!currentUser) return;
   setSyncStatus('syncing');
   try {
-    const { data, error } = await supabase
-      .from('study_data')
-      .select('data')
-      .eq('user_id', currentUser.id)
-      .maybeSingle();
+    const { data, error } = await supabase.from('study_data').select('data').eq('user_id', currentUser.id).maybeSingle();
     if (error) throw error;
-    if (data && data.data) {
-      state = { ...state, ...data.data };
-      window.state = state;
-    }
+    if (data && data.data) state = { ...state, ...data.data };
     setSyncStatus('synced');
-  } catch (err) {
-    console.error('Load error', err);
-    setSyncStatus('error');
-    toast('Could not load data');
-  }
+  } catch (err) { console.error(err); setSyncStatus('error'); }
 }
 
 async function saveToCloud() {
   if (!currentUser) return;
   setSyncStatus('syncing');
   try {
-    const { error } = await supabase
-      .from('study_data')
-      .upsert(
-        { user_id: currentUser.id, data: state, updated_at: new Date().toISOString() },
-        { onConflict: 'user_id' }
-      );
+    const { error } = await supabase.from('study_data').upsert({ user_id: currentUser.id, data: state, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
     if (error) throw error;
     setSyncStatus('synced');
-  } catch (err) {
-    console.error('Save error', err);
-    setSyncStatus('error');
+  } catch (err) { console.error(err); setSyncStatus('error'); }
+}
+
+function saveState() { if (saveTimer) clearTimeout(saveTimer); saveTimer = setTimeout(() => saveToCloud(), 600); }
+
+async function loadSubjects() {
+  const { data } = await supabase.from('subjects').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: true });
+  if (data) subjects = data;
+}
+
+window.addSubject = async function() {
+  const name = document.getElementById('newSubjectName').value.trim();
+  if (!name) { toast('Name required'); return; }
+  const { data, error } = await supabase.from('subjects').insert({ user_id: currentUser.id, name }).select().single();
+  if (error) { toast('Error: ' + error.message); return; }
+  subjects.push(data);
+  document.getElementById('newSubjectName').value = '';
+  renderFolderView();
+  toast('Folder created');
+};
+
+window.deleteSubject = async function(id, e) {
+  if (e) e.stopPropagation();
+  if (!confirm('Delete folder and all files inside?')) return;
+  const { data: files } = await supabase.from('files').select('storage_path').eq('subject_id', id);
+  if (files && files.length) await supabase.storage.from('study-files').remove(files.map(f => f.storage_path));
+  await supabase.from('subjects').delete().eq('id', id);
+  subjects = subjects.filter(s => s.id !== id);
+  renderFolderView();
+  toast('Folder deleted');
+};
+
+window.openFolder = async function(id) {
+  currentFolderId = id;
+  const s = subjects.find(x => x.id === id);
+  document.getElementById('currentFolderName').textContent = s ? s.name : '—';
+  document.getElementById('folderView').style.display = 'none';
+  document.getElementById('fileListView').style.display = 'block';
+  await renderFileList();
+};
+
+window.exitFolder = function() {
+  currentFolderId = null;
+  document.getElementById('folderView').style.display = 'block';
+  document.getElementById('fileListView').style.display = 'none';
+};
+
+function renderFolderView() {
+  const grid = document.getElementById('subjectGrid');
+  document.getElementById('subjectCount').textContent = `${subjects.length} folder${subjects.length !== 1 ? 's' : ''}`;
+  if (subjects.length === 0) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No folders yet.</div>'; return; }
+  grid.innerHTML = subjects.map(s => `
+    <div class="folder-card" onclick="openFolder('${s.id}')">
+      <div class="folder-icon"></div>
+      <div class="folder-title">${escapeHtml(s.name)}</div>
+      <div class="folder-meta">Click to open</div>
+      <button class="card-remove" onclick="deleteSubject('${s.id}', event)" style="position:absolute;top:16px;right:16px;">Delete</button>
+    </div>
+  `).join('');
+}
+
+async function renderFileList() {
+  if (!currentFolderId) return;
+  const { data: files } = await supabase.from('files').select('*').eq('subject_id', currentFolderId).order('created_at', { ascending: false });
+  const list = document.getElementById('fileList');
+  if (!files || files.length === 0) { list.innerHTML = '<div class="empty">No files in this folder yet.<br>Drop some above.</div>'; return; }
+  list.innerHTML = files.map(f => {
+    const ext = (f.name.split('.').pop() || '').toLowerCase();
+    const icon = { pdf:'PDF', doc:'DOC', docx:'DOC', jpg:'IMG', jpeg:'IMG', png:'IMG', gif:'IMG', txt:'TXT' }[ext] || '•';
+    return `
+      <div class="file-row">
+        <div class="file-icon">${icon}</div>
+        <div>
+          <div class="file-name">${escapeHtml(f.name)}</div>
+          <div class="file-meta">${new Date(f.created_at).toLocaleDateString()}</div>
+        </div>
+        <div class="file-size">${formatBytes(f.size_bytes)}</div>
+        <div style="display:flex;gap:12px;">
+          <button class="card-remove" onclick="downloadFile('${f.storage_path.replace(/'/g, "\\'")}', '${f.name.replace(/'/g, "\\'")}')">Download</button>
+          <button class="card-remove" onclick="deleteFile('${f.id}', '${f.storage_path.replace(/'/g, "\\'")}')">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function uploadFiles(fileList) {
+  if (!currentFolderId) { toast('Open a folder first'); return; }
+  for (const file of fileList) {
+    if (file.size > 52428800) { toast(`${file.name} too large (max 50MB)`); continue; }
+    const path = `${currentUser.id}/${currentFolderId}/${Date.now()}-${file.name}`;
+    setSyncStatus('syncing');
+    try {
+      const { error: upErr } = await supabase.storage.from('study-files').upload(path, file);
+      if (upErr) throw upErr;
+      const { error: dbErr } = await supabase.from('files').insert({
+        user_id: currentUser.id, subject_id: currentFolderId, name: file.name,
+        storage_path: path, size_bytes: file.size, mime_type: file.type
+      });
+      if (dbErr) throw dbErr;
+      toast(`Uploaded ${file.name}`);
+    } catch (err) { console.error(err); toast(`Upload failed: ${file.name}`); }
+    setSyncStatus('synced');
+  }
+  await renderFileList();
+}
+
+window.downloadFile = async function(path, name) {
+  const { data, error } = await supabase.storage.from('study-files').download(path);
+  if (error) { toast('Download failed'); return; }
+  const url = URL.createObjectURL(data);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.deleteFile = async function(id, path) {
+  if (!confirm('Delete this file?')) return;
+  await supabase.storage.from('study-files').remove([path]);
+  await supabase.from('files').delete().eq('id', id);
+  await renderFileList();
+  toast('Deleted');
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const dz = document.getElementById('dropzone');
+  const input = document.getElementById('fileInput');
+  if (dz) {
+    ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('dragover'); }));
+    ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('dragover'); }));
+    dz.addEventListener('drop', e => { if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files); });
+  }
+  if (input) input.addEventListener('change', e => { if (e.target.files.length) uploadFiles(e.target.files); input.value = ''; });
+});
+
+async function loadChallenges() {
+  const { data } = await supabase.from('challenges').select('*').eq('date', todayStr());
+  if (data) challenges = data;
+  const { data: subs } = await supabase.from('submissions').select('*').eq('user_id', currentUser.id);
+  if (subs) submissions = subs;
+}
+
+function renderChallenges() {
+  const list = document.getElementById('challengeList');
+  document.getElementById('challengeCount').textContent = `${challenges.length} available`;
+  if (challenges.length === 0) {
+    list.innerHTML = '<div class="empty">No challenges available today.<br>Check back tomorrow.</div>';
+    return;
+  }
+  list.innerHTML = challenges.map(c => {
+    const completed = submissions.some(s => s.challenge_id === c.id);
+    let body = '';
+    if (c.type === 'quiz' && c.payload) {
+      const opts = c.payload.options || [];
+      body = `<div class="quiz-options" id="quiz-${c.id}">${opts.map((o, i) => `<button class="quiz-option" onclick="selectQuizOption('${c.id}', ${i})" ${completed ? 'disabled' : ''}><span class="letter">${String.fromCharCode(65+i)}.</span><span>${escapeHtml(o)}</span></button>`).join('')}</div>`;
+    } else if (c.type === 'sprint' && c.payload) {
+      const mins = c.payload.minutes || 25;
+      body = `<div class="sprint-timer" id="timer-${c.id}">${mins}:00</div><div style="text-align:center;"><button class="primary" onclick="startSprint('${c.id}', ${mins})" ${completed ? 'disabled' : ''}>${completed ? 'Completed' : 'Start ' + mins + '-min sprint'}</button></div>`;
+    } else if (c.type === 'task') {
+      body = `<div style="text-align:left;"><button class="primary" onclick="completeTask('${c.id}')" ${completed ? 'disabled' : ''}>${completed ? 'Completed' : 'Mark complete'}</button></div>`;
+    }
+    return `
+      <div class="challenge-card ${completed ? 'completed' : ''}">
+        <div class="challenge-subject">${escapeHtml(c.subject_name)}</div>
+        <div class="challenge-head">
+          <div><span class="challenge-type-tag ${c.type}">${c.type}</span></div>
+          <div class="challenge-points">+${c.points} pts</div>
+        </div>
+        <div class="challenge-title">${escapeHtml(c.title)}</div>
+        ${c.description ? `<div class="challenge-desc">${escapeHtml(c.description)}</div>` : ''}
+        ${body}
+      </div>
+    `;
+  }).join('');
+}
+
+window.selectQuizOption = async function(cid, idx) {
+  const c = challenges.find(x => x.id === cid);
+  if (!c) return;
+  const correct = c.payload.correctIndex;
+  const container = document.getElementById('quiz-' + cid);
+  container.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.disabled = true;
+    if (i === correct) b.classList.add('correct');
+    if (i === idx && idx !== correct) b.classList.add('incorrect');
+  });
+  if (idx === correct) { await submitChallenge(cid, c.points); toast(`Correct! +${c.points} pts`); }
+  else { await submitChallenge(cid, 0); toast('Better luck tomorrow'); }
+};
+
+window.startSprint = function(cid, mins) {
+  if (sprintTimers[cid]) return;
+  let remaining = mins * 60;
+  const el = document.getElementById('timer-' + cid);
+  el.classList.add('running');
+  sprintTimers[cid] = setInterval(async () => {
+    remaining--;
+    const m = Math.floor(remaining / 60), s = remaining % 60;
+    el.textContent = `${m}:${String(s).padStart(2,'0')}`;
+    if (remaining <= 0) {
+      clearInterval(sprintTimers[cid]); delete sprintTimers[cid];
+      const c = challenges.find(x => x.id === cid);
+      await submitChallenge(cid, c.points);
+      toast(`Sprint complete! +${c.points} pts`);
+      renderChallenges();
+    }
+  }, 1000);
+};
+
+window.completeTask = async function(cid) {
+  const c = challenges.find(x => x.id === cid);
+  if (!c) return;
+  if (!confirm('Did you complete this task?')) return;
+  await submitChallenge(cid, c.points);
+  toast(`Task complete! +${c.points} pts`);
+  renderChallenges();
+};
+
+async function submitChallenge(cid, points) {
+  const { error } = await supabase.from('submissions').insert({ user_id: currentUser.id, challenge_id: cid, points_earned: points });
+  if (!error) {
+    submissions.push({ challenge_id: cid, points_earned: points, user_id: currentUser.id });
+    await loadAllSubmissions();
+    renderLeaderboard();
+    render();
   }
 }
 
-// Debounced save: wait 600ms after the last change before pushing to cloud
-function saveState() {
-  if (saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => saveToCloud(), 600);
+async function loadAllProfiles() {
+  const { data } = await supabase.from('profiles').select('id, display_name');
+  if (data) { allProfiles = {}; data.forEach(p => allProfiles[p.id] = p.display_name); }
 }
 
-// ============== REALTIME (cross-device sync) ==============
-function subscribeToChanges() {
-  if (!currentUser) return;
-  supabase
-    .channel('study-data-' + currentUser.id)
-    .on('postgres_changes',
-      { event: '*', schema: 'public', table: 'study_data', filter: `user_id=eq.${currentUser.id}` },
-      (payload) => {
-        if (payload.new && payload.new.data) {
-          // Only update if data differs (avoid loop with our own writes)
-          const incoming = JSON.stringify(payload.new.data);
-          const current = JSON.stringify(state);
-          if (incoming !== current) {
-            state = { ...state, ...payload.new.data };
-            window.state = state;
-            render();
-            toast('Synced from another device');
-          }
-        }
-      }
-    )
-    .subscribe();
+async function loadAllSubmissions() {
+  const { data } = await supabase.from('submissions').select('user_id, points_earned, challenge_id');
+  if (data) allSubmissions = data;
 }
 
-// ============== UTILS ==============
-function todayStr() { return new Date().toISOString().split('T')[0]; }
-
-function daysBetween(dateStr) {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const target = new Date(dateStr); target.setHours(0,0,0,0);
-  return Math.round((target - today) / 86400000);
+function renderLeaderboard() {
+  const subjectsInCh = [...new Set(challenges.map(c => c.subject_name))].sort();
+  const tabs = document.getElementById('lbTabs');
+  tabs.innerHTML = `<button class="lb-tab ${lbCurrentSubject === 'all' ? 'active' : ''}" data-subject="all">Overall</button>` +
+    subjectsInCh.map(s => `<button class="lb-tab ${lbCurrentSubject === s ? 'active' : ''}" data-subject="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join('');
+  tabs.querySelectorAll('.lb-tab').forEach(btn => {
+    btn.addEventListener('click', () => { lbCurrentSubject = btn.dataset.subject; renderLeaderboard(); });
+  });
+  const totals = {};
+  allSubmissions.forEach(sub => {
+    let include = true;
+    if (lbCurrentSubject !== 'all') {
+      const ch = challenges.find(c => c.id === sub.challenge_id);
+      include = ch && ch.subject_name === lbCurrentSubject;
+    }
+    if (include) totals[sub.user_id] = (totals[sub.user_id] || 0) + (sub.points_earned || 0);
+  });
+  const ranked = Object.entries(totals).map(([uid, pts]) => ({ userId: uid, points: pts, name: allProfiles[uid] || 'Anonymous' })).sort((a, b) => b.points - a.points);
+  const podium = document.getElementById('lbPodium');
+  const table = document.getElementById('lbTable');
+  if (ranked.length === 0) {
+    podium.style.display = 'none';
+    table.innerHTML = '<div class="empty" style="padding:60px 24px;">No submissions yet.<br>Be the first to earn points.</div>';
+    document.getElementById('statPoints').textContent = '0';
+    return;
+  }
+  podium.style.display = 'grid';
+  const positions = [{ idx: 1, label: 'II', cls: 'second' }, { idx: 0, label: 'I', cls: 'first' }, { idx: 2, label: 'III', cls: 'third' }];
+  podium.innerHTML = positions.map(p => {
+    if (!ranked[p.idx]) return '<div></div>';
+    const r = ranked[p.idx];
+    return `<div class="lb-spot ${p.cls}"><div class="lb-medal">${p.label}</div><div class="lb-name">${escapeHtml(r.name)}</div><div class="lb-points">${r.points} points</div></div>`;
+  }).join('');
+  table.innerHTML = ranked.map((r, i) => `
+    <div class="lb-row ${r.userId === currentUser.id ? 'me' : ''}">
+      <div class="lb-rank">${String(i+1).padStart(2,'0')}</div>
+      <div class="lb-username">${escapeHtml(r.name)}${r.userId === currentUser.id ? ' <span style="color:var(--accent);font-size:12px;font-style:italic;">(you)</span>' : ''}</div>
+      <div class="lb-pts">${r.points} pts</div>
+    </div>
+  `).join('');
+  document.getElementById('statPoints').textContent = totals[currentUser.id] || 0;
 }
 
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2400);
-}
-window.toast = toast;
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-// ============== SPACED REPETITION ==============
 const SR_INTERVALS = { 1: 1, 2: 2, 3: 4, 4: 7, 5: 14 };
+function nextReviewDate(t) { const last = t.lastReviewed || t.createdAt; const interval = SR_INTERVALS[t.confidence] || 4; const d = new Date(last); d.setDate(d.getDate() + interval); return d.toISOString().split('T')[0]; }
+function isDueToday(t) { return nextReviewDate(t) <= todayStr(); }
 
-function nextReviewDate(topic) {
-  const last = topic.lastReviewed || topic.createdAt;
-  const interval = SR_INTERVALS[topic.confidence] || 4;
-  const d = new Date(last);
-  d.setDate(d.getDate() + interval);
-  return d.toISOString().split('T')[0];
-}
-
-function isDueToday(topic) { return nextReviewDate(topic) <= todayStr(); }
-
-// ============== ACTIONS ==============
 window.addExam = function() {
   const subject = document.getElementById('examSubject').value.trim();
   const date = document.getElementById('examDate').value;
@@ -1312,15 +1020,9 @@ window.addExam = function() {
   document.getElementById('examSubject').value = '';
   document.getElementById('examDate').value = '';
   document.getElementById('examNotes').value = '';
-  render();
-  toast('Exam added');
+  render(); toast('Exam added');
 };
-
-window.removeExam = function(id) {
-  state.exams = state.exams.filter(e => e.id !== id);
-  saveState(); render();
-};
-
+window.removeExam = function(id) { state.exams = state.exams.filter(e => e.id !== id); saveState(); render(); };
 window.addTopic = function() {
   const name = document.getElementById('topicName').value.trim();
   const subject = document.getElementById('topicSubject').value;
@@ -1332,71 +1034,48 @@ window.addTopic = function() {
   document.getElementById('topicName').value = '';
   render(); toast('Topic added');
 };
-
-window.removeTopic = function(id) {
-  state.topics = state.topics.filter(t => t.id !== id);
-  saveState(); render();
-};
-
+window.removeTopic = function(id) { state.topics = state.topics.filter(t => t.id !== id); saveState(); render(); };
 window.markReviewed = function(id) {
-  const topic = state.topics.find(t => t.id === id);
-  if (!topic) return;
-  topic.lastReviewed = todayStr();
+  const t = state.topics.find(x => x.id === id);
+  if (!t) return;
+  t.lastReviewed = todayStr();
   if (!state.completions[todayStr()]) state.completions[todayStr()] = [];
   if (!state.completions[todayStr()].includes(id)) state.completions[todayStr()].push(id);
   saveState(); render(); toast('Marked reviewed');
 };
 
-// ============== RENDER ==============
 function render() {
   const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
   document.getElementById('eyebrowDate').textContent = dateStr;
-  renderToday();
-  renderExams();
-  renderTopics();
-  renderSubjectOptions();
-  renderSettings();
+  renderToday(); renderExams(); renderTopics(); renderSubjectOptions(); renderSettings();
 }
-window.render = render;
 
 function renderToday() {
   const due = state.topics.filter(isDueToday);
   const completedToday = state.completions[todayStr()] || [];
-  const priorityRank = { high: 0, medium: 1, low: 2 };
-
+  const rank = { high: 0, medium: 1, low: 2 };
   const queue = [...due].sort((a, b) => {
-    const aDone = completedToday.includes(a.id);
-    const bDone = completedToday.includes(b.id);
-    if (aDone !== bDone) return aDone ? 1 : -1;
-    if (a.priority !== b.priority) return priorityRank[a.priority] - priorityRank[b.priority];
+    const aD = completedToday.includes(a.id), bD = completedToday.includes(b.id);
+    if (aD !== bD) return aD ? 1 : -1;
+    if (a.priority !== b.priority) return rank[a.priority] - rank[b.priority];
     return a.confidence - b.confidence;
   });
-
   document.getElementById('statDue').textContent = due.length;
-
-  const nextExam = state.exams
-    .filter(e => daysBetween(e.date) >= 0)
-    .sort((a, b) => daysBetween(a.date) - daysBetween(b.date))[0];
+  const nextExam = state.exams.filter(e => daysBetween(e.date) >= 0).sort((a, b) => daysBetween(a.date) - daysBetween(b.date))[0];
   document.getElementById('statDays').textContent = nextExam ? daysBetween(nextExam.date) : '—';
   document.getElementById('statExamName').textContent = nextExam ? escapeHtml(nextExam.subject) : 'no exams scheduled yet';
-
   document.getElementById('todayCount').textContent = `${queue.length} item${queue.length !== 1 ? 's' : ''}`;
   const list = document.getElementById('todayQueue');
-  if (queue.length === 0) {
-    list.innerHTML = '<div class="empty">All caught up.<br>Come back tomorrow.</div>';
-    return;
-  }
+  if (queue.length === 0) { list.innerHTML = '<div class="empty">All caught up.<br>Come back tomorrow.</div>'; return; }
   list.innerHTML = queue.map((t, i) => {
-    const isReview = !!t.lastReviewed;
-    const isDone = completedToday.includes(t.id);
+    const isReview = !!t.lastReviewed, isDone = completedToday.includes(t.id);
     const tag = isDone ? 'Completed' : (isReview ? 'Review' : 'New');
-    const tagClass = isDone ? 'done' : (isReview ? 'review' : 'new');
+    const tagClass = isDone ? 'done' : (isReview ? '' : 'new');
     const pips = [1,2,3,4,5].map(n => `<div class="conf-pip ${n <= t.confidence ? 'filled' : ''}"></div>`).join('');
-    const num = String(i + 1).padStart(2, '0');
     return `
       <div class="queue-item ${isDone ? 'done' : ''}">
-        <div class="queue-num">${num}</div>
-        <div class="queue-content">
+        <div class="queue-num">${String(i+1).padStart(2,'0')}</div>
+        <div>
           <div class="queue-tag ${tagClass}">${tag} · ${escapeHtml(t.priority)}</div>
           <div class="queue-name">${escapeHtml(t.name)}</div>
           <div class="queue-sub">${escapeHtml(t.subject)}</div>
@@ -1412,20 +1091,16 @@ function renderExams() {
   const grid = document.getElementById('examGrid');
   const sorted = [...state.exams].sort((a, b) => new Date(a.date) - new Date(b.date));
   document.getElementById('examCount').textContent = `${sorted.length} item${sorted.length !== 1 ? 's' : ''}`;
-  if (sorted.length === 0) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No exams added yet.</div>';
-    return;
-  }
+  if (sorted.length === 0) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No exams added yet.</div>'; return; }
   grid.innerHTML = sorted.map(e => {
     const days = daysBetween(e.date);
-    const urgent = days <= 14 && days >= 0;
-    const past = days < 0;
+    const urgent = days <= 14 && days >= 0, past = days < 0;
     const label = past ? `${Math.abs(days)} days ago` : days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`;
-    const formatted = new Date(e.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const fmt = new Date(e.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     return `
-      <div class="card">
+      <div class="card no-hover">
         <div class="card-eyebrow">${escapeHtml(e.subject)}</div>
-        <div class="card-title"><em>${formatted}</em></div>
+        <div class="card-title"><em>${fmt}</em></div>
         <div class="card-desc">${e.notes ? escapeHtml(e.notes) : ''}</div>
         <div class="card-foot">
           <span class="card-days ${urgent ? 'urgent' : ''}">${label}</span>
@@ -1439,24 +1114,18 @@ function renderExams() {
 function renderTopics() {
   const grid = document.getElementById('topicGrid');
   document.getElementById('topicCount').textContent = `${state.topics.length} item${state.topics.length !== 1 ? 's' : ''}`;
-  if (state.topics.length === 0) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No topics yet.</div>';
-    return;
-  }
-  const priorityRank = { high: 0, medium: 1, low: 2 };
-  const sorted = [...state.topics].sort((a, b) =>
-    priorityRank[a.priority] - priorityRank[b.priority] || a.confidence - b.confidence
-  );
+  if (state.topics.length === 0) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No topics yet.</div>'; return; }
+  const rank = { high: 0, medium: 1, low: 2 };
+  const sorted = [...state.topics].sort((a, b) => rank[a.priority] - rank[b.priority] || a.confidence - b.confidence);
   grid.innerHTML = sorted.map(t => {
-    const next = nextReviewDate(t);
-    const days = daysBetween(next);
+    const next = nextReviewDate(t), days = daysBetween(next);
     const due = days <= 0 ? 'Due now' : days === 1 ? 'Tomorrow' : `In ${days} days`;
     const pips = [1,2,3,4,5].map(n => `<div class="conf-pip ${n <= t.confidence ? 'filled' : ''}"></div>`).join('');
     return `
-      <div class="card">
+      <div class="card no-hover">
         <div class="card-eyebrow">${escapeHtml(t.subject)} · ${escapeHtml(t.priority)}</div>
         <div class="card-title">${escapeHtml(t.name)}</div>
-        <div class="card-desc"><div class="queue-confidence" style="display:flex;gap:4px;">${pips}</div></div>
+        <div class="card-desc"><div style="display:flex;gap:4px;">${pips}</div></div>
         <div class="card-foot">
           <span class="card-days ${days <= 0 ? 'urgent' : ''}">${due}</span>
           <button class="card-remove" onclick="removeTopic('${t.id}')">Remove</button>
@@ -1469,9 +1138,8 @@ function renderTopics() {
 function renderSubjectOptions() {
   const select = document.getElementById('topicSubject');
   const currentVal = select.value;
-  const subjects = [...new Set(state.exams.map(e => e.subject))];
-  select.innerHTML = '<option value="">Choose a subject…</option>' +
-    subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  const subjectList = [...new Set(state.exams.map(e => e.subject))];
+  select.innerHTML = '<option value="">Choose a subject…</option>' + subjectList.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
   select.value = currentVal;
 }
 
@@ -1484,19 +1152,18 @@ function renderSettings() {
   if (status === 'denied') bar.classList.add('hidden');
 }
 
-// ============== NOTIFICATIONS ==============
 window.requestNotifications = async function() {
-  if (!('Notification' in window)) { toast('Notifications not supported'); return; }
+  if (!('Notification' in window)) { toast('Not supported'); return; }
   const perm = await Notification.requestPermission();
   renderSettings();
-  if (perm === 'granted') { toast('Notifications enabled'); scheduleNotification(); }
+  if (perm === 'granted') { toast('Enabled'); scheduleNotification(); }
 };
 
 window.testNotification = function() {
-  if (Notification.permission !== 'granted') { toast('Enable notifications first'); return; }
+  if (Notification.permission !== 'granted') { toast('Enable first'); return; }
   const dueCount = state.topics.filter(isDueToday).length;
   new Notification('Studio — Study reminder', {
-    body: dueCount > 0 ? `${dueCount} topic${dueCount !== 1 ? 's' : ''} due for review today.` : 'No reviews due. Take a breath.',
+    body: dueCount > 0 ? `${dueCount} topic${dueCount !== 1 ? 's' : ''} to review today.` : 'No reviews due. Try a daily challenge!',
     icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%231f2024" width="100" height="100"/><circle cx="50" cy="50" r="20" fill="%23e87545"/></svg>'
   });
 };
@@ -1506,18 +1173,13 @@ function scheduleNotification() {
   if (notifTimer) clearTimeout(notifTimer);
   if (Notification.permission !== 'granted') return;
   const [h, m] = state.settings.notifTime.split(':').map(Number);
-  const now = new Date();
-  const next = new Date();
+  const now = new Date(), next = new Date();
   next.setHours(h, m, 0, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
   notifTimer = setTimeout(() => { window.testNotification(); scheduleNotification(); }, next - now);
 }
 
-window.saveSettings = function() {
-  state.settings.notifTime = document.getElementById('notifTime').value;
-  saveState(); scheduleNotification(); toast('Saved');
-};
-
+window.saveSettings = function() { state.settings.notifTime = document.getElementById('notifTime').value; saveState(); scheduleNotification(); toast('Saved'); };
 window.exportData = function() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1525,15 +1187,13 @@ window.exportData = function() {
   a.href = url; a.download = `studio-backup-${todayStr()}.json`; a.click();
   URL.revokeObjectURL(url);
 };
-
 window.clearData = async function() {
-  if (!confirm('Clear all your data? This cannot be undone.')) return;
-  state = { exams: [], topics: [], completions: {}, settings: { notifTime: '09:00' } };
+  if (!confirm('Clear your study data (exams, topics)?')) return;
+  state = { exams: [], topics: [], completions: {}, settings: state.settings };
   await saveToCloud();
   render(); toast('Cleared');
 };
 
-// ============== TABS ==============
 document.querySelectorAll('.nav-link').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
@@ -1544,19 +1204,7 @@ document.querySelectorAll('.nav-link').forEach(btn => {
   });
 });
 
-// ============== INIT ==============
-checkSession().then(() => {
-  if (currentUser) subscribeToChanges();
-});
-
-// Handle auth state changes (e.g., session expiry)
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_OUT' && currentUser) {
-    currentUser = null;
-    showAuth();
-  }
-});
+checkSession();
 </script>
-
 </body>
 </html>
