@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Studio — Study Tracker</title>
+<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlN0dWRpbyAtIFN0dWR5IFRyYWNrZXIiLAogICJzaG9ydF9uYW1lIjogIlN0dWRpbyIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzFmMjAyNCIsCiAgInRoZW1lX2NvbG9yIjogIiMxZjIwMjQiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7dXRmOCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IGZpbGw9JyMxZjIwMjQnIHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJy8+PGNpcmNsZSBjeD0nMjU2JyBjeT0nMjU2JyByPSc4MCcgZmlsbD0nJWUyMDQ1NDUnLz48L3N2Zz4iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
+<meta name="theme-color" content="#1f2024">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,7 +26,6 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body { height: 100%; }
 
 body {
@@ -44,6 +45,121 @@ body {
   margin: 0 auto;
   padding: 0 32px;
 }
+
+/* ============== AUTH SCREEN ============== */
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+}
+
+.auth-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(232, 117, 69, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(232, 117, 69, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.auth-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 48px;
+  max-width: 440px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.auth-numeral {
+  position: absolute;
+  font-family: var(--display);
+  font-size: 200px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.03);
+  line-height: 1;
+  top: -40px;
+  right: -20px;
+  pointer-events: none;
+  letter-spacing: -0.05em;
+}
+
+.auth-eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+
+.auth-title {
+  font-family: var(--display);
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.auth-title em { font-style: italic; font-weight: 300; }
+
+.auth-sub {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  margin-bottom: 32px;
+}
+
+.auth-toggle {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.auth-toggle button {
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--ink-mute);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.auth-toggle button.active { color: var(--ink); }
+.auth-toggle button.active::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  margin-top: 12px;
+  margin-bottom: -13px;
+}
+
+.auth-error {
+  background: rgba(232, 117, 69, 0.1);
+  border-left: 2px solid var(--accent);
+  padding: 12px 16px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 16px;
+  display: none;
+}
+.auth-error.show { display: block; }
 
 /* ============== TOP NAV ============== */
 nav {
@@ -90,11 +206,7 @@ nav {
 }
 
 .nav-link:hover { color: var(--ink); }
-
-.nav-link.active {
-  color: var(--ink);
-}
-
+.nav-link.active { color: var(--ink); }
 .nav-link.active::after {
   content: '';
   position: absolute;
@@ -107,12 +219,49 @@ nav {
   background: var(--accent);
 }
 
-.nav-icon {
-  color: var(--ink-soft);
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.sync-indicator {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-mute);
+  transition: background 0.3s;
+}
+.sync-dot.synced { background: #7eb185; }
+.sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
+.sync-dot.error { background: #d44; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.signout-btn {
+  background: none;
+  border: none;
+  color: var(--ink-mute);
+  font-family: var(--sans);
+  font-size: 12px;
   cursor: pointer;
+  letter-spacing: 0.05em;
   transition: color 0.2s;
 }
-.nav-icon:hover { color: var(--accent); }
+.signout-btn:hover { color: var(--accent); }
 
 /* ============== HERO / TODAY ============== */
 .hero {
@@ -158,13 +307,9 @@ nav {
   line-height: 0.95;
   letter-spacing: -0.02em;
   margin-bottom: 36px;
-  color: var(--ink);
 }
 
-.hero-title em {
-  font-style: italic;
-  font-weight: 300;
-}
+.hero-title em { font-style: italic; font-weight: 300; }
 
 .hero-desc {
   font-family: var(--sans);
@@ -202,18 +347,12 @@ nav {
 .read-more:hover { gap: 14px; }
 .read-more:hover::after { width: 32px; }
 
-/* Hero right - stats */
 .hero-right {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 36px;
-}
-
-.stat-block {
-  padding-left: 0;
-  border-left: none;
 }
 
 .stat-label {
@@ -231,15 +370,10 @@ nav {
   font-size: 64px;
   font-weight: 400;
   line-height: 1;
-  color: var(--ink);
   letter-spacing: -0.02em;
 }
 
-.stat-value em {
-  font-style: italic;
-  font-weight: 300;
-  color: var(--accent);
-}
+.stat-value em { font-style: italic; font-weight: 300; color: var(--accent); }
 
 .stat-sub {
   font-family: var(--sans);
@@ -249,31 +383,8 @@ nav {
   font-weight: 300;
 }
 
-/* Accent dots overlay */
-.accent-dot {
-  position: absolute;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 300;
-  font-size: 22px;
-  cursor: pointer;
-  transition: transform 0.2s;
-  z-index: 3;
-  box-shadow: 0 8px 24px rgba(232, 117, 69, 0.3);
-}
-.accent-dot:hover { transform: scale(1.1); }
-
 /* ============== SECTION ============== */
-section.content-section {
-  padding: 60px 0;
-  position: relative;
-}
+section.content-section { padding: 60px 0; position: relative; }
 
 .section-header {
   display: flex;
@@ -290,12 +401,7 @@ section.content-section {
   font-size: 42px;
   letter-spacing: -0.02em;
 }
-
-.section-title em {
-  font-style: italic;
-  font-weight: 300;
-  color: var(--accent);
-}
+.section-title em { font-style: italic; font-weight: 300; color: var(--accent); }
 
 .section-meta {
   font-family: var(--sans);
@@ -306,10 +412,7 @@ section.content-section {
 }
 
 /* ============== QUEUE LIST ============== */
-.queue {
-  display: flex;
-  flex-direction: column;
-}
+.queue { display: flex; flex-direction: column; }
 
 .queue-item {
   display: grid;
@@ -320,7 +423,6 @@ section.content-section {
   border-bottom: 1px solid var(--line);
   transition: padding 0.2s;
 }
-
 .queue-item:hover { padding-left: 12px; }
 
 .queue-num {
@@ -342,7 +444,6 @@ section.content-section {
   margin-bottom: 8px;
 }
 
-.queue-content .queue-tag.review { color: var(--accent); }
 .queue-content .queue-tag.new { color: #7eb185; }
 .queue-content .queue-tag.done { color: var(--ink-mute); }
 
@@ -350,12 +451,9 @@ section.content-section {
   font-family: var(--display);
   font-size: 26px;
   font-weight: 400;
-  color: var(--ink);
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
-
-.queue-name em { font-style: italic; }
 
 .queue-sub {
   font-family: var(--sans);
@@ -365,10 +463,7 @@ section.content-section {
   font-weight: 300;
 }
 
-.queue-confidence {
-  display: flex;
-  gap: 4px;
-}
+.queue-confidence { display: flex; gap: 4px; }
 
 .conf-pip {
   width: 6px;
@@ -417,11 +512,7 @@ section.content-section {
   position: relative;
   transition: transform 0.2s, border-color 0.2s;
 }
-
-.card:hover {
-  border-color: var(--line-strong);
-  transform: translateY(-2px);
-}
+.card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
 
 .card-eyebrow {
   font-family: var(--sans);
@@ -440,9 +531,7 @@ section.content-section {
   line-height: 1.1;
   letter-spacing: -0.01em;
   margin-bottom: 12px;
-  color: var(--ink);
 }
-
 .card-title em { font-style: italic; }
 
 .card-desc {
@@ -467,9 +556,7 @@ section.content-section {
   font-family: var(--display);
   font-style: italic;
   font-size: 18px;
-  color: var(--ink);
 }
-
 .card-days.urgent { color: var(--accent); }
 
 .card-remove {
@@ -557,9 +644,7 @@ select {
   padding-right: 24px;
 }
 
-input[type="date"], input[type="time"] {
-  color-scheme: dark;
-}
+input[type="date"], input[type="time"] { color-scheme: dark; }
 
 button.primary {
   font-family: var(--sans);
@@ -574,8 +659,12 @@ button.primary {
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
   margin-top: 12px;
+  width: 100%;
 }
 button.primary:hover { background: #d96638; transform: translateY(-1px); }
+button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+button.primary.inline { width: auto; }
 
 button.ghost {
   background: transparent;
@@ -597,26 +686,15 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   transition: background 0.2s;
 }
 .notif-bar:hover { background: rgba(232, 117, 69, 0.22); }
-.notif-bar.granted { display: none; }
-.notif-bar.hidden { display: none; }
+.notif-bar.granted, .notif-bar.hidden { display: none; }
 
 .notif-bar .nb-text {
   font-family: var(--sans);
   font-size: 13px;
   color: var(--ink);
-  font-weight: 400;
 }
-
-.notif-bar .nb-text em {
-  color: var(--accent);
-  font-style: normal;
-  font-weight: 600;
-}
-
-.notif-bar .nb-arrow {
-  color: var(--accent);
-  font-size: 20px;
-}
+.notif-bar .nb-text em { color: var(--accent); font-style: normal; font-weight: 600; }
+.notif-bar .nb-arrow { color: var(--accent); font-size: 20px; }
 
 /* ============== PANELS ============== */
 .panel { display: none; }
@@ -626,6 +704,9 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+#app { display: none; }
+#app.show { display: block; }
 
 /* ============== EMPTY ============== */
 .empty {
@@ -653,6 +734,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   align-items: center;
   padding: 28px 0;
   border-bottom: 1px solid var(--line);
+  gap: 24px;
 }
 .setting-row:last-child { border-bottom: none; }
 
@@ -669,17 +751,8 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   font-weight: 300;
 }
 
-.setting-row input[type="time"] {
-  width: auto;
-  font-size: 18px;
-  border-bottom: none;
-}
-
-.setting-row button {
-  margin: 0;
-  padding: 12px 24px;
-  font-size: 11px;
-}
+.setting-row input[type="time"] { width: auto; font-size: 18px; border-bottom: none; }
+.setting-row button { margin: 0; padding: 12px 24px; font-size: 11px; width: auto; }
 
 /* ============== TOAST ============== */
 .toast {
@@ -701,6 +774,32 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
+/* ============== LOADING SPINNER ============== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  z-index: 1000;
+}
+
+.loading-screen.hidden { display: none; }
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ============== MOBILE ============== */
 @media (max-width: 800px) {
   .container, .nav-inner { padding: 0 20px; }
@@ -713,13 +812,18 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   .hero-numeral { font-size: 200px; top: -10px; left: -10px; }
   .nav-links { gap: 20px; }
   .nav-link { font-size: 13px; }
+  .nav-right { gap: 12px; }
+  .sync-indicator { display: none; }
   .form-row { grid-template-columns: 1fr; }
   .form-card { padding: 24px; }
+  .auth-card { padding: 32px 24px; }
+  .auth-title { font-size: 42px; }
   .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .queue-item { grid-template-columns: 36px 1fr auto; gap: 16px; }
   .queue-confidence { display: none; }
   .queue-name { font-size: 20px; }
   .stat-value { font-size: 48px; }
+  .setting-row { flex-direction: column; align-items: flex-start; }
 }
 
 @media (max-width: 480px) {
@@ -731,6 +835,42 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 </head>
 <body>
 
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+</div>
+
+<!-- ============== AUTH SCREEN ============== -->
+<div class="auth-screen" id="authScreen" style="display:none;">
+  <div class="auth-card">
+    <div class="auth-numeral">01</div>
+    <div class="auth-eyebrow">STUDIO</div>
+    <h1 class="auth-title">Welcome <em>back.</em></h1>
+    <p class="auth-sub" id="authSub">Sign in to access your study plan from any device.</p>
+    
+    <div class="auth-toggle">
+      <button class="active" data-mode="signin">Sign in</button>
+      <button data-mode="signup">Create account</button>
+    </div>
+
+    <div class="auth-error" id="authError"></div>
+
+    <form id="authForm">
+      <div style="margin-bottom: 24px;">
+        <label>Email</label>
+        <input type="email" id="authEmail" required autocomplete="email" placeholder="your@email.com">
+      </div>
+      <div style="margin-bottom: 24px;">
+        <label>Password</label>
+        <input type="password" id="authPassword" required autocomplete="current-password" placeholder="••••••••" minlength="6">
+      </div>
+      <button type="submit" class="primary" id="authSubmit">Sign in →</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============== APP ============== -->
+<div id="app">
+
 <nav>
   <div class="nav-inner">
     <div class="brand">Studio.</div>
@@ -740,11 +880,17 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <button class="nav-link" data-tab="topics">Topics</button>
       <button class="nav-link" data-tab="settings">Settings</button>
     </div>
-    <div class="nav-icon">◐</div>
+    <div class="nav-right">
+      <div class="sync-indicator" id="syncIndicator">
+        <span class="sync-dot synced" id="syncDot"></span>
+        <span id="syncText">Synced</span>
+      </div>
+      <button class="signout-btn" onclick="signOut()">Sign out</button>
+    </div>
   </div>
 </nav>
 
-<!-- ============== TODAY ============== -->
+<!-- TODAY -->
 <div class="panel active" id="panel-today">
   <div class="container">
     <div class="notif-bar" id="notifBar" onclick="requestNotifications()">
@@ -753,22 +899,20 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
     </div>
 
     <div class="hero">
-      <div class="hero-numeral" id="heroNumeral">01</div>
-      
+      <div class="hero-numeral">01</div>
       <div class="hero-left">
         <div class="eyebrow" id="eyebrowDate">TODAY</div>
         <h1 class="hero-title"><em>Study</em><br>Plan.</h1>
         <p class="hero-desc">A daily companion to keep you focused. Spaced repetition surfaces what needs revising. Priority drives what comes first.</p>
         <button class="read-more" onclick="document.querySelector('.queue').scrollIntoView({behavior:'smooth'})">Begin today</button>
       </div>
-
       <div class="hero-right">
-        <div class="stat-block">
+        <div>
           <div class="stat-label">Reviews Due</div>
           <div class="stat-value" id="statDue">0</div>
           <div class="stat-sub">topics scheduled for revision today</div>
         </div>
-        <div class="stat-block">
+        <div>
           <div class="stat-label">Days to Next Exam</div>
           <div class="stat-value"><em id="statDays">—</em></div>
           <div class="stat-sub" id="statExamName">no exams scheduled yet</div>
@@ -788,7 +932,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<!-- ============== EXAMS ============== -->
+<!-- EXAMS -->
 <div class="panel" id="panel-exams">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 40px;">
@@ -804,22 +948,13 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <h3>Add an <em>exam</em></h3>
       <div class="form-sub">A subject, a date, and any notes you want to remember.</div>
       <div class="form-row">
-        <div>
-          <label>Subject</label>
-          <input type="text" id="examSubject" placeholder="e.g. Organic Chemistry">
-        </div>
-        <div>
-          <label>Date</label>
-          <input type="date" id="examDate">
-        </div>
+        <div><label>Subject</label><input type="text" id="examSubject" placeholder="e.g. Organic Chemistry"></div>
+        <div><label>Date</label><input type="date" id="examDate"></div>
       </div>
       <div class="form-row single">
-        <div>
-          <label>Notes (optional)</label>
-          <input type="text" id="examNotes" placeholder="e.g. covers chapters 1–7, lecture hall B">
-        </div>
+        <div><label>Notes (optional)</label><input type="text" id="examNotes" placeholder="e.g. covers chapters 1–7"></div>
       </div>
-      <button class="primary" onclick="addExam()">Add exam →</button>
+      <button class="primary inline" onclick="addExam()">Add exam →</button>
     </div>
 
     <section class="content-section" style="padding-top:0;">
@@ -827,14 +962,12 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
         <h2 class="section-title">All <em>exams</em></h2>
         <span class="section-meta" id="examCount">0 items</span>
       </div>
-      <div class="cards" id="examGrid">
-        <div class="empty" style="grid-column:1/-1;">No exams added yet.</div>
-      </div>
+      <div class="cards" id="examGrid"><div class="empty" style="grid-column:1/-1;">No exams added yet.</div></div>
     </section>
   </div>
 </div>
 
-<!-- ============== TOPICS ============== -->
+<!-- TOPICS -->
 <div class="panel" id="panel-topics">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 40px;">
@@ -850,16 +983,8 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <h3>Add a <em>topic</em></h3>
       <div class="form-sub">Topics are tied to a subject. Add an exam first if you haven't.</div>
       <div class="form-row">
-        <div>
-          <label>Topic name</label>
-          <input type="text" id="topicName" placeholder="e.g. SN2 reactions">
-        </div>
-        <div>
-          <label>Subject</label>
-          <select id="topicSubject">
-            <option value="">Choose a subject…</option>
-          </select>
-        </div>
+        <div><label>Topic name</label><input type="text" id="topicName" placeholder="e.g. SN2 reactions"></div>
+        <div><label>Subject</label><select id="topicSubject"><option value="">Choose a subject…</option></select></div>
       </div>
       <div class="form-row">
         <div>
@@ -881,7 +1006,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
           </select>
         </div>
       </div>
-      <button class="primary" onclick="addTopic()">Add topic →</button>
+      <button class="primary inline" onclick="addTopic()">Add topic →</button>
     </div>
 
     <section class="content-section" style="padding-top:0;">
@@ -889,14 +1014,12 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
         <h2 class="section-title">All <em>topics</em></h2>
         <span class="section-meta" id="topicCount">0 items</span>
       </div>
-      <div class="cards" id="topicGrid">
-        <div class="empty" style="grid-column:1/-1;">No topics yet.</div>
-      </div>
+      <div class="cards" id="topicGrid"><div class="empty" style="grid-column:1/-1;">No topics yet.</div></div>
     </section>
   </div>
 </div>
 
-<!-- ============== SETTINGS ============== -->
+<!-- SETTINGS -->
 <div class="panel" id="panel-settings">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 40px;">
@@ -904,7 +1027,16 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <div class="hero-left">
         <div class="eyebrow">SETTINGS</div>
         <h1 class="hero-title">Make it<br><em>yours.</em></h1>
-        <p class="hero-desc">Notifications, daily reminder time, data management.</p>
+        <p class="hero-desc">Notifications, account, data management.</p>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Your <em>account</em></h3>
+      <div class="form-sub">Signed in as <span id="userEmail" style="color:var(--ink);font-style:italic;">—</span></div>
+      <div class="setting-row">
+        <div class="setting-info"><h4>Sign out</h4><p>Sign back in anytime from any device</p></div>
+        <button class="primary ghost" onclick="signOut()">Sign out</button>
       </div>
     </div>
 
@@ -912,52 +1044,48 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <h3>Daily <em>reminder</em></h3>
       <div class="form-sub">Configure when and how you're notified each day.</div>
       <div class="setting-row">
-        <div class="setting-info">
-          <h4>Notification time</h4>
-          <p>When you'd like your daily study reminder</p>
-        </div>
+        <div class="setting-info"><h4>Notification time</h4><p>When you'd like your daily study reminder</p></div>
         <input type="time" id="notifTime" value="09:00" onchange="saveSettings()">
       </div>
       <div class="setting-row">
-        <div class="setting-info">
-          <h4>Permission status</h4>
-          <p id="permStatus">—</p>
-        </div>
+        <div class="setting-info"><h4>Permission status</h4><p id="permStatus">—</p></div>
         <button class="primary ghost" onclick="requestNotifications()">Request</button>
       </div>
       <div class="setting-row">
-        <div class="setting-info">
-          <h4>Test notification</h4>
-          <p>Send a sample reminder right now</p>
-        </div>
+        <div class="setting-info"><h4>Test notification</h4><p>Send a sample reminder right now</p></div>
         <button class="primary" onclick="testNotification()">Test</button>
       </div>
     </div>
 
     <div class="form-card">
       <h3>Your <em>data</em></h3>
-      <div class="form-sub">Currently stored on this device only. Backups recommended.</div>
+      <div class="form-sub">Synced to the cloud and tied to your account.</div>
       <div class="setting-row">
-        <div class="setting-info">
-          <h4>Export backup</h4>
-          <p>Download all your data as JSON</p>
-        </div>
+        <div class="setting-info"><h4>Export backup</h4><p>Download all your data as JSON</p></div>
         <button class="primary ghost" onclick="exportData()">Export</button>
       </div>
       <div class="setting-row">
-        <div class="setting-info">
-          <h4>Clear everything</h4>
-          <p>This action cannot be undone</p>
-        </div>
+        <div class="setting-info"><h4>Clear everything</h4><p>This action cannot be undone</p></div>
         <button class="primary" onclick="clearData()" style="background:#7a3424;">Clear all</button>
       </div>
     </div>
   </div>
 </div>
 
+</div>
+
 <div class="toast" id="toast"></div>
 
-<script>
+<!-- ============== SUPABASE ============== -->
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://rzvmvmodapvxymzotpsd.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_vkirq2f_ZnfO0TJFrqdROw_HlJAZQ-1';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+window.supabase = supabase;
+
 // ============== STATE ==============
 let state = {
   exams: [],
@@ -965,31 +1093,176 @@ let state = {
   completions: {},
   settings: { notifTime: '09:00' }
 };
+let currentUser = null;
+let saveTimer = null;
 
-const useStorage = typeof window.storage !== 'undefined';
+window.state = state;
 
-async function loadState() {
-  if (useStorage) {
-    try {
-      const r = await window.storage.get('studio-data');
-      if (r && r.value) state = { ...state, ...JSON.parse(r.value) };
-    } catch(e) {}
+// ============== AUTH FLOW ==============
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await enterApp();
   } else {
-    try {
-      const saved = localStorage.getItem('studio-state');
-      if (saved) state = { ...state, ...JSON.parse(saved) };
-    } catch(e) {}
+    showAuth();
+  }
+  document.getElementById('loadingScreen').classList.add('hidden');
+}
+
+function showAuth() {
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('app').classList.remove('show');
+}
+
+async function enterApp() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('userEmail').textContent = currentUser.email;
+  await loadFromCloud();
+  render();
+  if ('Notification' in window && Notification.permission === 'granted') scheduleNotification();
+}
+
+// Auth form mode toggle
+let authMode = 'signin';
+document.querySelectorAll('.auth-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    authMode = btn.dataset.mode;
+    document.querySelectorAll('.auth-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const isSignup = authMode === 'signup';
+    document.querySelector('.auth-title').innerHTML = isSignup ? 'Create your <em>account.</em>' : 'Welcome <em>back.</em>';
+    document.getElementById('authSub').textContent = isSignup
+      ? 'Just an email and password. Your study data syncs across all your devices.'
+      : 'Sign in to access your study plan from any device.';
+    document.getElementById('authSubmit').textContent = isSignup ? 'Create account →' : 'Sign in →';
+    document.getElementById('authError').classList.remove('show');
+  });
+});
+
+// Auth form submit
+document.getElementById('authForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errEl = document.getElementById('authError');
+  const submitBtn = document.getElementById('authSubmit');
+  errEl.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Please wait…';
+
+  try {
+    let result;
+    if (authMode === 'signup') {
+      result = await supabase.auth.signUp({ email, password });
+      if (result.error) throw result.error;
+      if (!result.data.session) {
+        errEl.textContent = 'Check your email for a confirmation link, then sign in.';
+        errEl.classList.add('show');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create account →';
+        return;
+      }
+      currentUser = result.data.user;
+    } else {
+      result = await supabase.auth.signInWithPassword({ email, password });
+      if (result.error) throw result.error;
+      currentUser = result.data.user;
+    }
+    await enterApp();
+  } catch (err) {
+    errEl.textContent = err.message || 'Something went wrong. Try again.';
+    errEl.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.textContent = authMode === 'signup' ? 'Create account →' : 'Sign in →';
+  }
+});
+
+window.signOut = async function() {
+  await supabase.auth.signOut();
+  currentUser = null;
+  state = { exams: [], topics: [], completions: {}, settings: { notifTime: '09:00' } };
+  showAuth();
+};
+
+// ============== CLOUD SYNC ==============
+function setSyncStatus(status) {
+  const dot = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  dot.classList.remove('synced', 'syncing', 'error');
+  dot.classList.add(status);
+  text.textContent = status === 'syncing' ? 'Syncing…' : status === 'error' ? 'Sync error' : 'Synced';
+}
+
+async function loadFromCloud() {
+  if (!currentUser) return;
+  setSyncStatus('syncing');
+  try {
+    const { data, error } = await supabase
+      .from('study_data')
+      .select('data')
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+    if (error) throw error;
+    if (data && data.data) {
+      state = { ...state, ...data.data };
+      window.state = state;
+    }
+    setSyncStatus('synced');
+  } catch (err) {
+    console.error('Load error', err);
+    setSyncStatus('error');
+    toast('Could not load data');
   }
 }
 
-async function saveState() {
-  if (useStorage) {
-    try { await window.storage.set('studio-data', JSON.stringify(state)); }
-    catch(e) { console.error(e); }
-  } else {
-    try { localStorage.setItem('studio-state', JSON.stringify(state)); }
-    catch(e) {}
+async function saveToCloud() {
+  if (!currentUser) return;
+  setSyncStatus('syncing');
+  try {
+    const { error } = await supabase
+      .from('study_data')
+      .upsert(
+        { user_id: currentUser.id, data: state, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' }
+      );
+    if (error) throw error;
+    setSyncStatus('synced');
+  } catch (err) {
+    console.error('Save error', err);
+    setSyncStatus('error');
   }
+}
+
+// Debounced save: wait 600ms after the last change before pushing to cloud
+function saveState() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveToCloud(), 600);
+}
+
+// ============== REALTIME (cross-device sync) ==============
+function subscribeToChanges() {
+  if (!currentUser) return;
+  supabase
+    .channel('study-data-' + currentUser.id)
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'study_data', filter: `user_id=eq.${currentUser.id}` },
+      (payload) => {
+        if (payload.new && payload.new.data) {
+          // Only update if data differs (avoid loop with our own writes)
+          const incoming = JSON.stringify(payload.new.data);
+          const current = JSON.stringify(state);
+          if (incoming !== current) {
+            state = { ...state, ...payload.new.data };
+            window.state = state;
+            render();
+            toast('Synced from another device');
+          }
+        }
+      }
+    )
+    .subscribe();
 }
 
 // ============== UTILS ==============
@@ -1009,6 +1282,7 @@ function toast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2400);
 }
+window.toast = toast;
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1028,50 +1302,50 @@ function nextReviewDate(topic) {
 function isDueToday(topic) { return nextReviewDate(topic) <= todayStr(); }
 
 // ============== ACTIONS ==============
-async function addExam() {
+window.addExam = function() {
   const subject = document.getElementById('examSubject').value.trim();
   const date = document.getElementById('examDate').value;
   const notes = document.getElementById('examNotes').value.trim();
   if (!subject || !date) { toast('Subject and date required'); return; }
   state.exams.push({ id: uid(), subject, date, notes });
-  await saveState();
+  saveState();
   document.getElementById('examSubject').value = '';
   document.getElementById('examDate').value = '';
   document.getElementById('examNotes').value = '';
   render();
   toast('Exam added');
-}
+};
 
-async function removeExam(id) {
+window.removeExam = function(id) {
   state.exams = state.exams.filter(e => e.id !== id);
-  await saveState(); render();
-}
+  saveState(); render();
+};
 
-async function addTopic() {
+window.addTopic = function() {
   const name = document.getElementById('topicName').value.trim();
   const subject = document.getElementById('topicSubject').value;
   const confidence = parseInt(document.getElementById('topicConfidence').value);
   const priority = document.getElementById('topicPriority').value;
   if (!name || !subject) { toast('Topic and subject required'); return; }
   state.topics.push({ id: uid(), name, subject, confidence, priority, createdAt: todayStr(), lastReviewed: null });
-  await saveState();
+  saveState();
   document.getElementById('topicName').value = '';
   render(); toast('Topic added');
-}
+};
 
-async function removeTopic(id) {
+window.removeTopic = function(id) {
   state.topics = state.topics.filter(t => t.id !== id);
-  await saveState(); render();
-}
+  saveState(); render();
+};
 
-async function markReviewed(id) {
+window.markReviewed = function(id) {
   const topic = state.topics.find(t => t.id === id);
   if (!topic) return;
   topic.lastReviewed = todayStr();
   if (!state.completions[todayStr()]) state.completions[todayStr()] = [];
   if (!state.completions[todayStr()].includes(id)) state.completions[todayStr()].push(id);
-  await saveState(); render(); toast('Marked reviewed');
-}
+  saveState(); render(); toast('Marked reviewed');
+};
 
 // ============== RENDER ==============
 function render() {
@@ -1083,12 +1357,13 @@ function render() {
   renderSubjectOptions();
   renderSettings();
 }
+window.render = render;
 
 function renderToday() {
   const due = state.topics.filter(isDueToday);
   const completedToday = state.completions[todayStr()] || [];
   const priorityRank = { high: 0, medium: 1, low: 2 };
-  
+
   const queue = [...due].sort((a, b) => {
     const aDone = completedToday.includes(a.id);
     const bDone = completedToday.includes(b.id);
@@ -1106,13 +1381,11 @@ function renderToday() {
   document.getElementById('statExamName').textContent = nextExam ? escapeHtml(nextExam.subject) : 'no exams scheduled yet';
 
   document.getElementById('todayCount').textContent = `${queue.length} item${queue.length !== 1 ? 's' : ''}`;
-
   const list = document.getElementById('todayQueue');
   if (queue.length === 0) {
     list.innerHTML = '<div class="empty">All caught up.<br>Come back tomorrow.</div>';
     return;
   }
-
   list.innerHTML = queue.map((t, i) => {
     const isReview = !!t.lastReviewed;
     const isDone = completedToday.includes(t.id);
@@ -1129,9 +1402,7 @@ function renderToday() {
           <div class="queue-sub">${escapeHtml(t.subject)}</div>
         </div>
         <div class="queue-confidence">${pips}</div>
-        <button class="queue-action ${isDone ? 'done' : ''}" onclick="markReviewed('${t.id}')" title="${isDone ? 'Completed' : 'Mark done'}">
-          ${isDone ? '✓' : '+'}
-        </button>
+        <button class="queue-action ${isDone ? 'done' : ''}" onclick="markReviewed('${t.id}')">${isDone ? '✓' : '+'}</button>
       </div>
     `;
   }).join('');
@@ -1185,9 +1456,7 @@ function renderTopics() {
       <div class="card">
         <div class="card-eyebrow">${escapeHtml(t.subject)} · ${escapeHtml(t.priority)}</div>
         <div class="card-title">${escapeHtml(t.name)}</div>
-        <div class="card-desc">
-          <div class="queue-confidence" style="display:flex;gap:4px;">${pips}</div>
-        </div>
+        <div class="card-desc"><div class="queue-confidence" style="display:flex;gap:4px;">${pips}</div></div>
         <div class="card-foot">
           <span class="card-days ${days <= 0 ? 'urgent' : ''}">${due}</span>
           <button class="card-remove" onclick="removeTopic('${t.id}')">Remove</button>
@@ -1216,21 +1485,21 @@ function renderSettings() {
 }
 
 // ============== NOTIFICATIONS ==============
-async function requestNotifications() {
+window.requestNotifications = async function() {
   if (!('Notification' in window)) { toast('Notifications not supported'); return; }
   const perm = await Notification.requestPermission();
   renderSettings();
   if (perm === 'granted') { toast('Notifications enabled'); scheduleNotification(); }
-}
+};
 
-function testNotification() {
+window.testNotification = function() {
   if (Notification.permission !== 'granted') { toast('Enable notifications first'); return; }
   const dueCount = state.topics.filter(isDueToday).length;
   new Notification('Studio — Study reminder', {
     body: dueCount > 0 ? `${dueCount} topic${dueCount !== 1 ? 's' : ''} due for review today.` : 'No reviews due. Take a breath.',
     icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%231f2024" width="100" height="100"/><circle cx="50" cy="50" r="20" fill="%23e87545"/></svg>'
   });
-}
+};
 
 let notifTimer = null;
 function scheduleNotification() {
@@ -1241,27 +1510,28 @@ function scheduleNotification() {
   const next = new Date();
   next.setHours(h, m, 0, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
-  notifTimer = setTimeout(() => { testNotification(); scheduleNotification(); }, next - now);
+  notifTimer = setTimeout(() => { window.testNotification(); scheduleNotification(); }, next - now);
 }
 
-async function saveSettings() {
+window.saveSettings = function() {
   state.settings.notifTime = document.getElementById('notifTime').value;
-  await saveState(); scheduleNotification(); toast('Saved');
-}
+  saveState(); scheduleNotification(); toast('Saved');
+};
 
-function exportData() {
+window.exportData = function() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = `studio-backup-${todayStr()}.json`; a.click();
   URL.revokeObjectURL(url);
-}
+};
 
-async function clearData() {
-  if (!confirm('Clear all data? This cannot be undone.')) return;
+window.clearData = async function() {
+  if (!confirm('Clear all your data? This cannot be undone.')) return;
   state = { exams: [], topics: [], completions: {}, settings: { notifTime: '09:00' } };
-  await saveState(); render(); toast('Cleared');
-}
+  await saveToCloud();
+  render(); toast('Cleared');
+};
 
 // ============== TABS ==============
 document.querySelectorAll('.nav-link').forEach(btn => {
@@ -1275,11 +1545,18 @@ document.querySelectorAll('.nav-link').forEach(btn => {
 });
 
 // ============== INIT ==============
-(async function init() {
-  await loadState();
-  render();
-  if ('Notification' in window && Notification.permission === 'granted') scheduleNotification();
-})();
+checkSession().then(() => {
+  if (currentUser) subscribeToChanges();
+});
+
+// Handle auth state changes (e.g., session expiry)
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT' && currentUser) {
+    currentUser = null;
+    showAuth();
+  }
+});
 </script>
+
 </body>
 </html>
