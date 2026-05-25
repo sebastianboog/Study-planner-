@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio — Study Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1f2024;
+  --bg-soft: #2a2b30;
+  --bg-card: #25262b;
+  --ink: #e8e6e1;
+  --ink-soft: #9a978f;
+  --ink-mute: #6a6862;
+  --accent: #e87545;
+  --accent-soft: rgba(232, 117, 69, 0.15);
+  --line: rgba(255, 255, 255, 0.06);
+  --line-strong: rgba(255, 255, 255, 0.12);
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Inter', -apple-system, system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 80px;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ============== TOP NAV ============== */
+nav {
+  background: var(--bg-soft);
+  padding: 22px 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 4px 0;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.nav-link:hover { color: var(--ink); }
+
+.nav-link.active {
+  color: var(--ink);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.nav-icon {
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.nav-icon:hover { color: var(--accent); }
+
+/* ============== HERO / TODAY ============== */
+.hero {
+  position: relative;
+  padding: 80px 0 60px;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 80px;
+  align-items: start;
+  min-height: 70vh;
+}
+
+.hero-numeral {
+  position: absolute;
+  left: -20px;
+  top: 40px;
+  font-family: var(--display);
+  font-size: 320px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.025);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
+}
+
+.hero-left { position: relative; z-index: 2; }
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+}
+
+.hero-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(64px, 9vw, 112px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 36px;
+  color: var(--ink);
+}
+
+.hero-title em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.hero-desc {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  max-width: 320px;
+  margin-bottom: 40px;
+  font-weight: 300;
+}
+
+.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: gap 0.2s;
+}
+
+.read-more::after {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+.read-more:hover { gap: 14px; }
+.read-more:hover::after { width: 32px; }
+
+/* Hero right - stats */
+.hero-right {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.stat-block {
+  padding-left: 0;
+  border-left: none;
+}
+
+.stat-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+
+.stat-value {
+  font-family: var(--display);
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.stat-value em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.stat-sub {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 10px;
+  font-weight: 300;
+}
+
+/* Accent dots overlay */
+.accent-dot {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 300;
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  z-index: 3;
+  box-shadow: 0 8px 24px rgba(232, 117, 69, 0.3);
+}
+.accent-dot:hover { transform: scale(1.1); }
+
+/* ============== SECTION ============== */
+section.content-section {
+  padding: 60px 0;
+  position: relative;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.section-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 42px;
+  letter-spacing: -0.02em;
+}
+
+.section-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.section-meta {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* ============== QUEUE LIST ============== */
+.queue {
+  display: flex;
+  flex-direction: column;
+}
+
+.queue-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto auto;
+  gap: 24px;
+  align-items: center;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding 0.2s;
+}
+
+.queue-item:hover { padding-left: 12px; }
+
+.queue-num {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+.queue-content .queue-tag {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.queue-content .queue-tag.review { color: var(--accent); }
+.queue-content .queue-tag.new { color: #7eb185; }
+.queue-content .queue-tag.done { color: var(--ink-mute); }
+
+.queue-name {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.queue-name em { font-style: italic; }
+
+.queue-sub {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 6px;
+  font-weight: 300;
+}
+
+.queue-confidence {
+  display: flex;
+  gap: 4px;
+}
+
+.conf-pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-mute);
+  opacity: 0.3;
+}
+.conf-pip.filled { opacity: 1; background: var(--accent); }
+
+.queue-action {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 6px 18px rgba(232, 117, 69, 0.25);
+}
+.queue-action:hover { transform: scale(1.08); }
+.queue-action.done {
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-mute);
+  box-shadow: none;
+}
+.queue-item.done .queue-name { color: var(--ink-mute); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+/* ============== CARDS GRID ============== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 32px 28px;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+}
+
+.card-eyebrow {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.card-title em { font-style: italic; }
+
+.card-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  min-height: 40px;
+}
+
+.card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.card-days {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.card-days.urgent { color: var(--accent); }
+
+.card-remove {
+  background: none;
+  border: none;
+  color: var(--ink-mute);
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.card-remove:hover { color: var(--accent); }
+
+/* ============== FORM ============== */
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 40px;
+  margin-bottom: 48px;
+}
+
+.form-card h3 {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.form-card h3 em { font-style: italic; color: var(--accent); }
+
+.form-sub {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  margin-bottom: 32px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.form-row.single { grid-template-columns: 1fr; }
+
+label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 10px;
+}
+
+input, select, textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding: 8px 0 12px;
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--ink);
+  font-weight: 400;
+  transition: border-color 0.2s;
+}
+
+input::placeholder { color: var(--ink-mute); font-style: italic; }
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239a978f' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  padding-right: 24px;
+}
+
+input[type="date"], input[type="time"] {
+  color-scheme: dark;
+}
+
+button.primary {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  margin-top: 12px;
+}
+button.primary:hover { background: #d96638; transform: translateY(-1px); }
+
+button.ghost {
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+}
+button.ghost:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
+
+/* ============== NOTIF BAR ============== */
+.notif-bar {
+  background: var(--accent-soft);
+  border: 1px solid rgba(232, 117, 69, 0.3);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 24px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.notif-bar:hover { background: rgba(232, 117, 69, 0.22); }
+.notif-bar.granted { display: none; }
+.notif-bar.hidden { display: none; }
+
+.notif-bar .nb-text {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 400;
+}
+
+.notif-bar .nb-text em {
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.notif-bar .nb-arrow {
+  color: var(--accent);
+  font-size: 20px;
+}
+
+/* ============== PANELS ============== */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeIn 0.5s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============== EMPTY ============== */
+.empty {
+  text-align: center;
+  padding: 80px 24px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink-mute);
+  font-weight: 300;
+}
+.empty::before {
+  content: '—';
+  display: block;
+  font-size: 32px;
+  margin-bottom: 16px;
+  color: var(--accent);
+  font-style: normal;
+}
+
+/* ============== SETTINGS ============== */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line);
+}
+.setting-row:last-child { border-bottom: none; }
+
+.setting-info h4 {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+.setting-info p {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-weight: 300;
+}
+
+.setting-row input[type="time"] {
+  width: auto;
+  font-size: 18px;
+  border-bottom: none;
+}
+
+.setting-row button {
+  margin: 0;
+  padding: 12px 24px;
+  font-size: 11px;
+}
+
+/* ============== TOAST ============== */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 14px 28px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 0.4s cubic-bezier(.18,.89,.32,1.28);
+  z-index: 200;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ============== MOBILE ============== */
+@media (max-width: 800px) {
+  .container, .nav-inner { padding: 0 20px; }
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 40px 0;
+    min-height: auto;
+  }
+  .hero-numeral { font-size: 200px; top: -10px; left: -10px; }
+  .nav-links { gap: 20px; }
+  .nav-link { font-size: 13px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-card { padding: 24px; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .queue-item { grid-template-columns: 36px 1fr auto; gap: 16px; }
+  .queue-confidence { display: none; }
+  .queue-name { font-size: 20px; }
+  .stat-value { font-size: 48px; }
+}
+
+@media (max-width: 480px) {
+  .brand { font-size: 16px; }
+  .nav-links { gap: 14px; }
+  .nav-link { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand">Studio.</div>
+    <div class="nav-links">
+      <button class="nav-link active" data-tab="today">Today</button>
+      <button class="nav-link" data-tab="exams">Exams</button>
+      <button class="nav-link" data-tab="topics">Topics</button>
+      <button class="nav-link" data-tab="settings">Settings</button>
+    </div>
+    <div class="nav-icon">◐</div>
+  </div>
+</nav>
+
+<!-- ============== TODAY ============== -->
+<div class="panel active" id="panel-today">
+  <div class="container">
+    <div class="notif-bar" id="notifBar" onclick="requestNotifications()">
+      <div class="nb-text">Enable <em>daily notifications</em> to stay on top of your study schedule.</div>
+      <div class="nb-arrow">→</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-numeral" id="heroNumeral">01</div>
+      
+      <div class="hero-left">
+        <div class="eyebrow" id="eyebrowDate">TODAY</div>
+        <h1 class="hero-title"><em>Study</em><br>Plan.</h1>
+        <p class="hero-desc">A daily companion to keep you focused. Spaced repetition surfaces what needs revising. Priority drives what comes first.</p>
+        <button class="read-more" onclick="document.querySelector('.queue').scrollIntoView({behavior:'smooth'})">Begin today</button>
+      </div>
+
+      <div class="hero-right">
+        <div class="stat-block">
+          <div class="stat-label">Reviews Due</div>
+          <div class="stat-value" id="statDue">0</div>
+          <div class="stat-sub">topics scheduled for revision today</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Days to Next Exam</div>
+          <div class="stat-value"><em id="statDays">—</em></div>
+          <div class="stat-sub" id="statExamName">no exams scheduled yet</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="content-section">
+      <div class="section-header">
+        <h2 class="section-title">Today's <em>queue</em></h2>
+        <span class="section-meta" id="todayCount">0 items</span>
+      </div>
+      <div class="queue" id="todayQueue">
+        <div class="empty">No topics scheduled.<br>Add some in the Topics section.</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============== EXAMS ============== -->
+<div class="panel" id="panel-exams">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 40px;">
+      <div class="hero-numeral">02</div>
+      <div class="hero-left">
+        <div class="eyebrow">EXAMINATIONS</div>
+        <h1 class="hero-title">Upcoming<br><em>dates.</em></h1>
+        <p class="hero-desc">Every exam on the horizon. The countdown begins the moment you add one.</p>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Add an <em>exam</em></h3>
+      <div class="form-sub">A subject, a date, and any notes you want to remember.</div>
+      <div class="form-row">
+        <div>
+          <label>Subject</label>
+          <input type="text" id="examSubject" placeholder="e.g. Organic Chemistry">
+        </div>
+        <div>
+          <label>Date</label>
+          <input type="date" id="examDate">
+        </div>
+      </div>
+      <div class="form-row single">
+        <div>
+          <label>Notes (optional)</label>
+          <input type="text" id="examNotes" placeholder="e.g. covers chapters 1–7, lecture hall B">
+        </div>
+      </div>
+      <button class="primary" onclick="addExam()">Add exam →</button>
+    </div>
+
+    <section class="content-section" style="padding-top:0;">
+      <div class="section-header">
+        <h2 class="section-title">All <em>exams</em></h2>
+        <span class="section-meta" id="examCount">0 items</span>
+      </div>
+      <div class="cards" id="examGrid">
+        <div class="empty" style="grid-column:1/-1;">No exams added yet.</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============== TOPICS ============== -->
+<div class="panel" id="panel-topics">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 40px;">
+      <div class="hero-numeral">03</div>
+      <div class="hero-left">
+        <div class="eyebrow">TOPICS</div>
+        <h1 class="hero-title">What to<br><em>revise.</em></h1>
+        <p class="hero-desc">Add each topic with a confidence rating. The lower the confidence, the sooner it returns for review.</p>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Add a <em>topic</em></h3>
+      <div class="form-sub">Topics are tied to a subject. Add an exam first if you haven't.</div>
+      <div class="form-row">
+        <div>
+          <label>Topic name</label>
+          <input type="text" id="topicName" placeholder="e.g. SN2 reactions">
+        </div>
+        <div>
+          <label>Subject</label>
+          <select id="topicSubject">
+            <option value="">Choose a subject…</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Confidence (1 shaky · 5 solid)</label>
+          <select id="topicConfidence">
+            <option value="1">1 — Just starting</option>
+            <option value="2">2 — Getting it</option>
+            <option value="3" selected>3 — Okay</option>
+            <option value="4">4 — Comfortable</option>
+            <option value="5">5 — Solid</option>
+          </select>
+        </div>
+        <div>
+          <label>Priority</label>
+          <select id="topicPriority">
+            <option value="high">High</option>
+            <option value="medium" selected>Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+      <button class="primary" onclick="addTopic()">Add topic →</button>
+    </div>
+
+    <section class="content-section" style="padding-top:0;">
+      <div class="section-header">
+        <h2 class="section-title">All <em>topics</em></h2>
+        <span class="section-meta" id="topicCount">0 items</span>
+      </div>
+      <div class="cards" id="topicGrid">
+        <div class="empty" style="grid-column:1/-1;">No topics yet.</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============== SETTINGS ============== -->
+<div class="panel" id="panel-settings">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 40px;">
+      <div class="hero-numeral">04</div>
+      <div class="hero-left">
+        <div class="eyebrow">SETTINGS</div>
+        <h1 class="hero-title">Make it<br><em>yours.</em></h1>
+        <p class="hero-desc">Notifications, daily reminder time, data management.</p>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Daily <em>reminder</em></h3>
+      <div class="form-sub">Configure when and how you're notified each day.</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Notification time</h4>
+          <p>When you'd like your daily study reminder</p>
+        </div>
+        <input type="time" id="notifTime" value="09:00" onchange="saveSettings()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Permission status</h4>
+          <p id="permStatus">—</p>
+        </div>
+        <button class="primary ghost" onclick="requestNotifications()">Request</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Test notification</h4>
+          <p>Send a sample reminder right now</p>
+        </div>
+        <button class="primary" onclick="testNotification()">Test</button>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Your <em>data</em></h3>
+      <div class="form-sub">Currently stored on this device only. Backups recommended.</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Export backup</h4>
+          <p>Download all your data as JSON</p>
+        </div>
+        <button class="primary ghost" onclick="exportData()">Export</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <h4>Clear everything</h4>
+          <p>This action cannot be undone</p>
+        </div>
+        <button class="primary" onclick="clearData()" style="background:#7a3424;">Clear all</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============== STATE ==============
+let state = {
+  exams: [],
+  topics: [],
+  completions: {},
+  settings: { notifTime: '09:00' }
+};
+
+const useStorage = typeof window.storage !== 'undefined';
+
+async function loadState() {
+  if (useStorage) {
+    try {
+      const r = await window.storage.get('studio-data');
+      if (r && r.value) state = { ...state, ...JSON.parse(r.value) };
+    } catch(e) {}
+  } else {
+    try {
+      const saved = localStorage.getItem('studio-state');
+      if (saved) state = { ...state, ...JSON.parse(saved) };
+    } catch(e) {}
+  }
+}
+
+async function saveState() {
+  if (useStorage) {
+    try { await window.storage.set('studio-data', JSON.stringify(state)); }
+    catch(e) { console.error(e); }
+  } else {
+    try { localStorage.setItem('studio-state', JSON.stringify(state)); }
+    catch(e) {}
+  }
+}
+
+// ============== UTILS ==============
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+function daysBetween(dateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(dateStr); target.setHours(0,0,0,0);
+  return Math.round((target - today) / 86400000);
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============== SPACED REPETITION ==============
+const SR_INTERVALS = { 1: 1, 2: 2, 3: 4, 4: 7, 5: 14 };
+
+function nextReviewDate(topic) {
+  const last = topic.lastReviewed || topic.createdAt;
+  const interval = SR_INTERVALS[topic.confidence] || 4;
+  const d = new Date(last);
+  d.setDate(d.getDate() + interval);
+  return d.toISOString().split('T')[0];
+}
+
+function isDueToday(topic) { return nextReviewDate(topic) <= todayStr(); }
+
+// ============== ACTIONS ==============
+async function addExam() {
+  const subject = document.getElementById('examSubject').value.trim();
+  const date = document.getElementById('examDate').value;
+  const notes = document.getElementById('examNotes').value.trim();
+  if (!subject || !date) { toast('Subject and date required'); return; }
+  state.exams.push({ id: uid(), subject, date, notes });
+  await saveState();
+  document.getElementById('examSubject').value = '';
+  document.getElementById('examDate').value = '';
+  document.getElementById('examNotes').value = '';
+  render();
+  toast('Exam added');
+}
+
+async function removeExam(id) {
+  state.exams = state.exams.filter(e => e.id !== id);
+  await saveState(); render();
+}
+
+async function addTopic() {
+  const name = document.getElementById('topicName').value.trim();
+  const subject = document.getElementById('topicSubject').value;
+  const confidence = parseInt(document.getElementById('topicConfidence').value);
+  const priority = document.getElementById('topicPriority').value;
+  if (!name || !subject) { toast('Topic and subject required'); return; }
+  state.topics.push({ id: uid(), name, subject, confidence, priority, createdAt: todayStr(), lastReviewed: null });
+  await saveState();
+  document.getElementById('topicName').value = '';
+  render(); toast('Topic added');
+}
+
+async function removeTopic(id) {
+  state.topics = state.topics.filter(t => t.id !== id);
+  await saveState(); render();
+}
+
+async function markReviewed(id) {
+  const topic = state.topics.find(t => t.id === id);
+  if (!topic) return;
+  topic.lastReviewed = todayStr();
+  if (!state.completions[todayStr()]) state.completions[todayStr()] = [];
+  if (!state.completions[todayStr()].includes(id)) state.completions[todayStr()].push(id);
+  await saveState(); render(); toast('Marked reviewed');
+}
+
+// ============== RENDER ==============
+function render() {
+  const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+  document.getElementById('eyebrowDate').textContent = dateStr;
+  renderToday();
+  renderExams();
+  renderTopics();
+  renderSubjectOptions();
+  renderSettings();
+}
+
+function renderToday() {
+  const due = state.topics.filter(isDueToday);
+  const completedToday = state.completions[todayStr()] || [];
+  const priorityRank = { high: 0, medium: 1, low: 2 };
+  
+  const queue = [...due].sort((a, b) => {
+    const aDone = completedToday.includes(a.id);
+    const bDone = completedToday.includes(b.id);
+    if (aDone !== bDone) return aDone ? 1 : -1;
+    if (a.priority !== b.priority) return priorityRank[a.priority] - priorityRank[b.priority];
+    return a.confidence - b.confidence;
+  });
+
+  document.getElementById('statDue').textContent = due.length;
+
+  const nextExam = state.exams
+    .filter(e => daysBetween(e.date) >= 0)
+    .sort((a, b) => daysBetween(a.date) - daysBetween(b.date))[0];
+  document.getElementById('statDays').textContent = nextExam ? daysBetween(nextExam.date) : '—';
+  document.getElementById('statExamName').textContent = nextExam ? escapeHtml(nextExam.subject) : 'no exams scheduled yet';
+
+  document.getElementById('todayCount').textContent = `${queue.length} item${queue.length !== 1 ? 's' : ''}`;
+
+  const list = document.getElementById('todayQueue');
+  if (queue.length === 0) {
+    list.innerHTML = '<div class="empty">All caught up.<br>Come back tomorrow.</div>';
+    return;
+  }
+
+  list.innerHTML = queue.map((t, i) => {
+    const isReview = !!t.lastReviewed;
+    const isDone = completedToday.includes(t.id);
+    const tag = isDone ? 'Completed' : (isReview ? 'Review' : 'New');
+    const tagClass = isDone ? 'done' : (isReview ? 'review' : 'new');
+    const pips = [1,2,3,4,5].map(n => `<div class="conf-pip ${n <= t.confidence ? 'filled' : ''}"></div>`).join('');
+    const num = String(i + 1).padStart(2, '0');
+    return `
+      <div class="queue-item ${isDone ? 'done' : ''}">
+        <div class="queue-num">${num}</div>
+        <div class="queue-content">
+          <div class="queue-tag ${tagClass}">${tag} · ${escapeHtml(t.priority)}</div>
+          <div class="queue-name">${escapeHtml(t.name)}</div>
+          <div class="queue-sub">${escapeHtml(t.subject)}</div>
+        </div>
+        <div class="queue-confidence">${pips}</div>
+        <button class="queue-action ${isDone ? 'done' : ''}" onclick="markReviewed('${t.id}')" title="${isDone ? 'Completed' : 'Mark done'}">
+          ${isDone ? '✓' : '+'}
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderExams() {
+  const grid = document.getElementById('examGrid');
+  const sorted = [...state.exams].sort((a, b) => new Date(a.date) - new Date(b.date));
+  document.getElementById('examCount').textContent = `${sorted.length} item${sorted.length !== 1 ? 's' : ''}`;
+  if (sorted.length === 0) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No exams added yet.</div>';
+    return;
+  }
+  grid.innerHTML = sorted.map(e => {
+    const days = daysBetween(e.date);
+    const urgent = days <= 14 && days >= 0;
+    const past = days < 0;
+    const label = past ? `${Math.abs(days)} days ago` : days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`;
+    const formatted = new Date(e.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    return `
+      <div class="card">
+        <div class="card-eyebrow">${escapeHtml(e.subject)}</div>
+        <div class="card-title"><em>${formatted}</em></div>
+        <div class="card-desc">${e.notes ? escapeHtml(e.notes) : ''}</div>
+        <div class="card-foot">
+          <span class="card-days ${urgent ? 'urgent' : ''}">${label}</span>
+          <button class="card-remove" onclick="removeExam('${e.id}')">Remove</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderTopics() {
+  const grid = document.getElementById('topicGrid');
+  document.getElementById('topicCount').textContent = `${state.topics.length} item${state.topics.length !== 1 ? 's' : ''}`;
+  if (state.topics.length === 0) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No topics yet.</div>';
+    return;
+  }
+  const priorityRank = { high: 0, medium: 1, low: 2 };
+  const sorted = [...state.topics].sort((a, b) =>
+    priorityRank[a.priority] - priorityRank[b.priority] || a.confidence - b.confidence
+  );
+  grid.innerHTML = sorted.map(t => {
+    const next = nextReviewDate(t);
+    const days = daysBetween(next);
+    const due = days <= 0 ? 'Due now' : days === 1 ? 'Tomorrow' : `In ${days} days`;
+    const pips = [1,2,3,4,5].map(n => `<div class="conf-pip ${n <= t.confidence ? 'filled' : ''}"></div>`).join('');
+    return `
+      <div class="card">
+        <div class="card-eyebrow">${escapeHtml(t.subject)} · ${escapeHtml(t.priority)}</div>
+        <div class="card-title">${escapeHtml(t.name)}</div>
+        <div class="card-desc">
+          <div class="queue-confidence" style="display:flex;gap:4px;">${pips}</div>
+        </div>
+        <div class="card-foot">
+          <span class="card-days ${days <= 0 ? 'urgent' : ''}">${due}</span>
+          <button class="card-remove" onclick="removeTopic('${t.id}')">Remove</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSubjectOptions() {
+  const select = document.getElementById('topicSubject');
+  const currentVal = select.value;
+  const subjects = [...new Set(state.exams.map(e => e.subject))];
+  select.innerHTML = '<option value="">Choose a subject…</option>' +
+    subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  select.value = currentVal;
+}
+
+function renderSettings() {
+  document.getElementById('notifTime').value = state.settings.notifTime || '09:00';
+  const status = 'Notification' in window ? Notification.permission : 'unsupported';
+  document.getElementById('permStatus').textContent = `Currently: ${status}`;
+  const bar = document.getElementById('notifBar');
+  if (status === 'granted') bar.classList.add('granted');
+  if (status === 'denied') bar.classList.add('hidden');
+}
+
+// ============== NOTIFICATIONS ==============
+async function requestNotifications() {
+  if (!('Notification' in window)) { toast('Notifications not supported'); return; }
+  const perm = await Notification.requestPermission();
+  renderSettings();
+  if (perm === 'granted') { toast('Notifications enabled'); scheduleNotification(); }
+}
+
+function testNotification() {
+  if (Notification.permission !== 'granted') { toast('Enable notifications first'); return; }
+  const dueCount = state.topics.filter(isDueToday).length;
+  new Notification('Studio — Study reminder', {
+    body: dueCount > 0 ? `${dueCount} topic${dueCount !== 1 ? 's' : ''} due for review today.` : 'No reviews due. Take a breath.',
+    icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%231f2024" width="100" height="100"/><circle cx="50" cy="50" r="20" fill="%23e87545"/></svg>'
+  });
+}
+
+let notifTimer = null;
+function scheduleNotification() {
+  if (notifTimer) clearTimeout(notifTimer);
+  if (Notification.permission !== 'granted') return;
+  const [h, m] = state.settings.notifTime.split(':').map(Number);
+  const now = new Date();
+  const next = new Date();
+  next.setHours(h, m, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  notifTimer = setTimeout(() => { testNotification(); scheduleNotification(); }, next - now);
+}
+
+async function saveSettings() {
+  state.settings.notifTime = document.getElementById('notifTime').value;
+  await saveState(); scheduleNotification(); toast('Saved');
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `studio-backup-${todayStr()}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function clearData() {
+  if (!confirm('Clear all data? This cannot be undone.')) return;
+  state = { exams: [], topics: [], completions: {}, settings: { notifTime: '09:00' } };
+  await saveState(); render(); toast('Cleared');
+}
+
+// ============== TABS ==============
+document.querySelectorAll('.nav-link').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// ============== INIT ==============
+(async function init() {
+  await loadState();
+  render();
+  if ('Notification' in window && Notification.permission === 'granted') scheduleNotification();
+})();
+</script>
+</body>
+</html>
