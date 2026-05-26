@@ -959,8 +959,33 @@ async function enterApp() {
   if (currentProfile.is_admin) {
     document.getElementById('adminNavLink').style.display = '';
   }
-  await Promise.all([loadFromCloud(), loadSubjects(), loadChallenges(), loadAllProfiles(), loadAllSubmissions(), loadActiveSprints(), loadAssessments()]);
-  render(); renderChallenges(); renderLeaderboard(); renderFolderView(); renderCalendar(); renderProgress(); renderATAR();
+  // Load each piece independently — if one fails (e.g. table doesn't exist yet),
+  // the rest still load and the app still renders.
+  const safeLoad = async (name, fn) => {
+    try { await fn(); }
+    catch (err) { console.warn(`Load failed: ${name}`, err); }
+  };
+  await Promise.all([
+    safeLoad('study_data', loadFromCloud),
+    safeLoad('subjects', loadSubjects),
+    safeLoad('challenges', loadChallenges),
+    safeLoad('profiles', loadAllProfiles),
+    safeLoad('submissions', loadAllSubmissions),
+    safeLoad('sprint_sessions', loadActiveSprints),
+    safeLoad('assessments', loadAssessments)
+  ]);
+  // Render — wrap each so one bad function doesn't break the whole UI
+  const safeRender = (name, fn) => {
+    try { fn(); }
+    catch (err) { console.warn(`Render failed: ${name}`, err); }
+  };
+  safeRender('main', render);
+  safeRender('challenges', renderChallenges);
+  safeRender('leaderboard', renderLeaderboard);
+  safeRender('folders', renderFolderView);
+  safeRender('calendar', renderCalendar);
+  safeRender('progress', renderProgress);
+  safeRender('atar', renderATAR);
   if ('Notification' in window && Notification.permission === 'granted') scheduleNotification();
 }
 
