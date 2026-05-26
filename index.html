@@ -301,6 +301,57 @@ section.content-section { padding: 40px 0; }
   .admin-type .num { font-size: 36px; }
 }
 
+/* DISCUSSION BOARDS */
+.guideline-banner { background: var(--accent-soft); border: 1px solid rgba(232, 117, 69, 0.3); padding: 20px 24px; margin-bottom: 24px; position: relative; }
+.guideline-banner.dismissed { display: none; }
+.gb-title { font-family: var(--display); font-size: 18px; font-weight: 400; margin-bottom: 6px; }
+.gb-title em { font-style: italic; color: var(--accent); }
+.gb-body { font-family: var(--sans); font-size: 13px; color: var(--ink-soft); line-height: 1.6; font-weight: 300; margin-right: 80px; }
+.gb-dismiss { position: absolute; top: 16px; right: 16px; background: var(--accent); color: white; border: none; padding: 8px 14px; font-family: var(--sans); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; font-weight: 500; }
+.gb-dismiss:hover { background: #d96638; }
+
+.full-guidelines { background: var(--bg-card); border: 1px solid var(--line); padding: 32px; margin-bottom: 24px; font-family: var(--sans); font-size: 14px; line-height: 1.8; color: var(--ink-soft); font-weight: 300; }
+.full-guidelines h3 { font-family: var(--display); font-size: 26px; font-weight: 400; color: var(--ink); margin-bottom: 16px; letter-spacing: -0.01em; }
+.full-guidelines h3 em { font-style: italic; color: var(--accent); }
+.full-guidelines strong { color: var(--ink); font-weight: 500; }
+.full-guidelines p { margin-bottom: 12px; }
+
+textarea { background: transparent; border: 1px solid var(--line-strong); padding: 12px 16px; font-family: var(--sans); font-size: 14px; color: var(--ink); width: 100%; resize: vertical; border-radius: 2px; }
+textarea:focus { outline: none; border-color: var(--accent); }
+textarea::placeholder { color: var(--ink-mute); font-style: italic; }
+
+.post-card { background: var(--bg-card); border: 1px solid var(--line); padding: 28px; margin-bottom: 16px; }
+.post-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+.post-author { font-family: var(--sans); font-size: 12px; color: var(--ink-mute); }
+.post-author .name { color: var(--ink); font-weight: 500; }
+.post-actions { display: flex; gap: 12px; align-items: center; }
+.post-action { background: none; border: none; color: var(--ink-mute); font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: color 0.2s; padding: 0; }
+.post-action:hover { color: var(--accent); }
+.post-action.report:hover { color: #d44; }
+.post-title { font-family: var(--display); font-size: 24px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 10px; line-height: 1.2; }
+.post-body { font-family: var(--sans); font-size: 14px; line-height: 1.7; color: var(--ink); font-weight: 300; white-space: pre-wrap; word-wrap: break-word; }
+.post-reply-toggle { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; gap: 16px; align-items: center; }
+.post-reply-count { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); }
+
+.replies-area { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+.reply-card { padding: 14px 16px; background: rgba(255,255,255,0.02); border-left: 2px solid var(--accent); margin-bottom: 10px; }
+.reply-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.reply-body { font-family: var(--sans); font-size: 13px; line-height: 1.6; color: var(--ink); font-weight: 300; white-space: pre-wrap; word-wrap: break-word; }
+.reply-form { display: flex; gap: 10px; margin-top: 10px; }
+.reply-form textarea { flex: 1; font-size: 13px; padding: 8px 12px; }
+.reply-form button { white-space: nowrap; padding: 0 16px; }
+
+.report-card { padding: 16px 20px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+.report-card:last-child { border-bottom: none; }
+.report-meta { font-family: var(--sans); font-size: 11px; color: var(--ink-mute); margin-bottom: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+.report-content { font-family: var(--sans); font-size: 13px; color: var(--ink); line-height: 1.6; font-weight: 300; background: rgba(255,255,255,0.02); padding: 10px 14px; margin-top: 8px; border-left: 2px solid var(--ink-mute); white-space: pre-wrap; word-wrap: break-word; }
+.report-actions { display: flex; flex-direction: column; gap: 8px; }
+.report-actions button { font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 14px; border: none; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.report-actions .delete-btn { background: #d44; color: white; }
+.report-actions .delete-btn:hover { background: #b33; }
+.report-actions .dismiss-btn { background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft); }
+.report-actions .dismiss-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 @media (max-width: 600px) {
   .cal-cell { min-height: 70px; padding: 6px; }
   .cal-date { font-size: 14px; }
@@ -430,6 +481,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <button class="nav-link" data-tab="atar">ATAR</button>
       <button class="nav-link" data-tab="files">Files</button>
       <button class="nav-link" data-tab="challenges">Challenges</button>
+      <button class="nav-link" data-tab="discussion">Discussion</button>
       <button class="nav-link" data-tab="leaderboard">Leaderboard</button>
       <button class="nav-link" data-tab="admin" id="adminNavLink" style="display:none;">Admin</button>
       <button class="nav-link" data-tab="settings">Settings</button>
@@ -752,10 +804,79 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<div class="panel" id="panel-leaderboard">
+<div class="panel" id="panel-discussion">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
       <div class="hero-numeral">09</div>
+      <div class="hero-left">
+        <div class="eyebrow">DISCUSSION</div>
+        <h1 class="hero-title">Talk it<br><em>through.</em></h1>
+        <p class="hero-desc">Per-subject boards for sharing study tips and asking questions. Be respectful — read the guidelines.</p>
+      </div>
+    </div>
+
+    <!-- Subject list view -->
+    <div id="discussionSubjectList">
+      <div class="guideline-banner" id="guidelineBanner">
+        <div class="gb-title">Before you post — <em>community guidelines</em></div>
+        <div class="gb-body">
+          Be respectful. No sharing assessment answers. Stay on topic. No personal information. Reports go straight to the admin. <a onclick="toggleGuidelines()" style="color:var(--accent);cursor:pointer;">Read the full guidelines</a>
+        </div>
+        <button onclick="dismissGuidelines()" class="gb-dismiss">Got it</button>
+      </div>
+
+      <div id="fullGuidelines" style="display:none;"></div>
+
+      <section class="content-section" style="padding-top:0;">
+        <div class="section-header">
+          <h2 class="section-title">Your <em>subjects</em></h2>
+          <span class="section-meta">click a board to open</span>
+        </div>
+        <div class="cards" id="discussionSubjectGrid">
+          <div class="empty" style="grid-column:1/-1;">Add an exam first to access discussion boards for your subjects.</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Inside a board view -->
+    <div id="discussionBoardView" style="display:none;">
+      <div class="breadcrumb">
+        <a onclick="exitBoard()">All boards</a>
+        <span class="sep">/</span>
+        <span class="current" id="currentBoardName">—</span>
+      </div>
+
+      <div class="form-card">
+        <h3>New <em>post</em></h3>
+        <div class="form-row single">
+          <div><label>Title (max 100 characters)</label><input type="text" id="postTitle" maxlength="100" placeholder="e.g. Help with SN2 mechanism"></div>
+        </div>
+        <div class="form-row single">
+          <div>
+            <label>Message (max 2000 characters)</label>
+            <textarea id="postBody" maxlength="2000" rows="4" placeholder="Share your question, tip, or insight…" style="font-family:var(--sans);font-size:14px;line-height:1.6;"></textarea>
+          </div>
+        </div>
+        <button class="primary" onclick="submitPost()" id="postSubmitBtn">Post →</button>
+      </div>
+
+      <section class="content-section" style="padding-top:0;">
+        <div class="section-header">
+          <h2 class="section-title">Recent <em>posts</em></h2>
+          <span class="section-meta" id="postsCount">0 posts</span>
+        </div>
+        <div id="postsList">
+          <div class="empty">No posts yet. Be the first.</div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-leaderboard">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">10</div>
       <div class="hero-left">
         <div class="eyebrow">LEADERBOARD</div>
         <h1 class="hero-title">Top of the<br><em>class.</em></h1>
@@ -773,7 +894,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-admin">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">10</div>
+      <div class="hero-numeral">11</div>
       <div class="hero-left">
         <div class="eyebrow">ADMIN DASHBOARD</div>
         <h1 class="hero-title">App <em>health.</em></h1>
@@ -833,13 +954,25 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
         <div class="admin-type-grid" id="adminTypeGrid"></div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="section-header">
+        <h2 class="section-title">Moderation <em>queue</em></h2>
+        <span class="section-meta" id="adminReportCount">0 reports</span>
+      </div>
+      <div class="admin-card">
+        <div id="adminReportsList">
+          <div class="empty" style="padding:40px;">No open reports.</div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
 <div class="panel" id="panel-settings">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">11</div>
+      <div class="hero-numeral">12</div>
       <div class="hero-left">
         <div class="eyebrow">SETTINGS</div>
         <h1 class="hero-title">Make it<br><em>yours.</em></h1>
@@ -2008,6 +2141,240 @@ function renderProgress() {
   }).join('');
 }
 
+// ============== DISCUSSION BOARDS ==============
+let currentBoardSubject = null;
+let lastPostTime = 0;
+const COMMUNITY_GUIDELINES_HTML = `
+  <div class="full-guidelines">
+    <h3>Community <em>guidelines</em></h3>
+    <p>These boards are for students to help each other study. To keep them useful and safe for everyone:</p>
+    <p><strong>Be respectful.</strong> Treat others how you'd want to be treated. No insults, harassment, or personal attacks.</p>
+    <p><strong>Don't share assessment answers.</strong> Discussing concepts and study methods is encouraged. Sharing answers to current assessments, IAs, or exams is academic misconduct and will be removed.</p>
+    <p><strong>Stay on topic.</strong> Each board is for its subject. Off-topic posts may be removed.</p>
+    <p><strong>No personal information.</strong> Don't share your full name, address, phone number, school details, or anyone else's.</p>
+    <p><strong>No inappropriate content.</strong> Nothing sexual, violent, or discriminatory. This is a study space.</p>
+    <p><strong>Report problems.</strong> If you see a post that breaks these guidelines, use the Report button. Reports are reviewed by the admin.</p>
+    <p><strong>Consequences.</strong> Posts that break these guidelines will be deleted. Repeated violations may result in posting access being revoked.</p>
+    <p><strong>Privacy notice.</strong> Your display name and posts are visible to all users. The admin can see reported posts and your basic account activity (in aggregate).</p>
+  </div>
+`;
+
+function renderDiscussionSubjects() {
+  // Show full guidelines if not dismissed
+  const dismissed = localStorage.getItem('studio_guidelines_dismissed') === 'true';
+  if (dismissed) document.getElementById('guidelineBanner').classList.add('dismissed');
+  document.getElementById('fullGuidelines').innerHTML = COMMUNITY_GUIDELINES_HTML;
+
+  const grid = document.getElementById('discussionSubjectGrid');
+  const userSubjects = [...new Set(state.exams.map(e => e.subject))];
+  if (userSubjects.length === 0) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">Add an exam first to access discussion boards for your subjects.</div>';
+    return;
+  }
+  grid.innerHTML = userSubjects.map(s => `
+    <div class="folder-card" onclick="openBoard('${s.replace(/'/g, "\\'")}')">
+      <div class="folder-icon"></div>
+      <div class="folder-title">${escapeHtml(s)}</div>
+      <div class="folder-meta">Click to open discussion</div>
+    </div>
+  `).join('');
+}
+
+window.toggleGuidelines = function() {
+  const el = document.getElementById('fullGuidelines');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+};
+
+window.dismissGuidelines = function() {
+  localStorage.setItem('studio_guidelines_dismissed', 'true');
+  document.getElementById('guidelineBanner').classList.add('dismissed');
+};
+
+window.openBoard = async function(subject) {
+  currentBoardSubject = subject;
+  document.getElementById('currentBoardName').textContent = subject;
+  document.getElementById('discussionSubjectList').style.display = 'none';
+  document.getElementById('discussionBoardView').style.display = 'block';
+  await loadPosts();
+};
+
+window.exitBoard = function() {
+  currentBoardSubject = null;
+  document.getElementById('discussionSubjectList').style.display = 'block';
+  document.getElementById('discussionBoardView').style.display = 'none';
+};
+
+async function loadPosts() {
+  if (!currentBoardSubject) return;
+  const { data: posts, error } = await supabase
+    .from('discussion_posts')
+    .select('*')
+    .eq('subject_name', currentBoardSubject)
+    .eq('is_deleted', false)
+    .order('created_at', { ascending: false });
+  if (error) { console.warn('loadPosts error:', error); return; }
+  
+  const list = document.getElementById('postsList');
+  document.getElementById('postsCount').textContent = `${(posts || []).length} post${(posts || []).length !== 1 ? 's' : ''}`;
+  if (!posts || posts.length === 0) {
+    list.innerHTML = '<div class="empty">No posts yet. Be the first.</div>';
+    return;
+  }
+
+  // Load all replies for these posts
+  const postIds = posts.map(p => p.id);
+  const { data: replies } = await supabase
+    .from('discussion_replies')
+    .select('*')
+    .in('post_id', postIds)
+    .eq('is_deleted', false)
+    .order('created_at', { ascending: true });
+  const repliesByPost = {};
+  (replies || []).forEach(r => {
+    if (!repliesByPost[r.post_id]) repliesByPost[r.post_id] = [];
+    repliesByPost[r.post_id].push(r);
+  });
+
+  list.innerHTML = posts.map(p => {
+    const isMine = p.user_id === currentUser.id;
+    const isAdmin = currentProfile.is_admin;
+    const authorName = allProfiles[p.user_id] || 'Unknown';
+    const postReplies = repliesByPost[p.id] || [];
+    const timestamp = relativeTime(p.created_at);
+    return `
+      <div class="post-card" data-post-id="${p.id}">
+        <div class="post-head">
+          <div class="post-author"><span class="name">${escapeHtml(authorName)}</span> · ${timestamp}</div>
+          <div class="post-actions">
+            ${(isMine || isAdmin) ? `<button class="post-action" onclick="deletePost('${p.id}')">Delete</button>` : ''}
+            ${!isMine ? `<button class="post-action report" onclick="reportPost('${p.id}')">Report</button>` : ''}
+          </div>
+        </div>
+        <div class="post-title">${escapeHtml(p.title)}</div>
+        <div class="post-body">${escapeHtml(p.body)}</div>
+        <div class="replies-area">
+          ${postReplies.map(r => {
+            const replyAuthor = allProfiles[r.user_id] || 'Unknown';
+            const isMyReply = r.user_id === currentUser.id;
+            return `
+              <div class="reply-card">
+                <div class="reply-head">
+                  <div class="post-author"><span class="name">${escapeHtml(replyAuthor)}</span> · ${relativeTime(r.created_at)}</div>
+                  <div class="post-actions">
+                    ${(isMyReply || isAdmin) ? `<button class="post-action" onclick="deleteReply('${r.id}')">Delete</button>` : ''}
+                    ${!isMyReply ? `<button class="post-action report" onclick="reportReply('${r.id}')">Report</button>` : ''}
+                  </div>
+                </div>
+                <div class="reply-body">${escapeHtml(r.body)}</div>
+              </div>
+            `;
+          }).join('')}
+          <div class="reply-form">
+            <textarea id="reply-input-${p.id}" placeholder="Reply…" rows="1" maxlength="2000"></textarea>
+            <button class="primary" onclick="submitReply('${p.id}')">Reply</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function relativeTime(iso) {
+  const now = Date.now();
+  const then = new Date(iso).getTime();
+  const diffSec = Math.floor((now - then) / 1000);
+  if (diffSec < 60) return 'just now';
+  if (diffSec < 3600) return `${Math.floor(diffSec/60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec/3600)}h ago`;
+  if (diffSec < 604800) return `${Math.floor(diffSec/86400)}d ago`;
+  return parseLocalDate(iso.split('T')[0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+window.submitPost = async function() {
+  const title = document.getElementById('postTitle').value.trim();
+  const body = document.getElementById('postBody').value.trim();
+  if (!title || !body) { toast('Title and message required'); return; }
+  if (Date.now() - lastPostTime < 10000) { toast('Please wait before posting again'); return; }
+  // Check user hasn't been banned
+  const btn = document.getElementById('postSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Posting…';
+  const { error } = await supabase.from('discussion_posts').insert({
+    user_id: currentUser.id,
+    subject_name: currentBoardSubject,
+    title, body
+  });
+  btn.disabled = false;
+  btn.textContent = 'Post →';
+  if (error) {
+    if (error.message && error.message.toLowerCase().includes('policy')) {
+      toast('Posting blocked — you may be banned');
+    } else {
+      toast('Error: ' + error.message);
+    }
+    return;
+  }
+  lastPostTime = Date.now();
+  document.getElementById('postTitle').value = '';
+  document.getElementById('postBody').value = '';
+  toast('Posted');
+  await loadPosts();
+};
+
+window.submitReply = async function(postId) {
+  const input = document.getElementById('reply-input-' + postId);
+  const body = input.value.trim();
+  if (!body) return;
+  if (Date.now() - lastPostTime < 10000) { toast('Please wait before posting again'); return; }
+  const { error } = await supabase.from('discussion_replies').insert({
+    post_id: postId, user_id: currentUser.id, body
+  });
+  if (error) {
+    if (error.message && error.message.toLowerCase().includes('policy')) {
+      toast('Posting blocked — you may be banned');
+    } else {
+      toast('Error: ' + error.message);
+    }
+    return;
+  }
+  lastPostTime = Date.now();
+  input.value = '';
+  toast('Replied');
+  await loadPosts();
+};
+
+window.deletePost = async function(postId) {
+  if (!confirm('Delete this post and all replies?')) return;
+  await supabase.from('discussion_posts').update({ is_deleted: true }).eq('id', postId);
+  await loadPosts();
+  toast('Deleted');
+};
+
+window.deleteReply = async function(replyId) {
+  if (!confirm('Delete this reply?')) return;
+  await supabase.from('discussion_replies').update({ is_deleted: true }).eq('id', replyId);
+  await loadPosts();
+  toast('Deleted');
+};
+
+window.reportPost = async function(postId) {
+  const reason = prompt('Why are you reporting this post? (optional)') ?? null;
+  const { error } = await supabase.from('post_reports').insert({
+    reporter_id: currentUser.id, post_id: postId, reason
+  });
+  if (error) { toast('Error: ' + error.message); return; }
+  toast('Reported — thank you');
+};
+
+window.reportReply = async function(replyId) {
+  const reason = prompt('Why are you reporting this reply? (optional)') ?? null;
+  const { error } = await supabase.from('post_reports').insert({
+    reporter_id: currentUser.id, reply_id: replyId, reason
+  });
+  if (error) { toast('Error: ' + error.message); return; }
+  toast('Reported — thank you');
+};
+
 // ============== ADMIN DASHBOARD ==============
 async function renderAdmin() {
   if (!currentProfile || !currentProfile.is_admin) return;
@@ -2090,7 +2457,76 @@ async function renderAdmin() {
     <div class="admin-type"><div class="num"><em>${typeCounts.sprint}</em></div><div class="lbl">Sprints</div></div>
     <div class="admin-type"><div class="num"><em>${typeCounts.task}</em></div><div class="lbl">Tasks</div></div>
   `;
+
+  // Load reports
+  await renderAdminReports();
 }
+
+async function renderAdminReports() {
+  const { data: reports } = await supabase
+    .from('post_reports')
+    .select('*')
+    .eq('resolved', false)
+    .order('created_at', { ascending: false });
+  const listEl = document.getElementById('adminReportsList');
+  const countEl = document.getElementById('adminReportCount');
+  if (!reports || reports.length === 0) {
+    listEl.innerHTML = '<div class="empty" style="padding:40px;">No open reports.</div>';
+    countEl.textContent = '0 reports';
+    return;
+  }
+  countEl.textContent = `${reports.length} open report${reports.length !== 1 ? 's' : ''}`;
+
+  // Fetch the actual posts/replies being reported
+  const postIds = reports.filter(r => r.post_id).map(r => r.post_id);
+  const replyIds = reports.filter(r => r.reply_id).map(r => r.reply_id);
+  const [{ data: posts }, { data: replies }] = await Promise.all([
+    postIds.length ? supabase.from('discussion_posts').select('*').in('id', postIds) : Promise.resolve({ data: [] }),
+    replyIds.length ? supabase.from('discussion_replies').select('*').in('id', replyIds) : Promise.resolve({ data: [] })
+  ]);
+  const postMap = {}; (posts || []).forEach(p => postMap[p.id] = p);
+  const replyMap = {}; (replies || []).forEach(r => replyMap[r.id] = r);
+
+  listEl.innerHTML = reports.map(r => {
+    const reporterName = allProfiles[r.reporter_id] || 'Unknown';
+    const isPost = !!r.post_id;
+    const item = isPost ? postMap[r.post_id] : replyMap[r.reply_id];
+    const authorName = item ? (allProfiles[item.user_id] || 'Unknown') : '(deleted)';
+    const contentText = item ? (isPost ? `${item.title}\n\n${item.body}` : item.body) : '(content unavailable)';
+    return `
+      <div class="report-card">
+        <div>
+          <div class="report-meta">${isPost ? 'POST' : 'REPLY'} · reported by ${escapeHtml(reporterName)} · ${relativeTime(r.created_at)}</div>
+          <div style="font-family:var(--sans);font-size:13px;color:var(--ink);">
+            <strong>Author:</strong> ${escapeHtml(authorName)}<br>
+            ${r.reason ? `<strong>Reason:</strong> ${escapeHtml(r.reason)}` : '<em style="color:var(--ink-mute);">(no reason given)</em>'}
+          </div>
+          <div class="report-content">${escapeHtml(contentText)}</div>
+        </div>
+        <div class="report-actions">
+          ${item ? `<button class="delete-btn" onclick="adminDeleteContent('${r.id}', '${isPost ? 'post' : 'reply'}', '${item.id}')">Delete</button>` : ''}
+          <button class="dismiss-btn" onclick="adminDismissReport('${r.id}')">Dismiss</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.adminDeleteContent = async function(reportId, kind, contentId) {
+  if (!confirm(`Delete this ${kind}? This cannot be undone.`)) return;
+  const table = kind === 'post' ? 'discussion_posts' : 'discussion_replies';
+  await supabase.from(table).update({ is_deleted: true }).eq('id', contentId);
+  await supabase.from('post_reports').update({ resolved: true, resolved_at: new Date().toISOString() }).eq('id', reportId);
+  await renderAdminReports();
+  toast('Content deleted, report resolved');
+};
+
+window.adminDismissReport = async function(reportId) {
+  if (!confirm('Dismiss this report without deleting?')) return;
+  await supabase.from('post_reports').update({ resolved: true, resolved_at: new Date().toISOString() }).eq('id', reportId);
+  await renderAdminReports();
+  toast('Report dismissed');
+};
 
 // ============== TABS ==============
 document.querySelectorAll('.nav-link').forEach(btn => {
@@ -2106,6 +2542,7 @@ document.querySelectorAll('.nav-link').forEach(btn => {
     if (btn.dataset.tab === 'challenges') renderChallenges();
     if (btn.dataset.tab === 'atar') renderATAR();
     if (btn.dataset.tab === 'admin') renderAdmin();
+    if (btn.dataset.tab === 'discussion') renderDiscussionSubjects();
   });
 });
 
