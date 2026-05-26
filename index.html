@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root {
   --bg: #1f2024;
@@ -183,6 +184,69 @@ section.content-section { padding: 40px 0; }
 .lb-tab:hover { border-color: var(--line-strong); color: var(--ink); }
 .lb-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
 
+/* CALENDAR */
+.cal-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 16px; }
+.cal-controls h3 { font-family: var(--display); font-size: 36px; font-weight: 400; letter-spacing: -0.02em; }
+.cal-controls h3 em { font-style: italic; color: var(--accent); }
+.cal-nav-btn { background: transparent; border: 1px solid var(--line-strong); color: var(--ink); font-family: var(--sans); font-size: 14px; padding: 8px 16px; cursor: pointer; transition: all 0.2s; }
+.cal-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.cal-day-header { background: var(--bg-soft); padding: 12px; text-align: center; font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); }
+.cal-cell { background: var(--bg-card); min-height: 110px; padding: 10px; position: relative; cursor: pointer; transition: background 0.15s; display: flex; flex-direction: column; gap: 4px; }
+.cal-cell:hover { background: var(--bg-soft); }
+.cal-cell.other-month { opacity: 0.35; }
+.cal-cell.today { background: rgba(232, 117, 69, 0.08); border-left: 3px solid var(--accent); padding-left: 7px; }
+.cal-cell.selected { background: rgba(232, 117, 69, 0.15); }
+.cal-date { font-family: var(--display); font-size: 18px; font-weight: 400; color: var(--ink); margin-bottom: 6px; }
+.cal-cell.today .cal-date { color: var(--accent); font-style: italic; }
+.cal-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; }
+.cal-dot.exam { background: var(--accent); }
+.cal-dot.review { background: var(--gold); }
+.cal-dot.challenge { background: var(--sage); }
+.cal-event { font-family: var(--sans); font-size: 10px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 4px; border-radius: 2px; line-height: 1.3; }
+.cal-event.exam { background: rgba(232, 117, 69, 0.15); color: var(--accent); }
+.cal-event.review { background: rgba(201, 165, 88, 0.12); color: var(--gold); }
+.cal-event-count { font-family: var(--sans); font-size: 10px; color: var(--ink-mute); margin-top: 2px; }
+
+.cal-detail { margin-top: 32px; background: var(--bg-card); border: 1px solid var(--line); padding: 28px; }
+.cal-detail h4 { font-family: var(--display); font-size: 28px; font-weight: 400; margin-bottom: 16px; }
+.cal-detail h4 em { font-style: italic; color: var(--accent); }
+.cal-detail-section { margin-bottom: 20px; }
+.cal-detail-section:last-child { margin-bottom: 0; }
+.cal-detail-label { font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 10px; }
+.cal-detail-item { font-family: var(--display); font-size: 18px; padding: 8px 0; color: var(--ink); }
+.cal-detail-item .meta { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); margin-left: 12px; }
+
+.cal-legend { display: flex; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+.cal-legend-item { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 12px; color: var(--ink-soft); }
+
+/* PROGRESS */
+.progress-card { background: var(--bg-card); border: 1px solid var(--line); padding: 32px; margin-bottom: 24px; }
+.progress-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+.progress-subject { font-family: var(--display); font-size: 32px; font-weight: 400; letter-spacing: -0.01em; }
+.progress-subject em { font-style: italic; color: var(--accent); }
+.progress-meta { font-family: var(--sans); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mute); }
+.progress-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 24px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.progress-stat-label { font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 8px; }
+.progress-stat-value { font-family: var(--display); font-size: 42px; font-weight: 400; line-height: 1; letter-spacing: -0.02em; }
+.progress-stat-value em { font-style: italic; color: var(--accent); }
+.progress-stat-sub { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); margin-top: 6px; font-weight: 300; }
+.progress-chart-wrap { position: relative; height: 200px; }
+.progress-bars { display: flex; flex-direction: column; gap: 12px; }
+.progress-bar-row { display: grid; grid-template-columns: 80px 1fr 50px; gap: 12px; align-items: center; font-family: var(--sans); font-size: 12px; }
+.progress-bar-track { background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden; }
+.progress-bar-fill { background: var(--accent); height: 100%; transition: width 0.6s ease; }
+.progress-bar-value { font-family: var(--display); font-style: italic; color: var(--ink-soft); text-align: right; }
+
+@media (max-width: 600px) {
+  .cal-cell { min-height: 70px; padding: 6px; }
+  .cal-date { font-size: 14px; }
+  .cal-event { font-size: 9px; padding: 1px 3px; }
+  .cal-day-header { padding: 8px 4px; font-size: 9px; }
+  .progress-card { padding: 20px; }
+  .progress-subject { font-size: 24px; }
+}
+
 .form-card { background: var(--bg-card); border: 1px solid var(--line); padding: 40px; margin-bottom: 32px; }
 .form-card h3 { font-family: var(--display); font-size: 28px; font-weight: 400; margin-bottom: 8px; letter-spacing: -0.01em; }
 .form-card h3 em { font-style: italic; color: var(--accent); }
@@ -296,6 +360,8 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
     <div class="brand">Studio.</div>
     <div class="nav-links">
       <button class="nav-link active" data-tab="today">Today</button>
+      <button class="nav-link" data-tab="calendar">Calendar</button>
+      <button class="nav-link" data-tab="progress">Progress</button>
       <button class="nav-link" data-tab="exams">Exams</button>
       <button class="nav-link" data-tab="topics">Topics</button>
       <button class="nav-link" data-tab="files">Files</button>
@@ -356,10 +422,51 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<div class="panel" id="panel-exams">
+<div class="panel" id="panel-calendar">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
       <div class="hero-numeral">02</div>
+      <div class="hero-left">
+        <div class="eyebrow">CALENDAR</div>
+        <h1 class="hero-title">The month<br><em>ahead.</em></h1>
+        <p class="hero-desc">Exams, reviews, and challenges in one view. Click any day for details.</p>
+      </div>
+    </div>
+    <div class="cal-legend">
+      <div class="cal-legend-item"><span class="cal-dot exam"></span> Exam</div>
+      <div class="cal-legend-item"><span class="cal-dot review"></span> Review due</div>
+      <div class="cal-legend-item"><span class="cal-dot challenge"></span> Challenge completed</div>
+    </div>
+    <div class="cal-controls">
+      <button class="cal-nav-btn" onclick="calPrev()">← Prev</button>
+      <h3 id="calMonthLabel">—</h3>
+      <button class="cal-nav-btn" onclick="calNext()">Next →</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-detail" id="calDetail" style="display:none;"></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-progress">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">03</div>
+      <div class="hero-left">
+        <div class="eyebrow">PROGRESS</div>
+        <h1 class="hero-title">How you're<br><em>tracking.</em></h1>
+        <p class="hero-desc">A snapshot of each subject — your confidence, challenge points earned, and review consistency.</p>
+      </div>
+    </div>
+    <div id="progressList">
+      <div class="empty">Add some topics and exams to see your progress.</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-exams">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">04</div>
       <div class="hero-left">
         <div class="eyebrow">EXAMINATIONS</div>
         <h1 class="hero-title">Upcoming<br><em>dates.</em></h1>
@@ -391,7 +498,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-topics">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">03</div>
+      <div class="hero-numeral">05</div>
       <div class="hero-left">
         <div class="eyebrow">TOPICS</div>
         <h1 class="hero-title">What to<br><em>revise.</em></h1>
@@ -440,7 +547,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-files">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">04</div>
+      <div class="hero-numeral">06</div>
       <div class="hero-left">
         <div class="eyebrow">FILES</div>
         <h1 class="hero-title">Your <em>library.</em></h1>
@@ -484,7 +591,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-challenges">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">05</div>
+      <div class="hero-numeral">07</div>
       <div class="hero-left">
         <div class="eyebrow">DAILY CHALLENGES</div>
         <h1 class="hero-title">Earn your<br><em>points.</em></h1>
@@ -506,7 +613,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-leaderboard">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">06</div>
+      <div class="hero-numeral">08</div>
       <div class="hero-left">
         <div class="eyebrow">LEADERBOARD</div>
         <h1 class="hero-title">Top of the<br><em>class.</em></h1>
@@ -524,7 +631,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-settings">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">07</div>
+      <div class="hero-numeral">09</div>
       <div class="hero-left">
         <div class="eyebrow">SETTINGS</div>
         <h1 class="hero-title">Make it<br><em>yours.</em></h1>
@@ -590,6 +697,10 @@ let currentFolderId = null, subjects = [], challenges = [], submissions = [];
 let allProfiles = {}, allSubmissions = [];
 let lbCurrentSubject = 'all';
 let sprintTimers = {};
+let sprintIntervals = {};
+let calViewDate = new Date();
+let calSelectedDate = null;
+let progressCharts = {};
 
 function todayStr() { return new Date().toISOString().split('T')[0]; }
 function daysBetween(s) { const t = new Date(); t.setHours(0,0,0,0); const d = new Date(s); d.setHours(0,0,0,0); return Math.round((d - t) / 86400000); }
@@ -628,8 +739,8 @@ async function enterApp() {
   document.getElementById('userEmail').textContent = currentUser.email;
   document.getElementById('userGreeting').textContent = currentProfile.display_name;
   document.getElementById('settingsDisplayName').value = currentProfile.display_name;
-  await Promise.all([loadFromCloud(), loadSubjects(), loadChallenges(), loadAllProfiles(), loadAllSubmissions()]);
-  render(); renderChallenges(); renderLeaderboard(); renderFolderView();
+  await Promise.all([loadFromCloud(), loadSubjects(), loadChallenges(), loadAllProfiles(), loadAllSubmissions(), loadActiveSprints()]);
+  render(); renderChallenges(); renderLeaderboard(); renderFolderView(); renderCalendar(); renderProgress();
   if ('Notification' in window && Notification.permission === 'granted') scheduleNotification();
 }
 
@@ -882,7 +993,14 @@ function renderChallenges() {
       body = `<div class="quiz-options" id="quiz-${c.id}">${opts.map((o, i) => `<button class="quiz-option" onclick="selectQuizOption('${c.id}', ${i})" ${completed ? 'disabled' : ''}><span class="letter">${String.fromCharCode(65+i)}.</span><span>${escapeHtml(o)}</span></button>`).join('')}</div>`;
     } else if (c.type === 'sprint' && c.payload) {
       const mins = c.payload.minutes || 25;
-      body = `<div class="sprint-timer" id="timer-${c.id}">${mins}:00</div><div style="text-align:center;"><button class="primary" onclick="startSprint('${c.id}', ${mins})" ${completed ? 'disabled' : ''}>${completed ? 'Completed' : 'Start ' + mins + '-min sprint'}</button></div>`;
+      const remaining = sprintRemaining(c.id);
+      const inProgress = remaining !== null && remaining > 0;
+      const initialDisplay = inProgress
+        ? `${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`
+        : `${mins}:00`;
+      const btnText = completed ? 'Completed' : inProgress ? 'Sprint in progress…' : `Start ${mins}-min sprint`;
+      const btnDisabled = completed || inProgress;
+      body = `<div class="sprint-timer ${inProgress ? 'running' : ''}" id="timer-${c.id}">${initialDisplay}</div><div style="text-align:center;"><button class="primary" onclick="startSprint('${c.id}', ${mins})" ${btnDisabled ? 'disabled' : ''}>${btnText}</button></div>`;
     } else if (c.type === 'task') {
       body = `<div style="text-align:left;"><button class="primary" onclick="completeTask('${c.id}')" ${completed ? 'disabled' : ''}>${completed ? 'Completed' : 'Mark complete'}</button></div>`;
     }
@@ -899,6 +1017,7 @@ function renderChallenges() {
       </div>
     `;
   }).join('');
+  resumeSprintTimers();
 }
 
 window.selectQuizOption = async function(cid, idx) {
@@ -915,24 +1034,77 @@ window.selectQuizOption = async function(cid, idx) {
   else { await submitChallenge(cid, 0); toast('Better luck tomorrow'); }
 };
 
-window.startSprint = function(cid, mins) {
-  if (sprintTimers[cid]) return;
-  let remaining = mins * 60;
+// Active sprint sessions, keyed by challenge_id → { startedAt: Date, durationSec: number }
+let activeSprints = {};
+
+async function loadActiveSprints() {
+  if (!currentUser) return;
+  const { data } = await supabase.from('sprint_sessions').select('*').eq('user_id', currentUser.id);
+  if (data) {
+    activeSprints = {};
+    data.forEach(s => {
+      activeSprints[s.challenge_id] = { startedAt: new Date(s.started_at), durationSec: s.duration_seconds };
+    });
+  }
+}
+
+function sprintRemaining(cid) {
+  const s = activeSprints[cid];
+  if (!s) return null;
+  const elapsed = Math.floor((Date.now() - s.startedAt.getTime()) / 1000);
+  const remaining = s.durationSec - elapsed;
+  return remaining;
+}
+
+window.startSprint = async function(cid, mins) {
+  if (activeSprints[cid]) return;
+  const startedAt = new Date();
+  const durationSec = mins * 60;
+  // Save to cloud so it survives refresh
+  const { error } = await supabase.from('sprint_sessions').insert({
+    user_id: currentUser.id, challenge_id: cid,
+    started_at: startedAt.toISOString(), duration_seconds: durationSec
+  });
+  if (error) { toast('Could not start sprint: ' + error.message); return; }
+  activeSprints[cid] = { startedAt, durationSec };
+  startSprintTimer(cid);
+  toast('Sprint started');
+};
+
+function startSprintTimer(cid) {
+  if (sprintIntervals[cid]) clearInterval(sprintIntervals[cid]);
   const el = document.getElementById('timer-' + cid);
+  if (!el) return;
   el.classList.add('running');
-  sprintTimers[cid] = setInterval(async () => {
-    remaining--;
+  const tick = async () => {
+    const remaining = sprintRemaining(cid);
+    if (remaining === null) { clearInterval(sprintIntervals[cid]); return; }
+    if (remaining <= 0) {
+      clearInterval(sprintIntervals[cid]); delete sprintIntervals[cid];
+      const c = challenges.find(x => x.id === cid);
+      if (c && !submissions.some(s => s.challenge_id === cid)) {
+        await submitChallenge(cid, c.points);
+        toast(`Sprint complete! +${c.points} pts`);
+      }
+      // Clean up the active sprint record
+      await supabase.from('sprint_sessions').delete().eq('user_id', currentUser.id).eq('challenge_id', cid);
+      delete activeSprints[cid];
+      renderChallenges();
+      return;
+    }
     const m = Math.floor(remaining / 60), s = remaining % 60;
     el.textContent = `${m}:${String(s).padStart(2,'0')}`;
-    if (remaining <= 0) {
-      clearInterval(sprintTimers[cid]); delete sprintTimers[cid];
-      const c = challenges.find(x => x.id === cid);
-      await submitChallenge(cid, c.points);
-      toast(`Sprint complete! +${c.points} pts`);
-      renderChallenges();
-    }
-  }, 1000);
-};
+  };
+  tick();
+  sprintIntervals[cid] = setInterval(tick, 1000);
+}
+
+// Restart any in-progress sprint timers when the challenges tab re-renders
+function resumeSprintTimers() {
+  Object.keys(activeSprints).forEach(cid => {
+    if (document.getElementById('timer-' + cid)) startSprintTimer(cid);
+  });
+}
 
 window.completeTask = async function(cid) {
   const c = challenges.find(x => x.id === cid);
@@ -1048,6 +1220,8 @@ function render() {
   const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
   document.getElementById('eyebrowDate').textContent = dateStr;
   renderToday(); renderExams(); renderTopics(); renderSubjectOptions(); renderSettings();
+  if (document.getElementById('panel-calendar').classList.contains('active')) renderCalendar();
+  if (document.getElementById('panel-progress').classList.contains('active')) renderProgress();
 }
 
 function renderToday() {
@@ -1194,6 +1368,194 @@ window.clearData = async function() {
   render(); toast('Cleared');
 };
 
+// ============== CALENDAR ==============
+function renderCalendar() {
+  const year = calViewDate.getFullYear();
+  const month = calViewDate.getMonth();
+  document.getElementById('calMonthLabel').innerHTML = `<em>${calViewDate.toLocaleDateString('en-US', { month: 'long' })}</em> ${year}`;
+
+  // Build map of events per date
+  const events = {}; // 'YYYY-MM-DD' → { exams: [], reviews: [], challenges: [] }
+  const addEvent = (dateStr, kind, item) => {
+    if (!events[dateStr]) events[dateStr] = { exams: [], reviews: [], challenges: [] };
+    events[dateStr][kind].push(item);
+  };
+  state.exams.forEach(e => addEvent(e.date, 'exams', e));
+  state.topics.forEach(t => addEvent(nextReviewDate(t), 'reviews', t));
+  // Challenge submissions (use date from challenge)
+  submissions.forEach(s => {
+    const ch = challenges.find(c => c.id === s.challenge_id);
+    if (ch) addEvent(ch.date, 'challenges', ch);
+  });
+
+  // Build grid
+  const firstDay = new Date(year, month, 1);
+  const startWeekday = firstDay.getDay(); // 0 = Sunday
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+  const todayKey = todayStr();
+
+  let html = '';
+  const dayHeaders = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  dayHeaders.forEach(d => html += `<div class="cal-day-header">${d}</div>`);
+
+  // Cells from prev month
+  for (let i = startWeekday - 1; i >= 0; i--) {
+    const d = daysInPrevMonth - i;
+    html += `<div class="cal-cell other-month"><div class="cal-date">${d}</div></div>`;
+  }
+
+  // Cells for this month
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const ev = events[dateStr] || { exams: [], reviews: [], challenges: [] };
+    const isToday = dateStr === todayKey;
+    const isSelected = calSelectedDate === dateStr;
+    let inner = `<div class="cal-date">${d}</div>`;
+    // Show up to 2 event labels then a "+N more" count
+    const eventLines = [];
+    ev.exams.slice(0, 2).forEach(e => eventLines.push(`<div class="cal-event exam">${escapeHtml(e.subject)}</div>`));
+    if (eventLines.length < 2) {
+      ev.reviews.slice(0, 2 - eventLines.length).forEach(t => eventLines.push(`<div class="cal-event review">${escapeHtml(t.name)}</div>`));
+    }
+    const totalEvents = ev.exams.length + ev.reviews.length + ev.challenges.length;
+    if (totalEvents > eventLines.length) {
+      eventLines.push(`<div class="cal-event-count">+${totalEvents - eventLines.length} more</div>`);
+    }
+    inner += eventLines.join('');
+    html += `<div class="cal-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectCalDate('${dateStr}')">${inner}</div>`;
+  }
+
+  // Fill remaining cells from next month
+  const totalCellsUsed = startWeekday + daysInMonth;
+  const remaining = (7 - (totalCellsUsed % 7)) % 7;
+  for (let i = 1; i <= remaining; i++) {
+    html += `<div class="cal-cell other-month"><div class="cal-date">${i}</div></div>`;
+  }
+
+  document.getElementById('calGrid').innerHTML = html;
+
+  // Show detail if a date is selected
+  if (calSelectedDate) renderCalDetail(calSelectedDate, events[calSelectedDate]);
+  else document.getElementById('calDetail').style.display = 'none';
+}
+
+window.calPrev = function() { calViewDate.setMonth(calViewDate.getMonth() - 1); renderCalendar(); };
+window.calNext = function() { calViewDate.setMonth(calViewDate.getMonth() + 1); renderCalendar(); };
+window.selectCalDate = function(dateStr) {
+  calSelectedDate = calSelectedDate === dateStr ? null : dateStr;
+  renderCalendar();
+};
+
+function renderCalDetail(dateStr, ev) {
+  const detail = document.getElementById('calDetail');
+  const dateLabel = new Date(dateStr).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  ev = ev || { exams: [], reviews: [], challenges: [] };
+  let html = `<h4><em>${dateLabel}</em></h4>`;
+  if (ev.exams.length === 0 && ev.reviews.length === 0 && ev.challenges.length === 0) {
+    html += `<div style="font-family:var(--display);font-style:italic;color:var(--ink-mute);">Nothing scheduled.</div>`;
+  } else {
+    if (ev.exams.length) {
+      html += `<div class="cal-detail-section"><div class="cal-detail-label">Exams</div>`;
+      ev.exams.forEach(e => {
+        html += `<div class="cal-detail-item">${escapeHtml(e.subject)}${e.notes ? `<span class="meta">${escapeHtml(e.notes)}</span>` : ''}</div>`;
+      });
+      html += `</div>`;
+    }
+    if (ev.reviews.length) {
+      html += `<div class="cal-detail-section"><div class="cal-detail-label">Reviews due</div>`;
+      ev.reviews.forEach(t => {
+        html += `<div class="cal-detail-item">${escapeHtml(t.name)}<span class="meta">${escapeHtml(t.subject)} · confidence ${t.confidence}/5</span></div>`;
+      });
+      html += `</div>`;
+    }
+    if (ev.challenges.length) {
+      html += `<div class="cal-detail-section"><div class="cal-detail-label">Challenges completed</div>`;
+      ev.challenges.forEach(c => {
+        html += `<div class="cal-detail-item">${escapeHtml(c.title)}<span class="meta">${escapeHtml(c.subject_name)}</span></div>`;
+      });
+      html += `</div>`;
+    }
+  }
+  detail.innerHTML = html;
+  detail.style.display = 'block';
+}
+
+// ============== PROGRESS ==============
+function renderProgress() {
+  const container = document.getElementById('progressList');
+  // Build list of all subjects the user is engaged with (from exams or topics)
+  const subjects = [...new Set([
+    ...state.exams.map(e => e.subject),
+    ...state.topics.map(t => t.subject)
+  ])];
+  if (subjects.length === 0) {
+    container.innerHTML = '<div class="empty">Add some exams or topics to see your progress.</div>';
+    return;
+  }
+  // Destroy existing charts before re-rendering
+  Object.values(progressCharts).forEach(ch => { try { ch.destroy(); } catch(e) {} });
+  progressCharts = {};
+
+  container.innerHTML = subjects.map(s => {
+    const topics = state.topics.filter(t => t.subject === s);
+    const avgConfidence = topics.length ? (topics.reduce((sum, t) => sum + t.confidence, 0) / topics.length).toFixed(1) : '—';
+    const mastered = topics.filter(t => t.confidence >= 4).length;
+    // Challenge points for this subject
+    const challengeIds = challenges.filter(c => c.subject_name === s).map(c => c.id);
+    const myChallengePoints = submissions.filter(sub => challengeIds.includes(sub.challenge_id))
+      .reduce((sum, sub) => sum + (sub.points_earned || 0), 0);
+    // Review consistency: of topics that have a lastReviewed date, what % were reviewed when due
+    // Simpler metric: out of currently-existing topics, what fraction is not overdue
+    const overdue = topics.filter(t => daysBetween(nextReviewDate(t)) < 0).length;
+    const onTrack = topics.length - overdue;
+    const consistencyPct = topics.length ? Math.round((onTrack / topics.length) * 100) : 0;
+
+    const chartId = 'chart-' + s.replace(/[^a-z0-9]/gi, '-');
+
+    return `
+      <div class="progress-card">
+        <div class="progress-head">
+          <div class="progress-subject"><em>${escapeHtml(s)}</em></div>
+          <div class="progress-meta">${topics.length} topic${topics.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="progress-stats">
+          <div>
+            <div class="progress-stat-label">Avg Confidence</div>
+            <div class="progress-stat-value"><em>${avgConfidence}</em></div>
+            <div class="progress-stat-sub">out of 5</div>
+          </div>
+          <div>
+            <div class="progress-stat-label">Topics Mastered</div>
+            <div class="progress-stat-value">${mastered}<span style="font-size:24px;color:var(--ink-mute);"> / ${topics.length}</span></div>
+            <div class="progress-stat-sub">at confidence 4 or 5</div>
+          </div>
+          <div>
+            <div class="progress-stat-label">Challenge Points</div>
+            <div class="progress-stat-value"><em>${myChallengePoints}</em></div>
+            <div class="progress-stat-sub">earned in this subject</div>
+          </div>
+          <div>
+            <div class="progress-stat-label">Review Health</div>
+            <div class="progress-stat-value">${consistencyPct}<span style="font-size:24px;color:var(--ink-mute);">%</span></div>
+            <div class="progress-stat-sub">topics on track</div>
+          </div>
+        </div>
+        ${topics.length ? `<div class="progress-bars">${
+          topics.slice().sort((a,b) => b.confidence - a.confidence).map(t => `
+            <div class="progress-bar-row">
+              <div style="font-family:var(--display);">${escapeHtml(t.name.length > 18 ? t.name.slice(0,18) + '…' : t.name)}</div>
+              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${(t.confidence/5)*100}%;"></div></div>
+              <div class="progress-bar-value">${t.confidence}/5</div>
+            </div>
+          `).join('')
+        }</div>` : '<div style="font-family:var(--display);font-style:italic;color:var(--ink-mute);">No topics added for this subject yet.</div>'}
+      </div>
+    `;
+  }).join('');
+}
+
+// ============== TABS ==============
 document.querySelectorAll('.nav-link').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
@@ -1201,6 +1563,10 @@ document.querySelectorAll('.nav-link').forEach(btn => {
     btn.classList.add('active');
     document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Re-render dynamic tabs on view
+    if (btn.dataset.tab === 'calendar') renderCalendar();
+    if (btn.dataset.tab === 'progress') renderProgress();
+    if (btn.dataset.tab === 'challenges') renderChallenges();
   });
 });
 
