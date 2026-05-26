@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Studio — Study Tracker</title>
 <meta name="theme-color" content="#1f2024">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%231f2024' width='100' height='100' rx='12'/%3E%3Ccircle cx='50' cy='50' r='22' fill='%23e87545'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%231f2024' width='100' height='100' rx='12'/%3E%3Ccircle cx='50' cy='50' r='22' fill='%23e87545'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -238,6 +240,37 @@ section.content-section { padding: 40px 0; }
 .progress-bar-fill { background: var(--accent); height: 100%; transition: width 0.6s ease; }
 .progress-bar-value { font-family: var(--display); font-style: italic; color: var(--ink-soft); text-align: right; }
 
+/* ATAR */
+.atar-hero { background: var(--bg-card); border: 1px solid var(--line); padding: 40px; margin-bottom: 32px; position: relative; overflow: hidden; }
+.atar-hero::before { content: ''; position: absolute; top: -40%; right: -10%; width: 320px; height: 320px; background: var(--accent); border-radius: 50%; opacity: 0.06; filter: blur(40px); }
+.atar-hero-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: end; margin-bottom: 24px; position: relative; z-index: 2; }
+.atar-big-number { font-family: var(--display); font-size: 120px; font-weight: 300; line-height: 0.95; letter-spacing: -0.03em; }
+.atar-big-number em { font-style: italic; color: var(--accent); }
+.atar-disclaimer { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); padding: 16px 20px; background: rgba(232, 117, 69, 0.06); border-left: 2px solid var(--accent); position: relative; z-index: 2; line-height: 1.6; font-weight: 300; }
+
+.assess-subject-group { background: var(--bg-card); border: 1px solid var(--line); padding: 28px; margin-bottom: 16px; }
+.assess-subject-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); gap: 12px; flex-wrap: wrap; }
+.assess-subject-name { font-family: var(--display); font-size: 26px; font-weight: 400; letter-spacing: -0.01em; }
+.assess-subject-name em { font-style: italic; color: var(--accent); }
+.assess-subject-scores { display: flex; gap: 24px; align-items: baseline; font-family: var(--sans); font-size: 12px; }
+.assess-subject-scores .raw { color: var(--ink-soft); }
+.assess-subject-scores .scaled { color: var(--accent); font-weight: 500; }
+.assess-subject-scores .num { font-family: var(--display); font-size: 24px; font-style: italic; margin-right: 6px; }
+.assess-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); font-family: var(--sans); font-size: 13px; }
+.assess-row:last-child { border-bottom: none; }
+.assess-row .name { color: var(--ink); font-family: var(--display); font-size: 17px; }
+.assess-row .name .meta { font-family: var(--sans); font-size: 11px; color: var(--ink-soft); display: block; margin-top: 2px; }
+.assess-row .score { font-family: var(--display); font-size: 18px; color: var(--accent); font-style: italic; }
+.assess-row .weight { color: var(--ink-mute); font-size: 11px; }
+
+@media (max-width: 700px) {
+  .atar-hero-grid { grid-template-columns: 1fr; gap: 24px; }
+  .atar-big-number { font-size: 80px; }
+  .atar-hero { padding: 28px 20px; }
+  .assess-row { grid-template-columns: 1fr auto; gap: 8px; }
+  .assess-row .weight { display: none; }
+}
+
 @media (max-width: 600px) {
   .cal-cell { min-height: 70px; padding: 6px; }
   .cal-date { font-size: 14px; }
@@ -364,6 +397,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <button class="nav-link" data-tab="progress">Progress</button>
       <button class="nav-link" data-tab="exams">Exams</button>
       <button class="nav-link" data-tab="topics">Topics</button>
+      <button class="nav-link" data-tab="atar">ATAR</button>
       <button class="nav-link" data-tab="files">Files</button>
       <button class="nav-link" data-tab="challenges">Challenges</button>
       <button class="nav-link" data-tab="leaderboard">Leaderboard</button>
@@ -544,10 +578,87 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<div class="panel" id="panel-files">
+<div class="panel" id="panel-atar">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
       <div class="hero-numeral">06</div>
+      <div class="hero-left">
+        <div class="eyebrow">ATAR ESTIMATOR</div>
+        <h1 class="hero-title">Predict your<br><em>rank.</em></h1>
+        <p class="hero-desc">Enter your assessment results to see an estimated ATAR. Uses recent QTAC scaling — estimate only, not official.</p>
+      </div>
+    </div>
+
+    <div class="atar-hero">
+      <div class="atar-hero-grid">
+        <div>
+          <div class="stat-label">Estimated ATAR</div>
+          <div class="atar-big-number"><em id="atarBigNumber">—</em></div>
+          <div class="stat-sub" id="atarSubtext">Add results below to see your estimate</div>
+        </div>
+        <div>
+          <div class="stat-label">Subjects with Results</div>
+          <div class="stat-value"><em id="atarSubjectCount">0</em></div>
+          <div class="stat-sub">need ≥4 General subjects for ATAR eligibility</div>
+        </div>
+      </div>
+      <div class="atar-disclaimer">⚠ Estimate only. Actual ATAR is calculated by QTAC each December using that year's cohort. Scaling values used here are based on recent QTAC reports and will differ from your final result.</div>
+    </div>
+
+    <div class="form-card">
+      <h3>Add an <em>assessment result</em></h3>
+      <div class="form-sub">Enter the raw mark and total. Add as many results as you have — the calculator averages them per subject.</div>
+      <div class="form-row">
+        <div>
+          <label>Subject</label>
+          <select id="assessSubject">
+            <option value="">Choose a subject…</option>
+          </select>
+        </div>
+        <div>
+          <label>Assessment name</label>
+          <input type="text" id="assessName" placeholder="e.g. IA1, Unit 3 Test, Final Exam">
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Mark obtained</label>
+          <input type="number" id="assessScore" placeholder="e.g. 22" step="0.1" min="0">
+        </div>
+        <div>
+          <label>Out of</label>
+          <input type="number" id="assessTotal" placeholder="e.g. 25" step="0.1" min="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Weighting (% of subject grade)</label>
+          <input type="number" id="assessWeight" placeholder="e.g. 25" value="25" step="1" min="0" max="100">
+        </div>
+        <div>
+          <label>Date (optional)</label>
+          <input type="date" id="assessDate">
+        </div>
+      </div>
+      <button class="primary" onclick="addAssessment()">Add result →</button>
+    </div>
+
+    <section class="content-section" style="padding-top:0;">
+      <div class="section-header">
+        <h2 class="section-title">Your <em>results</em></h2>
+        <span class="section-meta" id="assessCount">0 entries</span>
+      </div>
+      <div id="assessList">
+        <div class="empty">No results entered yet.<br>Add some above to see your estimated ATAR.</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="panel" id="panel-files">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">07</div>
       <div class="hero-left">
         <div class="eyebrow">FILES</div>
         <h1 class="hero-title">Your <em>library.</em></h1>
@@ -591,7 +702,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-challenges">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">07</div>
+      <div class="hero-numeral">08</div>
       <div class="hero-left">
         <div class="eyebrow">DAILY CHALLENGES</div>
         <h1 class="hero-title">Earn your<br><em>points.</em></h1>
@@ -613,7 +724,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-leaderboard">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">08</div>
+      <div class="hero-numeral">09</div>
       <div class="hero-left">
         <div class="eyebrow">LEADERBOARD</div>
         <h1 class="hero-title">Top of the<br><em>class.</em></h1>
@@ -631,7 +742,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-settings">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">09</div>
+      <div class="hero-numeral">10</div>
       <div class="hero-left">
         <div class="eyebrow">SETTINGS</div>
         <h1 class="hero-title">Make it<br><em>yours.</em></h1>
@@ -703,7 +814,15 @@ let calSelectedDate = null;
 let progressCharts = {};
 
 function todayStr() { return new Date().toISOString().split('T')[0]; }
-function daysBetween(s) { const t = new Date(); t.setHours(0,0,0,0); const d = new Date(s); d.setHours(0,0,0,0); return Math.round((d - t) / 86400000); }
+function parseLocalDate(s) {
+  // Parse YYYY-MM-DD as local midnight, not UTC midnight, to avoid timezone shift bugs
+  if (typeof s === 'string' && /^\d{4}-\d{2}-\d{2}/.test(s)) {
+    const [y, m, d] = s.split('T')[0].split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  return new Date(s);
+}
+function daysBetween(s) { const t = new Date(); t.setHours(0,0,0,0); const d = parseLocalDate(s); d.setHours(0,0,0,0); return Math.round((d - t) / 86400000); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatBytes(b) { if (!b) return '—'; if (b < 1024) return b + ' B'; if (b < 1048576) return (b/1024).toFixed(1) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
@@ -739,8 +858,8 @@ async function enterApp() {
   document.getElementById('userEmail').textContent = currentUser.email;
   document.getElementById('userGreeting').textContent = currentProfile.display_name;
   document.getElementById('settingsDisplayName').value = currentProfile.display_name;
-  await Promise.all([loadFromCloud(), loadSubjects(), loadChallenges(), loadAllProfiles(), loadAllSubmissions(), loadActiveSprints()]);
-  render(); renderChallenges(); renderLeaderboard(); renderFolderView(); renderCalendar(); renderProgress();
+  await Promise.all([loadFromCloud(), loadSubjects(), loadChallenges(), loadAllProfiles(), loadAllSubmissions(), loadActiveSprints(), loadAssessments()]);
+  render(); renderChallenges(); renderLeaderboard(); renderFolderView(); renderCalendar(); renderProgress(); renderATAR();
   if ('Notification' in window && Notification.permission === 'granted') scheduleNotification();
 }
 
@@ -1036,6 +1155,193 @@ window.selectQuizOption = async function(cid, idx) {
 
 // Active sprint sessions, keyed by challenge_id → { startedAt: Date, durationSec: number }
 let activeSprints = {};
+let assessments = [];
+
+// QTAC scaling factors based on recent (2024-25) reports — approximate.
+// Each subject maps a raw score (0-100) to a scaled score (0-100) via a curve.
+// Format: [scale_at_50, scale_at_75, scale_at_90] — linear interpolation between anchors.
+// Subjects not in the list use [50, 75, 90] (no scaling).
+const ATAR_SCALING = {
+  'Specialist Mathematics': [62, 85, 98],
+  'Mathematical Methods':   [56, 78, 94],
+  'Physics':                [55, 77, 93],
+  'Chemistry':              [54, 76, 92],
+  'Biology':                [48, 70, 87],
+  'English':                [49, 71, 87],
+  'Modern History':         [46, 68, 85],
+  'Ancient History':        [47, 69, 86],
+  'Economics':              [52, 74, 91],
+  'Business':               [44, 66, 83],
+  'Geography':              [46, 68, 85],
+  'Japanese':               [55, 77, 93],
+  'General Mathematics':    [44, 66, 83],
+  'Digital Solutions':      [50, 72, 89],
+  'Engineering':            [51, 73, 90],
+  'Aerospace Systems':      [51, 73, 90],
+  'Design':                 [44, 66, 83]
+};
+
+function scaleScore(subject, rawScore) {
+  const anchors = ATAR_SCALING[subject] || [50, 75, 90];
+  // Linear interpolation through (0,0), (50, anchors[0]), (75, anchors[1]), (90, anchors[2]), (100, 100)
+  const points = [[0,0], [50, anchors[0]], [75, anchors[1]], [90, anchors[2]], [100, 100]];
+  for (let i = 0; i < points.length - 1; i++) {
+    const [x1, y1] = points[i], [x2, y2] = points[i+1];
+    if (rawScore >= x1 && rawScore <= x2) {
+      return y1 + (rawScore - x1) * (y2 - y1) / (x2 - x1);
+    }
+  }
+  return rawScore;
+}
+
+function aggregateToATAR(aggregate) {
+  // Aggregate is sum of top 5 scaled scores (out of 500).
+  // Map to ATAR via sigmoid-like curve calibrated to typical QLD distributions.
+  if (aggregate <= 0) return 0;
+  // Empirically: aggregate of ~480 → ATAR 99+, ~400 → 90, ~340 → 75, ~270 → 50, ~200 → 30
+  const points = [[0, 0], [150, 15], [200, 30], [270, 50], [340, 75], [400, 90], [440, 96], [480, 99], [500, 99.95]];
+  for (let i = 0; i < points.length - 1; i++) {
+    const [x1, y1] = points[i], [x2, y2] = points[i+1];
+    if (aggregate >= x1 && aggregate <= x2) {
+      return y1 + (aggregate - x1) * (y2 - y1) / (x2 - x1);
+    }
+  }
+  return 99.95;
+}
+
+async function loadAssessments() {
+  if (!currentUser) return;
+  const { data } = await supabase.from('assessments').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+  if (data) assessments = data;
+}
+
+window.addAssessment = async function() {
+  const subject = document.getElementById('assessSubject').value;
+  const name = document.getElementById('assessName').value.trim();
+  const score = parseFloat(document.getElementById('assessScore').value);
+  const total = parseFloat(document.getElementById('assessTotal').value);
+  const weight = parseFloat(document.getElementById('assessWeight').value) || 25;
+  const date = document.getElementById('assessDate').value || todayStr();
+  if (!subject || !name || isNaN(score) || isNaN(total) || total <= 0) {
+    toast('Fill in subject, name, mark, and total');
+    return;
+  }
+  if (score > total) { toast('Mark cannot exceed total'); return; }
+  const { data, error } = await supabase.from('assessments').insert({
+    user_id: currentUser.id,
+    subject_name: subject,
+    assessment_name: name,
+    score_obtained: score,
+    score_total: total,
+    weighting: weight,
+    date_completed: date
+  }).select().single();
+  if (error) { toast('Error: ' + error.message); return; }
+  assessments.unshift(data);
+  document.getElementById('assessName').value = '';
+  document.getElementById('assessScore').value = '';
+  document.getElementById('assessTotal').value = '';
+  renderATAR();
+  toast('Result added');
+};
+
+window.removeAssessment = async function(id) {
+  if (!confirm('Delete this result?')) return;
+  await supabase.from('assessments').delete().eq('id', id);
+  assessments = assessments.filter(a => a.id !== id);
+  renderATAR();
+  toast('Deleted');
+};
+
+function calculateSubjectScores() {
+  // Group assessments by subject, compute weighted average raw score (out of 100)
+  const bySubject = {};
+  assessments.forEach(a => {
+    if (!bySubject[a.subject_name]) bySubject[a.subject_name] = [];
+    bySubject[a.subject_name].push(a);
+  });
+  const results = {};
+  Object.entries(bySubject).forEach(([subject, items]) => {
+    let totalWeightedPct = 0, totalWeight = 0;
+    items.forEach(a => {
+      const pct = (a.score_obtained / a.score_total) * 100;
+      const w = parseFloat(a.weighting) || 25;
+      totalWeightedPct += pct * w;
+      totalWeight += w;
+    });
+    const rawAvg = totalWeight > 0 ? totalWeightedPct / totalWeight : 0;
+    const scaled = scaleScore(subject, rawAvg);
+    results[subject] = { rawAvg, scaled, items, totalWeight };
+  });
+  return results;
+}
+
+function renderATAR() {
+  // Populate subject dropdown
+  const select = document.getElementById('assessSubject');
+  if (select) {
+    const currentVal = select.value;
+    // Use all configured QCAA subjects plus any custom ones from exams
+    const allSubjects = [...new Set([...Object.keys(ATAR_SCALING), ...state.exams.map(e => e.subject)])].sort();
+    select.innerHTML = '<option value="">Choose a subject…</option>' +
+      allSubjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+    select.value = currentVal;
+  }
+
+  // Compute subject scores
+  const subjects = calculateSubjectScores();
+  const subjectArr = Object.entries(subjects).map(([name, data]) => ({ name, ...data }));
+  // Sort by scaled score descending for top 5
+  subjectArr.sort((a, b) => b.scaled - a.scaled);
+  const top5 = subjectArr.slice(0, 5);
+  const aggregate = top5.reduce((sum, s) => sum + s.scaled, 0);
+  const atar = aggregateToATAR(aggregate);
+
+  // Hero numbers
+  const subjCount = subjectArr.length;
+  document.getElementById('atarSubjectCount').textContent = subjCount;
+  if (subjCount === 0) {
+    document.getElementById('atarBigNumber').textContent = '—';
+    document.getElementById('atarSubtext').textContent = 'Add results below to see your estimate';
+  } else if (subjCount < 4) {
+    document.getElementById('atarBigNumber').textContent = '—';
+    document.getElementById('atarSubtext').textContent = `Need at least 4 subjects with results for an ATAR estimate (you have ${subjCount}).`;
+  } else {
+    document.getElementById('atarBigNumber').textContent = atar.toFixed(2);
+    const topSubjectNames = top5.map(s => s.name).join(', ');
+    document.getElementById('atarSubtext').textContent = `Based on top ${top5.length}: ${topSubjectNames}`;
+  }
+
+  // List of assessments grouped by subject
+  const list = document.getElementById('assessList');
+  document.getElementById('assessCount').textContent = `${assessments.length} entr${assessments.length === 1 ? 'y' : 'ies'}`;
+  if (assessments.length === 0) {
+    list.innerHTML = '<div class="empty">No results entered yet.<br>Add some above to see your estimated ATAR.</div>';
+    return;
+  }
+  list.innerHTML = subjectArr.map(s => {
+    const inTop5 = top5.some(t => t.name === s.name);
+    return `
+      <div class="assess-subject-group">
+        <div class="assess-subject-head">
+          <div class="assess-subject-name"><em>${escapeHtml(s.name)}</em>${inTop5 ? ' <span style="font-family:var(--sans);font-size:10px;letter-spacing:0.2em;color:var(--sage);">· COUNTING</span>' : ''}</div>
+          <div class="assess-subject-scores">
+            <div><span class="raw">Raw</span> <span class="num">${s.rawAvg.toFixed(1)}</span></div>
+            <div><span class="scaled">Scaled</span> <span class="num">${s.scaled.toFixed(1)}</span></div>
+          </div>
+        </div>
+        ${s.items.map(a => `
+          <div class="assess-row">
+            <div class="name">${escapeHtml(a.assessment_name)}<span class="meta">${parseLocalDate(a.date_completed).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span></div>
+            <div class="score">${a.score_obtained}/${a.score_total}</div>
+            <div class="weight">${a.weighting}%</div>
+            <button class="card-remove" onclick="removeAssessment('${a.id}')">Remove</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+}
 
 async function loadActiveSprints() {
   if (!currentUser) return;
@@ -1179,7 +1485,7 @@ function renderLeaderboard() {
 }
 
 const SR_INTERVALS = { 1: 1, 2: 2, 3: 4, 4: 7, 5: 14 };
-function nextReviewDate(t) { const last = t.lastReviewed || t.createdAt; const interval = SR_INTERVALS[t.confidence] || 4; const d = new Date(last); d.setDate(d.getDate() + interval); return d.toISOString().split('T')[0]; }
+function nextReviewDate(t) { const last = t.lastReviewed || t.createdAt; const interval = SR_INTERVALS[t.confidence] || 4; const d = parseLocalDate(last); d.setDate(d.getDate() + interval); return d.toISOString().split('T')[0]; }
 function isDueToday(t) { return nextReviewDate(t) <= todayStr(); }
 
 window.addExam = function() {
@@ -1263,14 +1569,14 @@ function renderToday() {
 
 function renderExams() {
   const grid = document.getElementById('examGrid');
-  const sorted = [...state.exams].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const sorted = [...state.exams].sort((a, b) => parseLocalDate(a.date) - parseLocalDate(b.date));
   document.getElementById('examCount').textContent = `${sorted.length} item${sorted.length !== 1 ? 's' : ''}`;
   if (sorted.length === 0) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No exams added yet.</div>'; return; }
   grid.innerHTML = sorted.map(e => {
     const days = daysBetween(e.date);
     const urgent = days <= 14 && days >= 0, past = days < 0;
     const label = past ? `${Math.abs(days)} days ago` : days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`;
-    const fmt = new Date(e.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const fmt = parseLocalDate(e.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     return `
       <div class="card no-hover">
         <div class="card-eyebrow">${escapeHtml(e.subject)}</div>
@@ -1449,7 +1755,7 @@ window.selectCalDate = function(dateStr) {
 
 function renderCalDetail(dateStr, ev) {
   const detail = document.getElementById('calDetail');
-  const dateLabel = new Date(dateStr).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const dateLabel = parseLocalDate(dateStr).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   ev = ev || { exams: [], reviews: [], challenges: [] };
   let html = `<h4><em>${dateLabel}</em></h4>`;
   if (ev.exams.length === 0 && ev.reviews.length === 0 && ev.challenges.length === 0) {
@@ -1567,6 +1873,7 @@ document.querySelectorAll('.nav-link').forEach(btn => {
     if (btn.dataset.tab === 'calendar') renderCalendar();
     if (btn.dataset.tab === 'progress') renderProgress();
     if (btn.dataset.tab === 'challenges') renderChallenges();
+    if (btn.dataset.tab === 'atar') renderATAR();
   });
 });
 
