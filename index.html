@@ -352,6 +352,46 @@ textarea::placeholder { color: var(--ink-mute); font-style: italic; }
 .report-actions .dismiss-btn { background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft); }
 .report-actions .dismiss-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+/* GUIDELINES MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 2000;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  backdrop-filter: blur(8px);
+}
+.modal-card {
+  background: var(--bg-card); border: 1px solid var(--line-strong);
+  max-width: 560px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;
+  position: relative; box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+.modal-header { padding: 36px 36px 20px; border-bottom: 1px solid var(--line); }
+.modal-title { font-family: var(--display); font-size: 36px; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 8px; line-height: 1; }
+.modal-title em { font-style: italic; color: var(--accent); font-weight: 300; }
+.modal-sub { font-family: var(--sans); font-size: 13px; color: var(--ink-soft); font-weight: 300; }
+.modal-body {
+  padding: 24px 36px; overflow-y: auto; flex: 1;
+  font-family: var(--sans); font-size: 13px; line-height: 1.7; color: var(--ink-soft); font-weight: 300;
+}
+.modal-body p { margin-bottom: 12px; }
+.modal-body strong { color: var(--ink); font-weight: 500; }
+.modal-footer { padding: 20px 36px 28px; border-top: 1px solid var(--line); }
+.modal-checkbox {
+  display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none;
+  font-family: var(--sans); font-size: 13px; color: var(--ink); margin-bottom: 16px;
+}
+.modal-checkbox input[type="checkbox"] {
+  width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0;
+  border-bottom: none; padding: 0;
+}
+.modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+.modal-actions button { margin-top: 0; }
+@media (max-width: 600px) {
+  .modal-card { max-height: 100vh; }
+  .modal-header, .modal-body, .modal-footer { padding-left: 24px; padding-right: 24px; }
+  .modal-title { font-size: 28px; }
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions button { width: 100%; }
+}
+
 @media (max-width: 600px) {
   .cal-cell { min-height: 70px; padding: 6px; }
   .cal-date { font-size: 14px; }
@@ -438,6 +478,38 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <body>
 
 <div class="loading-screen" id="loadingScreen"><div class="spinner"></div></div>
+
+<!-- Guidelines acceptance modal -->
+<div class="modal-overlay" id="guidelinesModal" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="auth-eyebrow">REQUIRED BEFORE POSTING</div>
+      <h2 class="modal-title">Community <em>guidelines</em></h2>
+      <p class="modal-sub">Please read these before participating in the discussion boards.</p>
+    </div>
+    <div class="modal-body" id="modalGuidelinesBody">
+      <p>These boards are for students to help each other study. To keep them useful and safe for everyone:</p>
+      <p><strong>Be respectful.</strong> Treat others how you'd want to be treated. No insults, harassment, or personal attacks.</p>
+      <p><strong>Don't share assessment answers.</strong> Discussing concepts and study methods is encouraged. Sharing answers to current assessments, IAs, or exams is academic misconduct and will be removed.</p>
+      <p><strong>Stay on topic.</strong> Each board is for its subject. Off-topic posts may be removed.</p>
+      <p><strong>No personal information.</strong> Don't share your full name, address, phone number, school details, or anyone else's.</p>
+      <p><strong>No inappropriate content.</strong> Nothing sexual, violent, or discriminatory. This is a study space.</p>
+      <p><strong>Report problems.</strong> If you see a post that breaks these guidelines, use the Report button. Reports are reviewed by the admin.</p>
+      <p><strong>Consequences.</strong> Posts that break these guidelines will be deleted. Repeated violations may result in posting access being revoked.</p>
+      <p><strong>Privacy notice.</strong> Your display name and posts are visible to all users. The admin can see reported posts and your basic account activity (in aggregate).</p>
+    </div>
+    <div class="modal-footer">
+      <label class="modal-checkbox">
+        <input type="checkbox" id="modalAgreeCheckbox" onchange="updateAgreeButton()">
+        <span>I have read and agree to follow these guidelines</span>
+      </label>
+      <div class="modal-actions">
+        <button class="primary ghost" onclick="declineGuidelines()">Decline</button>
+        <button class="primary" id="modalAgreeBtn" onclick="acceptGuidelines()" disabled>Accept and continue →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="auth-screen" id="authScreen" style="display:none;">
   <div class="auth-card">
@@ -594,7 +666,31 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <h3>Add an <em>exam</em></h3>
       <div class="form-sub">A subject, a date, and any notes you want to remember.</div>
       <div class="form-row">
-        <div><label>Subject</label><input type="text" id="examSubject" placeholder="e.g. Chemistry"></div>
+        <div>
+          <label>Subject</label>
+          <select id="examSubject">
+            <option value="">Choose a subject…</option>
+            <option value="Aerospace Systems">Aerospace Systems</option>
+            <option value="Ancient History">Ancient History</option>
+            <option value="Biology">Biology</option>
+            <option value="Business">Business</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Design">Design</option>
+            <option value="Digital Solutions">Digital Solutions</option>
+            <option value="Economics">Economics</option>
+            <option value="Engineering">Engineering</option>
+            <option value="English">English</option>
+            <option value="General Mathematics">General Mathematics</option>
+            <option value="Geography">Geography</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Mathematical Methods">Mathematical Methods</option>
+            <option value="Modern History">Modern History</option>
+            <option value="Physics">Physics</option>
+            <option value="Specialist Mathematics">Specialist Mathematics</option>
+            <option value="__other__">Other (type your own)</option>
+          </select>
+          <input type="text" id="examSubjectOther" placeholder="Type subject name" style="display:none;margin-top:8px;">
+        </div>
         <div><label>Date</label><input type="date" id="examDate"></div>
       </div>
       <div class="form-row single">
@@ -752,7 +848,31 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <div class="form-card">
         <h3>Add a <em>subject folder</em></h3>
         <div class="form-row single">
-          <div><label>Subject name</label><input type="text" id="newSubjectName" placeholder="e.g. Chemistry"></div>
+          <div>
+            <label>Subject name</label>
+            <select id="newSubjectName">
+              <option value="">Choose a subject…</option>
+              <option value="Aerospace Systems">Aerospace Systems</option>
+              <option value="Ancient History">Ancient History</option>
+              <option value="Biology">Biology</option>
+              <option value="Business">Business</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Design">Design</option>
+              <option value="Digital Solutions">Digital Solutions</option>
+              <option value="Economics">Economics</option>
+              <option value="Engineering">Engineering</option>
+              <option value="English">English</option>
+              <option value="General Mathematics">General Mathematics</option>
+              <option value="Geography">Geography</option>
+              <option value="Japanese">Japanese</option>
+              <option value="Mathematical Methods">Mathematical Methods</option>
+              <option value="Modern History">Modern History</option>
+              <option value="Physics">Physics</option>
+              <option value="Specialist Mathematics">Specialist Mathematics</option>
+              <option value="__other__">Other (type your own)</option>
+            </select>
+            <input type="text" id="newSubjectNameOther" placeholder="Type subject name" style="display:none;margin-top:8px;">
+          </div>
         </div>
         <button class="primary" onclick="addSubject()">Create folder →</button>
       </div>
@@ -817,16 +937,6 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 
     <!-- Subject list view -->
     <div id="discussionSubjectList">
-      <div class="guideline-banner" id="guidelineBanner">
-        <div class="gb-title">Before you post — <em>community guidelines</em></div>
-        <div class="gb-body">
-          Be respectful. No sharing assessment answers. Stay on topic. No personal information. Reports go straight to the admin. <a onclick="toggleGuidelines()" style="color:var(--accent);cursor:pointer;">Read the full guidelines</a>
-        </div>
-        <button onclick="dismissGuidelines()" class="gb-dismiss">Got it</button>
-      </div>
-
-      <div id="fullGuidelines" style="display:none;"></div>
-
       <section class="content-section" style="padding-top:0;">
         <div class="section-header">
           <h2 class="section-title">Your <em>subjects</em></h2>
@@ -1240,12 +1350,18 @@ async function loadSubjects() {
 }
 
 window.addSubject = async function() {
-  const name = document.getElementById('newSubjectName').value.trim();
+  let name = document.getElementById('newSubjectName').value;
+  if (name === '__other__') {
+    name = document.getElementById('newSubjectNameOther').value.trim();
+  }
+  name = (name || '').trim();
   if (!name) { toast('Name required'); return; }
   const { data, error } = await supabase.from('subjects').insert({ user_id: currentUser.id, name }).select().single();
   if (error) { toast('Error: ' + error.message); return; }
   subjects.push(data);
   document.getElementById('newSubjectName').value = '';
+  document.getElementById('newSubjectNameOther').value = '';
+  document.getElementById('newSubjectNameOther').style.display = 'none';
   renderFolderView();
   toast('Folder created');
 };
@@ -1362,6 +1478,19 @@ document.addEventListener('DOMContentLoaded', () => {
     dz.addEventListener('drop', e => { if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files); });
   }
   if (input) input.addEventListener('change', e => { if (e.target.files.length) uploadFiles(e.target.files); input.value = ''; });
+
+  // Wire up "Other" subject toggle for exam form and folder form
+  const wireOtherToggle = (selectId, inputId) => {
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!sel || !inp) return;
+    sel.addEventListener('change', () => {
+      inp.style.display = sel.value === '__other__' ? 'block' : 'none';
+      if (sel.value === '__other__') inp.focus();
+    });
+  };
+  wireOtherToggle('examSubject', 'examSubjectOther');
+  wireOtherToggle('newSubjectName', 'newSubjectNameOther');
 });
 
 async function loadChallenges() {
@@ -1763,13 +1892,19 @@ function nextReviewDate(t) { const last = t.lastReviewed || t.createdAt; const i
 function isDueToday(t) { return nextReviewDate(t) <= todayStr(); }
 
 window.addExam = function() {
-  const subject = document.getElementById('examSubject').value.trim();
+  let subject = document.getElementById('examSubject').value;
+  if (subject === '__other__') {
+    subject = document.getElementById('examSubjectOther').value.trim();
+  }
+  subject = (subject || '').trim();
   const date = document.getElementById('examDate').value;
   const notes = document.getElementById('examNotes').value.trim();
   if (!subject || !date) { toast('Subject and date required'); return; }
   state.exams.push({ id: uid(), subject, date, notes });
   saveState();
   document.getElementById('examSubject').value = '';
+  document.getElementById('examSubjectOther').value = '';
+  document.getElementById('examSubjectOther').style.display = 'none';
   document.getElementById('examDate').value = '';
   document.getElementById('examNotes').value = '';
   render(); toast('Exam added');
@@ -2144,26 +2279,55 @@ function renderProgress() {
 // ============== DISCUSSION BOARDS ==============
 let currentBoardSubject = null;
 let lastPostTime = 0;
-const COMMUNITY_GUIDELINES_HTML = `
-  <div class="full-guidelines">
-    <h3>Community <em>guidelines</em></h3>
-    <p>These boards are for students to help each other study. To keep them useful and safe for everyone:</p>
-    <p><strong>Be respectful.</strong> Treat others how you'd want to be treated. No insults, harassment, or personal attacks.</p>
-    <p><strong>Don't share assessment answers.</strong> Discussing concepts and study methods is encouraged. Sharing answers to current assessments, IAs, or exams is academic misconduct and will be removed.</p>
-    <p><strong>Stay on topic.</strong> Each board is for its subject. Off-topic posts may be removed.</p>
-    <p><strong>No personal information.</strong> Don't share your full name, address, phone number, school details, or anyone else's.</p>
-    <p><strong>No inappropriate content.</strong> Nothing sexual, violent, or discriminatory. This is a study space.</p>
-    <p><strong>Report problems.</strong> If you see a post that breaks these guidelines, use the Report button. Reports are reviewed by the admin.</p>
-    <p><strong>Consequences.</strong> Posts that break these guidelines will be deleted. Repeated violations may result in posting access being revoked.</p>
-    <p><strong>Privacy notice.</strong> Your display name and posts are visible to all users. The admin can see reported posts and your basic account activity (in aggregate).</p>
-  </div>
-`;
+
+// Show the guidelines modal if user hasn't accepted yet
+window.showGuidelinesModal = function() {
+  document.getElementById('modalAgreeCheckbox').checked = false;
+  document.getElementById('modalAgreeBtn').disabled = true;
+  document.getElementById('guidelinesModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+};
+
+window.hideGuidelinesModal = function() {
+  document.getElementById('guidelinesModal').style.display = 'none';
+  document.body.style.overflow = '';
+};
+
+window.updateAgreeButton = function() {
+  document.getElementById('modalAgreeBtn').disabled = !document.getElementById('modalAgreeCheckbox').checked;
+};
+
+window.acceptGuidelines = async function() {
+  const now = new Date().toISOString();
+  const { error } = await supabase.from('profiles')
+    .update({ guidelines_accepted_at: now })
+    .eq('id', currentUser.id);
+  if (error) {
+    toast('Could not save acceptance — try again');
+    console.error(error);
+    return;
+  }
+  currentProfile.guidelines_accepted_at = now;
+  hideGuidelinesModal();
+  toast('Welcome to the boards');
+  renderDiscussionSubjects();
+};
+
+window.declineGuidelines = function() {
+  hideGuidelinesModal();
+  // Send them back to Today tab
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.nav-link[data-tab="today"]').classList.add('active');
+  document.getElementById('panel-today').classList.add('active');
+};
 
 function renderDiscussionSubjects() {
-  // Show full guidelines if not dismissed
-  const dismissed = localStorage.getItem('studio_guidelines_dismissed') === 'true';
-  if (dismissed) document.getElementById('guidelineBanner').classList.add('dismissed');
-  document.getElementById('fullGuidelines').innerHTML = COMMUNITY_GUIDELINES_HTML;
+  // Gate: must accept guidelines first
+  if (!currentProfile.guidelines_accepted_at) {
+    showGuidelinesModal();
+    return;
+  }
 
   const grid = document.getElementById('discussionSubjectGrid');
   const userSubjects = [...new Set(state.exams.map(e => e.subject))];
@@ -2179,16 +2343,6 @@ function renderDiscussionSubjects() {
     </div>
   `).join('');
 }
-
-window.toggleGuidelines = function() {
-  const el = document.getElementById('fullGuidelines');
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
-};
-
-window.dismissGuidelines = function() {
-  localStorage.setItem('studio_guidelines_dismissed', 'true');
-  document.getElementById('guidelineBanner').classList.add('dismissed');
-};
 
 window.openBoard = async function(subject) {
   currentBoardSubject = subject;
@@ -2345,14 +2499,40 @@ window.submitReply = async function(postId) {
 
 window.deletePost = async function(postId) {
   if (!confirm('Delete this post and all replies?')) return;
-  await supabase.from('discussion_posts').update({ is_deleted: true }).eq('id', postId);
+  const { data, error } = await supabase
+    .from('discussion_posts')
+    .update({ is_deleted: true })
+    .eq('id', postId)
+    .select();
+  if (error) {
+    console.error('Delete post error:', error);
+    toast('Could not delete: ' + error.message);
+    return;
+  }
+  if (!data || data.length === 0) {
+    toast('Could not delete — you may not have permission');
+    return;
+  }
   await loadPosts();
   toast('Deleted');
 };
 
 window.deleteReply = async function(replyId) {
   if (!confirm('Delete this reply?')) return;
-  await supabase.from('discussion_replies').update({ is_deleted: true }).eq('id', replyId);
+  const { data, error } = await supabase
+    .from('discussion_replies')
+    .update({ is_deleted: true })
+    .eq('id', replyId)
+    .select();
+  if (error) {
+    console.error('Delete reply error:', error);
+    toast('Could not delete: ' + error.message);
+    return;
+  }
+  if (!data || data.length === 0) {
+    toast('Could not delete — you may not have permission');
+    return;
+  }
   await loadPosts();
   toast('Deleted');
 };
