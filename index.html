@@ -2991,7 +2991,10 @@ document.querySelectorAll('.nav-link').forEach(btn => {
     if (btn.dataset.tab === 'challenges') renderChallenges();
     if (btn.dataset.tab === 'atar') renderATAR();
     if (btn.dataset.tab === 'admin') renderAdmin();
-    if (btn.dataset.tab === 'discussion') renderDiscussionSubjects();
+    if (btn.dataset.tab === 'discussion') {
+      if (currentBoardSubject) loadPosts();
+      else renderDiscussionSubjects();
+    }
     if (btn.dataset.tab === 'notes') renderNotesSubjects();
   });
 });
