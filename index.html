@@ -2665,18 +2665,10 @@ window.submitReply = async function(postId) {
 
 window.deletePost = async function(postId) {
   if (!confirm('Delete this post and all replies?')) return;
-  const { data, error } = await supabase
-    .from('discussion_posts')
-    .update({ is_deleted: true })
-    .eq('id', postId)
-    .select();
+  const { data, error } = await supabase.rpc('soft_delete_post', { p_post_id: postId });
   if (error) {
     console.error('Delete post error:', error);
     toast('Could not delete: ' + error.message);
-    return;
-  }
-  if (!data || data.length === 0) {
-    toast('Could not delete — you may not have permission');
     return;
   }
   await loadPosts();
@@ -2685,18 +2677,10 @@ window.deletePost = async function(postId) {
 
 window.deleteReply = async function(replyId) {
   if (!confirm('Delete this reply?')) return;
-  const { data, error } = await supabase
-    .from('discussion_replies')
-    .update({ is_deleted: true })
-    .eq('id', replyId)
-    .select();
+  const { data, error } = await supabase.rpc('soft_delete_reply', { p_reply_id: replyId });
   if (error) {
     console.error('Delete reply error:', error);
     toast('Could not delete: ' + error.message);
-    return;
-  }
-  if (!data || data.length === 0) {
-    toast('Could not delete — you may not have permission');
     return;
   }
   await loadPosts();
@@ -2963,8 +2947,14 @@ async function renderAdminReports() {
 
 window.adminDeleteContent = async function(reportId, kind, contentId) {
   if (!confirm(`Delete this ${kind}? This cannot be undone.`)) return;
-  const table = kind === 'post' ? 'discussion_posts' : 'discussion_replies';
-  await supabase.from(table).update({ is_deleted: true }).eq('id', contentId);
+  const fnName = kind === 'post' ? 'soft_delete_post' : 'soft_delete_reply';
+  const paramName = kind === 'post' ? 'p_post_id' : 'p_reply_id';
+  const { error } = await supabase.rpc(fnName, { [paramName]: contentId });
+  if (error) {
+    console.error('Admin delete error:', error);
+    toast('Could not delete: ' + error.message);
+    return;
+  }
   await supabase.from('post_reports').update({ resolved: true, resolved_at: new Date().toISOString() }).eq('id', reportId);
   await renderAdminReports();
   toast('Content deleted, report resolved');
