@@ -352,6 +352,12 @@ textarea::placeholder { color: var(--ink-mute); font-style: italic; }
 .report-actions .dismiss-btn { background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft); }
 .report-actions .dismiss-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+/* NOTES EDITOR */
+.notes-editor-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.notes-save-status { font-family: var(--sans); font-size: 11px; color: var(--ink-mute); letter-spacing: 0.1em; text-transform: uppercase; }
+.notes-save-status.saving { color: var(--accent); }
+.notes-save-status.saved { color: var(--sage); }
+
 /* GUIDELINES MODAL */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 2000;
@@ -550,6 +556,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <button class="nav-link" data-tab="progress">Progress</button>
       <button class="nav-link" data-tab="exams">Exams</button>
       <button class="nav-link" data-tab="topics">Topics</button>
+      <button class="nav-link" data-tab="notes">Notes</button>
       <button class="nav-link" data-tab="atar">ATAR</button>
       <button class="nav-link" data-tab="files">Files</button>
       <button class="nav-link" data-tab="challenges">Challenges</button>
@@ -670,26 +677,48 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
           <label>Subject</label>
           <select id="examSubject">
             <option value="">Choose a subject…</option>
+            <option value="Aboriginal & Torres Strait Islander Studies">Aboriginal & Torres Strait Islander Studies</option>
+            <option value="Accounting">Accounting</option>
             <option value="Aerospace Systems">Aerospace Systems</option>
+            <option value="Agricultural Science">Agricultural Science</option>
             <option value="Ancient History">Ancient History</option>
             <option value="Biology">Biology</option>
             <option value="Business">Business</option>
             <option value="Chemistry">Chemistry</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Dance">Dance</option>
             <option value="Design">Design</option>
             <option value="Digital Solutions">Digital Solutions</option>
+            <option value="Drama">Drama</option>
+            <option value="Earth & Environmental Science">Earth & Environmental Science</option>
             <option value="Economics">Economics</option>
             <option value="Engineering">Engineering</option>
             <option value="English">English</option>
+            <option value="English as an Additional Language">English as an Additional Language</option>
+            <option value="Film, Television & New Media">Film, Television & New Media</option>
+            <option value="Food & Nutrition">Food & Nutrition</option>
+            <option value="French">French</option>
             <option value="General Mathematics">General Mathematics</option>
             <option value="Geography">Geography</option>
+            <option value="German">German</option>
+            <option value="Health">Health</option>
+            <option value="Italian">Italian</option>
             <option value="Japanese">Japanese</option>
+            <option value="Legal Studies">Legal Studies</option>
+            <option value="Literature">Literature</option>
+            <option value="Marine Science">Marine Science</option>
             <option value="Mathematical Methods">Mathematical Methods</option>
             <option value="Modern History">Modern History</option>
+            <option value="Music">Music</option>
+            <option value="Philosophy & Reason">Philosophy & Reason</option>
+            <option value="Physical Education">Physical Education</option>
             <option value="Physics">Physics</option>
+            <option value="Psychology">Psychology</option>
+            <option value="Spanish">Spanish</option>
             <option value="Specialist Mathematics">Specialist Mathematics</option>
-            <option value="__other__">Other (type your own)</option>
+            <option value="Study of Religion">Study of Religion</option>
+            <option value="Visual Art">Visual Art</option>
           </select>
-          <input type="text" id="examSubjectOther" placeholder="Type subject name" style="display:none;margin-top:8px;">
         </div>
         <div><label>Date</label><input type="date" id="examDate"></div>
       </div>
@@ -757,10 +786,53 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
   </div>
 </div>
 
-<div class="panel" id="panel-atar">
+<div class="panel" id="panel-notes">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
       <div class="hero-numeral">06</div>
+      <div class="hero-left">
+        <div class="eyebrow">SUBJECT NOTES</div>
+        <h1 class="hero-title">Your <em>study notes.</em></h1>
+        <p class="hero-desc">A personal notebook per subject. Anything you want — formulas, mnemonics, summaries, study plans. Private to you, synced everywhere.</p>
+      </div>
+    </div>
+
+    <!-- Subject list view -->
+    <div id="notesSubjectList">
+      <section class="content-section" style="padding-top:0;">
+        <div class="section-header">
+          <h2 class="section-title">Your <em>subjects</em></h2>
+          <span class="section-meta">click to write</span>
+        </div>
+        <div class="cards" id="notesSubjectGrid">
+          <div class="empty" style="grid-column:1/-1;">Add an exam first to start writing notes.</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Note editor view -->
+    <div id="notesEditorView" style="display:none;">
+      <div class="breadcrumb">
+        <a onclick="exitNote()">All subjects</a>
+        <span class="sep">/</span>
+        <span class="current" id="currentNoteSubject">—</span>
+      </div>
+
+      <div class="form-card">
+        <div class="notes-editor-head">
+          <h3 id="noteHeading"><em>Your notes</em></h3>
+          <span class="notes-save-status" id="notesSaveStatus">All changes saved</span>
+        </div>
+        <textarea id="noteContent" rows="20" placeholder="Start writing… your notes save automatically.&#10;&#10;Some ideas:&#10;• Key formulas and definitions&#10;• Important dates and events&#10;• Mnemonics and memory tricks&#10;• Things your teacher emphasised&#10;• Topics to revisit before the exam" style="font-family:var(--sans);font-size:14px;line-height:1.7;min-height:400px;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-atar">
+  <div class="container">
+    <div class="hero" style="min-height:auto;padding:60px 0 30px;">
+      <div class="hero-numeral">07</div>
       <div class="hero-left">
         <div class="eyebrow">ATAR ESTIMATOR</div>
         <h1 class="hero-title">Predict your<br><em>rank.</em></h1>
@@ -837,7 +909,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-files">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">07</div>
+      <div class="hero-numeral">08</div>
       <div class="hero-left">
         <div class="eyebrow">FILES</div>
         <h1 class="hero-title">Your <em>library.</em></h1>
@@ -852,26 +924,48 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
             <label>Subject name</label>
             <select id="newSubjectName">
               <option value="">Choose a subject…</option>
+              <option value="Aboriginal & Torres Strait Islander Studies">Aboriginal & Torres Strait Islander Studies</option>
+              <option value="Accounting">Accounting</option>
               <option value="Aerospace Systems">Aerospace Systems</option>
+              <option value="Agricultural Science">Agricultural Science</option>
               <option value="Ancient History">Ancient History</option>
               <option value="Biology">Biology</option>
               <option value="Business">Business</option>
               <option value="Chemistry">Chemistry</option>
+              <option value="Chinese">Chinese</option>
+              <option value="Dance">Dance</option>
               <option value="Design">Design</option>
               <option value="Digital Solutions">Digital Solutions</option>
+              <option value="Drama">Drama</option>
+              <option value="Earth & Environmental Science">Earth & Environmental Science</option>
               <option value="Economics">Economics</option>
               <option value="Engineering">Engineering</option>
               <option value="English">English</option>
+              <option value="English as an Additional Language">English as an Additional Language</option>
+              <option value="Film, Television & New Media">Film, Television & New Media</option>
+              <option value="Food & Nutrition">Food & Nutrition</option>
+              <option value="French">French</option>
               <option value="General Mathematics">General Mathematics</option>
               <option value="Geography">Geography</option>
+              <option value="German">German</option>
+              <option value="Health">Health</option>
+              <option value="Italian">Italian</option>
               <option value="Japanese">Japanese</option>
+              <option value="Legal Studies">Legal Studies</option>
+              <option value="Literature">Literature</option>
+              <option value="Marine Science">Marine Science</option>
               <option value="Mathematical Methods">Mathematical Methods</option>
               <option value="Modern History">Modern History</option>
+              <option value="Music">Music</option>
+              <option value="Philosophy & Reason">Philosophy & Reason</option>
+              <option value="Physical Education">Physical Education</option>
               <option value="Physics">Physics</option>
+              <option value="Psychology">Psychology</option>
+              <option value="Spanish">Spanish</option>
               <option value="Specialist Mathematics">Specialist Mathematics</option>
-              <option value="__other__">Other (type your own)</option>
+              <option value="Study of Religion">Study of Religion</option>
+              <option value="Visual Art">Visual Art</option>
             </select>
-            <input type="text" id="newSubjectNameOther" placeholder="Type subject name" style="display:none;margin-top:8px;">
           </div>
         </div>
         <button class="primary" onclick="addSubject()">Create folder →</button>
@@ -905,7 +999,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-challenges">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">08</div>
+      <div class="hero-numeral">09</div>
       <div class="hero-left">
         <div class="eyebrow">DAILY CHALLENGES</div>
         <h1 class="hero-title">Earn your<br><em>points.</em></h1>
@@ -927,7 +1021,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-discussion">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">09</div>
+      <div class="hero-numeral">10</div>
       <div class="hero-left">
         <div class="eyebrow">DISCUSSION</div>
         <h1 class="hero-title">Talk it<br><em>through.</em></h1>
@@ -986,7 +1080,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-leaderboard">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">10</div>
+      <div class="hero-numeral">11</div>
       <div class="hero-left">
         <div class="eyebrow">LEADERBOARD</div>
         <h1 class="hero-title">Top of the<br><em>class.</em></h1>
@@ -1004,7 +1098,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-admin">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">11</div>
+      <div class="hero-numeral">12</div>
       <div class="hero-left">
         <div class="eyebrow">ADMIN DASHBOARD</div>
         <h1 class="hero-title">App <em>health.</em></h1>
@@ -1082,7 +1176,7 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 <div class="panel" id="panel-settings">
   <div class="container">
     <div class="hero" style="min-height:auto;padding:60px 0 30px;">
-      <div class="hero-numeral">12</div>
+      <div class="hero-numeral">13</div>
       <div class="hero-left">
         <div class="eyebrow">SETTINGS</div>
         <h1 class="hero-title">Make it<br><em>yours.</em></h1>
@@ -1226,7 +1320,8 @@ async function enterApp() {
     safeLoad('profiles', loadAllProfiles),
     safeLoad('submissions', loadAllSubmissions),
     safeLoad('sprint_sessions', loadActiveSprints),
-    safeLoad('assessments', loadAssessments)
+    safeLoad('assessments', loadAssessments),
+    safeLoad('subject_notes', loadAllNotes)
   ]);
   // Render — wrap each so one bad function doesn't break the whole UI
   const safeRender = (name, fn) => {
@@ -1323,9 +1418,13 @@ window.updateDisplayName = async function() {
 
 // Map of common non-canonical subject names to the canonical QCAA name
 const SUBJECT_ALIASES = {
+  // English
   'general english': 'English',
   'english (general)': 'English',
   'eng': 'English',
+  'eal': 'English as an Additional Language',
+  'lit': 'Literature',
+  // Maths
   'specialist math': 'Specialist Mathematics',
   'specialist maths': 'Specialist Mathematics',
   'spec math': 'Specialist Mathematics',
@@ -1339,23 +1438,60 @@ const SUBJECT_ALIASES = {
   'general maths': 'General Mathematics',
   'gen math': 'General Mathematics',
   'gen maths': 'General Mathematics',
+  // Sciences
   'chem': 'Chemistry',
   'bio': 'Biology',
   'phys': 'Physics',
   'physical': 'Physics',
+  'psych': 'Psychology',
+  'marine': 'Marine Science',
+  'earth science': 'Earth & Environmental Science',
+  'environmental science': 'Earth & Environmental Science',
+  'eaes': 'Earth & Environmental Science',
+  // History/Humanities
   'modern hist': 'Modern History',
   'mod history': 'Modern History',
+  'mod hist': 'Modern History',
   'ancient hist': 'Ancient History',
   'anc history': 'Ancient History',
-  'jap': 'Japanese',
+  'anc hist': 'Ancient History',
   'econ': 'Economics',
   'biz': 'Business',
   'geo': 'Geography',
+  'legal': 'Legal Studies',
+  'religion': 'Study of Religion',
+  'sor': 'Study of Religion',
+  'philosophy': 'Philosophy & Reason',
+  'phil': 'Philosophy & Reason',
+  'accounting (general)': 'Accounting',
+  'acc': 'Accounting',
+  // Languages
+  'jap': 'Japanese',
+  'jpn': 'Japanese',
+  // Technologies
   'dig sol': 'Digital Solutions',
   'digital': 'Digital Solutions',
   'eng (engineering)': 'Engineering',
+  'engineering general': 'Engineering',
   'aero': 'Aerospace Systems',
-  'aerospace': 'Aerospace Systems'
+  'aerospace': 'Aerospace Systems',
+  'food and nutrition': 'Food & Nutrition',
+  'food': 'Food & Nutrition',
+  // The Arts
+  'visual arts': 'Visual Art',
+  'art': 'Visual Art',
+  'va': 'Visual Art',
+  'film tv': 'Film, Television & New Media',
+  'film television new media': 'Film, Television & New Media',
+  'film': 'Film, Television & New Media',
+  'ftvnm': 'Film, Television & New Media',
+  // HPE
+  'pe': 'Physical Education',
+  'phys ed': 'Physical Education',
+  'health (general)': 'Health',
+  // Aboriginal & Torres Strait Islander
+  'atsi studies': 'Aboriginal & Torres Strait Islander Studies',
+  'atsis': 'Aboriginal & Torres Strait Islander Studies'
 };
 
 function canonicalSubject(name) {
@@ -1405,18 +1541,12 @@ async function loadSubjects() {
 }
 
 window.addSubject = async function() {
-  let name = document.getElementById('newSubjectName').value;
-  if (name === '__other__') {
-    name = document.getElementById('newSubjectNameOther').value.trim();
-  }
-  name = (name || '').trim();
+  const name = document.getElementById('newSubjectName').value.trim();
   if (!name) { toast('Name required'); return; }
   const { data, error } = await supabase.from('subjects').insert({ user_id: currentUser.id, name }).select().single();
   if (error) { toast('Error: ' + error.message); return; }
   subjects.push(data);
   document.getElementById('newSubjectName').value = '';
-  document.getElementById('newSubjectNameOther').value = '';
-  document.getElementById('newSubjectNameOther').style.display = 'none';
   renderFolderView();
   toast('Folder created');
 };
@@ -1533,19 +1663,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dz.addEventListener('drop', e => { if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files); });
   }
   if (input) input.addEventListener('change', e => { if (e.target.files.length) uploadFiles(e.target.files); input.value = ''; });
-
-  // Wire up "Other" subject toggle for exam form and folder form
-  const wireOtherToggle = (selectId, inputId) => {
-    const sel = document.getElementById(selectId);
-    const inp = document.getElementById(inputId);
-    if (!sel || !inp) return;
-    sel.addEventListener('change', () => {
-      inp.style.display = sel.value === '__other__' ? 'block' : 'none';
-      if (sel.value === '__other__') inp.focus();
-    });
-  };
-  wireOtherToggle('examSubject', 'examSubjectOther');
-  wireOtherToggle('newSubjectName', 'newSubjectNameOther');
 });
 
 async function loadChallenges() {
@@ -1947,19 +2064,13 @@ function nextReviewDate(t) { const last = t.lastReviewed || t.createdAt; const i
 function isDueToday(t) { return nextReviewDate(t) <= todayStr(); }
 
 window.addExam = function() {
-  let subject = document.getElementById('examSubject').value;
-  if (subject === '__other__') {
-    subject = document.getElementById('examSubjectOther').value.trim();
-  }
-  subject = (subject || '').trim();
+  const subject = document.getElementById('examSubject').value.trim();
   const date = document.getElementById('examDate').value;
   const notes = document.getElementById('examNotes').value.trim();
   if (!subject || !date) { toast('Subject and date required'); return; }
   state.exams.push({ id: uid(), subject, date, notes });
   saveState();
   document.getElementById('examSubject').value = '';
-  document.getElementById('examSubjectOther').value = '';
-  document.getElementById('examSubjectOther').style.display = 'none';
   document.getElementById('examDate').value = '';
   document.getElementById('examNotes').value = '';
   render(); toast('Exam added');
@@ -2610,6 +2721,109 @@ window.reportReply = async function(replyId) {
   toast('Reported — thank you');
 };
 
+// ============== SUBJECT NOTES ==============
+let currentNoteSubject = null;
+let noteSaveTimer = null;
+let notesCache = {}; // subject_name → { content, updated_at }
+
+async function loadAllNotes() {
+  if (!currentUser) return;
+  const { data, error } = await supabase
+    .from('subject_notes')
+    .select('subject_name, content, updated_at')
+    .eq('user_id', currentUser.id);
+  if (error) { console.warn('loadAllNotes error:', error); return; }
+  notesCache = {};
+  (data || []).forEach(n => { notesCache[n.subject_name] = n; });
+}
+
+function renderNotesSubjects() {
+  const grid = document.getElementById('notesSubjectGrid');
+  const userSubjects = [...new Set(state.exams.map(e => e.subject))];
+  if (userSubjects.length === 0) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">Add an exam first to start writing notes.</div>';
+    return;
+  }
+  grid.innerHTML = userSubjects.map(s => {
+    const note = notesCache[s];
+    const preview = note && note.content
+      ? (note.content.length > 60 ? note.content.slice(0, 60).replace(/\n/g, ' ') + '…' : note.content.replace(/\n/g, ' '))
+      : 'No notes yet — click to start';
+    const wordCount = note && note.content ? note.content.trim().split(/\s+/).filter(Boolean).length : 0;
+    return `
+      <div class="folder-card" onclick="openNote('${s.replace(/'/g, "\\'")}')">
+        <div class="folder-icon"></div>
+        <div class="folder-title">${escapeHtml(s)}</div>
+        <div class="folder-meta">${escapeHtml(preview)}</div>
+        ${wordCount > 0 ? `<div class="folder-meta" style="margin-top:4px;color:var(--accent);font-style:italic;">${wordCount} word${wordCount !== 1 ? 's' : ''}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+window.openNote = async function(subject) {
+  currentNoteSubject = subject;
+  document.getElementById('currentNoteSubject').textContent = subject;
+  document.getElementById('noteHeading').innerHTML = `Notes for <em>${escapeHtml(subject)}</em>`;
+  document.getElementById('notesSubjectList').style.display = 'none';
+  document.getElementById('notesEditorView').style.display = 'block';
+  const note = notesCache[subject];
+  document.getElementById('noteContent').value = note ? note.content : '';
+  setNotesSaveStatus('saved');
+};
+
+window.exitNote = function() {
+  // Force-save before exit if there's a pending save
+  if (noteSaveTimer) { clearTimeout(noteSaveTimer); noteSaveTimer = null; saveCurrentNote(); }
+  currentNoteSubject = null;
+  document.getElementById('notesSubjectList').style.display = 'block';
+  document.getElementById('notesEditorView').style.display = 'none';
+  renderNotesSubjects();
+};
+
+function setNotesSaveStatus(status) {
+  const el = document.getElementById('notesSaveStatus');
+  if (!el) return;
+  el.classList.remove('saving', 'saved');
+  if (status === 'saving') { el.textContent = 'Saving…'; el.classList.add('saving'); }
+  else if (status === 'saved') { el.textContent = 'All changes saved'; el.classList.add('saved'); }
+  else if (status === 'error') { el.textContent = 'Could not save — check connection'; }
+}
+
+async function saveCurrentNote() {
+  if (!currentNoteSubject) return;
+  const content = document.getElementById('noteContent').value;
+  setNotesSaveStatus('saving');
+  const { error } = await supabase
+    .from('subject_notes')
+    .upsert({
+      user_id: currentUser.id,
+      subject_name: currentNoteSubject,
+      content,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id,subject_name' });
+  if (error) {
+    console.error('Note save error:', error);
+    setNotesSaveStatus('error');
+    return;
+  }
+  notesCache[currentNoteSubject] = { content, updated_at: new Date().toISOString(), subject_name: currentNoteSubject };
+  setNotesSaveStatus('saved');
+}
+
+// Auto-save on note content change (debounced)
+document.addEventListener('DOMContentLoaded', () => {
+  const noteContent = document.getElementById('noteContent');
+  if (noteContent) {
+    noteContent.addEventListener('input', () => {
+      if (!currentNoteSubject) return;
+      setNotesSaveStatus('saving');
+      if (noteSaveTimer) clearTimeout(noteSaveTimer);
+      noteSaveTimer = setTimeout(() => { saveCurrentNote(); noteSaveTimer = null; }, 800);
+    });
+  }
+});
+
 // ============== ADMIN DASHBOARD ==============
 async function renderAdmin() {
   if (!currentProfile || !currentProfile.is_admin) return;
@@ -2778,6 +2992,7 @@ document.querySelectorAll('.nav-link').forEach(btn => {
     if (btn.dataset.tab === 'atar') renderATAR();
     if (btn.dataset.tab === 'admin') renderAdmin();
     if (btn.dataset.tab === 'discussion') renderDiscussionSubjects();
+    if (btn.dataset.tab === 'notes') renderNotesSubjects();
   });
 });
 
