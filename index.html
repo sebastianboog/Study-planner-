@@ -1321,6 +1321,50 @@ window.updateDisplayName = async function() {
   toast('Name updated');
 };
 
+// Map of common non-canonical subject names to the canonical QCAA name
+const SUBJECT_ALIASES = {
+  'general english': 'English',
+  'english (general)': 'English',
+  'eng': 'English',
+  'specialist math': 'Specialist Mathematics',
+  'specialist maths': 'Specialist Mathematics',
+  'spec math': 'Specialist Mathematics',
+  'spec maths': 'Specialist Mathematics',
+  'specialist': 'Specialist Mathematics',
+  'math methods': 'Mathematical Methods',
+  'maths methods': 'Mathematical Methods',
+  'methods': 'Mathematical Methods',
+  'mathematics methods': 'Mathematical Methods',
+  'general math': 'General Mathematics',
+  'general maths': 'General Mathematics',
+  'gen math': 'General Mathematics',
+  'gen maths': 'General Mathematics',
+  'chem': 'Chemistry',
+  'bio': 'Biology',
+  'phys': 'Physics',
+  'physical': 'Physics',
+  'modern hist': 'Modern History',
+  'mod history': 'Modern History',
+  'ancient hist': 'Ancient History',
+  'anc history': 'Ancient History',
+  'jap': 'Japanese',
+  'econ': 'Economics',
+  'biz': 'Business',
+  'geo': 'Geography',
+  'dig sol': 'Digital Solutions',
+  'digital': 'Digital Solutions',
+  'eng (engineering)': 'Engineering',
+  'aero': 'Aerospace Systems',
+  'aerospace': 'Aerospace Systems'
+};
+
+function canonicalSubject(name) {
+  if (!name) return name;
+  const trimmed = name.trim();
+  const lookup = SUBJECT_ALIASES[trimmed.toLowerCase()];
+  return lookup || trimmed;
+}
+
 async function loadFromCloud() {
   if (!currentUser) return;
   setSyncStatus('syncing');
@@ -1328,6 +1372,17 @@ async function loadFromCloud() {
     const { data, error } = await supabase.from('study_data').select('data').eq('user_id', currentUser.id).maybeSingle();
     if (error) throw error;
     if (data && data.data) state = { ...state, ...data.data };
+    // Auto-normalize old free-text subject names so users end up on the right discussion boards
+    let changed = false;
+    (state.exams || []).forEach(e => {
+      const canon = canonicalSubject(e.subject);
+      if (canon !== e.subject) { e.subject = canon; changed = true; }
+    });
+    (state.topics || []).forEach(t => {
+      const canon = canonicalSubject(t.subject);
+      if (canon !== t.subject) { t.subject = canon; changed = true; }
+    });
+    if (changed) saveState();
     setSyncStatus('synced');
   } catch (err) { console.error(err); setSyncStatus('error'); }
 }
