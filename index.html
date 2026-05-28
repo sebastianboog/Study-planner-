@@ -358,6 +358,23 @@ textarea::placeholder { color: var(--ink-mute); font-style: italic; }
 .notes-save-status.saving { color: var(--accent); }
 .notes-save-status.saved { color: var(--sage); }
 
+/* MODERATION HISTORY */
+.moderation-counter { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
+.mc-label { font-family: var(--sans); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mute); }
+.mc-value { font-family: var(--display); font-size: 32px; font-weight: 400; }
+.mc-value em { font-style: italic; color: var(--accent); }
+.mc-of { font-size: 14px; color: var(--ink-soft); margin-left: 4px; }
+.cooldown-banner { background: rgba(212, 68, 68, 0.08); border: 1px solid rgba(212, 68, 68, 0.3); padding: 20px 24px; margin-bottom: 16px; border-left: 3px solid #d44; }
+.cb-title { font-family: var(--display); font-size: 18px; font-weight: 400; margin-bottom: 8px; }
+.cb-title em { font-style: italic; color: #d44; }
+.cb-body { font-family: var(--sans); font-size: 13px; line-height: 1.7; color: var(--ink-soft); font-weight: 300; }
+.moderation-list-title { font-family: var(--sans); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 8px; }
+.moderation-list { display: flex; flex-direction: column; gap: 8px; }
+.moderation-item { padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 2px solid var(--accent); }
+.moderation-item.past { border-left-color: var(--ink-mute); opacity: 0.6; }
+.mi-date { font-family: var(--sans); font-size: 11px; color: var(--ink-mute); letter-spacing: 0.05em; margin-bottom: 4px; }
+.mi-reason { font-family: var(--sans); font-size: 13px; color: var(--ink); line-height: 1.5; }
+
 /* GUIDELINES MODAL */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 2000;
@@ -482,6 +499,24 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
 </style>
 </head>
 <body>
+
+<!-- Content warning modal -->
+<div class="modal-overlay" id="warningModal" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="auth-eyebrow" style="color:#d44;">CONTENT WARNING</div>
+      <h2 class="modal-title" id="warningModalTitle">Warning <em>issued</em></h2>
+    </div>
+    <div class="modal-body" id="warningModalBody">
+      <!-- filled by showWarningModal() -->
+    </div>
+    <div class="modal-footer">
+      <div class="modal-actions">
+        <button class="primary" onclick="closeWarningModal()">I understand</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="loading-screen" id="loadingScreen"><div class="spinner"></div></div>
 
@@ -1213,6 +1248,13 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       </div>
     </div>
     <div class="form-card">
+      <h3>Moderation <em>history</em></h3>
+      <div class="form-sub">Warnings issued for content that broke the guidelines. After 3 warnings you'll be in a 24-hour cooldown. Warnings reset after a cooldown ends.</div>
+      <div id="moderationHistory">
+        <div class="empty" style="padding:24px 0;">Loading…</div>
+      </div>
+    </div>
+    <div class="form-card">
       <h3>Your <em>data</em></h3>
       <div class="setting-row">
         <div class="setting-info"><h4>Export backup</h4><p>Download exams + topics as JSON</p></div>
@@ -1321,7 +1363,8 @@ async function enterApp() {
     safeLoad('submissions', loadAllSubmissions),
     safeLoad('sprint_sessions', loadActiveSprints),
     safeLoad('assessments', loadAssessments),
-    safeLoad('subject_notes', loadAllNotes)
+    safeLoad('subject_notes', loadAllNotes),
+    safeLoad('moderation_status', refreshUserStatus)
   ]);
   // Render — wrap each so one bad function doesn't break the whole UI
   const safeRender = (name, fn) => {
@@ -1415,6 +1458,176 @@ window.updateDisplayName = async function() {
   renderLeaderboard();
   toast('Name updated');
 };
+
+// ============== CONTENT MODERATION ==============
+// Slur list — used to detect harmful content in posts/replies.
+// Kept in app code (not database) so you can update it without SQL.
+// Edit this list to add/remove terms. Use lowercase, no spaces.
+// NOTE: deliberately excludes mild profanity and reclaimed language.
+const SLUR_LIST = [
+  // Racial slurs
+  'nigger', 'nigga', 'chink', 'gook', 'kike', 'spic', 'wetback', 'beaner',
+  'wog', 'paki', 'coon', 'jigaboo', 'sandnigger', 'jewboy',
+  // Anti-LGBTQ+ slurs
+  'faggot', 'fag', 'tranny', 'shemale', 'dyke', 'homo',
+  // Ableist slurs (severe)
+  'retard', 'retarded', 'sped',
+  // Misogynistic dehumanizing
+  'whore', 'slut'
+];
+
+// User's current moderation status (refreshed from server periodically)
+let userModerationStatus = { warning_count: 0, in_cooldown: false, cooldown_until: null };
+
+// Normalize text for slur detection: lowercase, strip punctuation/spaces,
+// substitute common leetspeak. This catches "f a g", "n!gger", "f4g" etc.
+function normalizeForModeration(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[@４]/g, 'a')
+    .replace(/[1!|]/g, 'i')
+    .replace(/[0]/g, 'o')
+    .replace(/[3]/g, 'e')
+    .replace(/[5$]/g, 's')
+    .replace(/[7]/g, 't')
+    .replace(/[^a-z]/g, ''); // strip everything that's not a letter
+}
+
+// Check if content contains a slur. Returns the detected slur or null.
+function detectSlur(text) {
+  const normalized = normalizeForModeration(text);
+  for (const slur of SLUR_LIST) {
+    if (normalized.includes(slur)) return slur;
+  }
+  return null;
+}
+
+// Refresh user's moderation status from the server
+async function refreshUserStatus() {
+  const { data, error } = await supabase.rpc('check_user_status');
+  if (error || !data) return;
+  userModerationStatus = data;
+}
+
+// Issue a warning to the current user via server
+async function issueWarningForContent(reason, snippet) {
+  const { data, error } = await supabase.rpc('issue_warning', {
+    p_reason: reason,
+    p_content_snippet: snippet
+  });
+  if (error) { console.error('Warning issue error:', error); return null; }
+  userModerationStatus = {
+    warning_count: data.warning_count,
+    cooldown_until: data.cooldown_until,
+    in_cooldown: data.cooldown_until && new Date(data.cooldown_until) > new Date()
+  };
+  return data;
+}
+
+// Show modal explaining the warning to the user
+function showWarningModal(detectedTerm, currentCount, inCooldown, cooldownUntil) {
+  const modal = document.getElementById('warningModal');
+  const title = document.getElementById('warningModalTitle');
+  const body = document.getElementById('warningModalBody');
+  if (inCooldown) {
+    const until = new Date(cooldownUntil);
+    title.innerHTML = 'You are in a <em>cooldown</em>';
+    body.innerHTML = `
+      <p>Your post wasn't sent because you've received <strong>3 warnings</strong> for using language that breaks the community guidelines.</p>
+      <p>You can post again after <strong>${until.toLocaleString('en-AU', { weekday: 'long', hour: '2-digit', minute: '2-digit' })}</strong>.</p>
+      <p>After the cooldown, your warning count will reset and you'll start fresh.</p>
+    `;
+  } else {
+    title.innerHTML = 'Warning <em>issued</em>';
+    body.innerHTML = `
+      <p>Your post contains language that breaks the community guidelines. It hasn't been sent.</p>
+      <p><strong>Warning ${currentCount} of 3.</strong> If you reach 3 warnings, you'll be unable to post for 24 hours.</p>
+      <p>Please rephrase your message and try again. You can review the community guidelines anytime.</p>
+    `;
+  }
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+window.closeWarningModal = function() {
+  document.getElementById('warningModal').style.display = 'none';
+  document.body.style.overflow = '';
+};
+
+async function renderModerationHistory() {
+  const container = document.getElementById('moderationHistory');
+  if (!container) return;
+  // Refresh status first
+  await refreshUserStatus();
+  const { data: warnings, error } = await supabase
+    .from('user_warnings')
+    .select('reason, issued_at, expires_at')
+    .order('issued_at', { ascending: false });
+  if (error) {
+    container.innerHTML = '<div class="empty" style="padding:24px 0;">Could not load warnings.</div>';
+    return;
+  }
+  // Filter to active (not expired)
+  const active = (warnings || []).filter(w => !w.expires_at || new Date(w.expires_at) > new Date());
+  const past = (warnings || []).filter(w => w.expires_at && new Date(w.expires_at) <= new Date());
+
+  let html = '';
+  // Cooldown banner
+  if (userModerationStatus.in_cooldown) {
+    const until = new Date(userModerationStatus.cooldown_until);
+    html += `
+      <div class="cooldown-banner">
+        <div class="cb-title">You are in a <em>cooldown</em></div>
+        <div class="cb-body">You can post again on <strong>${until.toLocaleString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</strong>. Warnings will reset when it ends.</div>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="moderation-counter">
+        <div class="mc-label">Active warnings</div>
+        <div class="mc-value"><em>${active.length}</em> <span class="mc-of">of 3</span></div>
+      </div>
+    `;
+  }
+
+  // Active warnings list
+  if (active.length > 0) {
+    html += '<div class="moderation-list-title">Active warnings</div>';
+    html += '<div class="moderation-list">';
+    active.forEach(w => {
+      const when = new Date(w.issued_at).toLocaleString('en-AU', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      html += `
+        <div class="moderation-item">
+          <div class="mi-date">${when}</div>
+          <div class="mi-reason">${escapeHtml(w.reason)}</div>
+        </div>
+      `;
+    });
+    html += '</div>';
+  }
+
+  // Past (expired) warnings
+  if (past.length > 0) {
+    html += '<div class="moderation-list-title" style="margin-top:20px;">Past warnings (reset)</div>';
+    html += '<div class="moderation-list">';
+    past.slice(0, 10).forEach(w => {
+      const when = new Date(w.issued_at).toLocaleString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+      html += `
+        <div class="moderation-item past">
+          <div class="mi-date">${when}</div>
+          <div class="mi-reason">${escapeHtml(w.reason)}</div>
+        </div>
+      `;
+    });
+    html += '</div>';
+  }
+
+  if (active.length === 0 && past.length === 0) {
+    html += '<div class="empty" style="padding:24px 0;">No warnings on record. Keep it that way.</div>';
+  }
+
+  container.innerHTML = html;
+}
 
 // Map of common non-canonical subject names to the canonical QCAA name
 const SUBJECT_ALIASES = {
@@ -2615,7 +2828,27 @@ window.submitPost = async function() {
   const body = document.getElementById('postBody').value.trim();
   if (!title || !body) { toast('Title and message required'); return; }
   if (Date.now() - lastPostTime < 10000) { toast('Please wait before posting again'); return; }
-  // Check user hasn't been banned
+
+  // Cooldown check
+  if (userModerationStatus.in_cooldown) {
+    showWarningModal(null, userModerationStatus.warning_count, true, userModerationStatus.cooldown_until);
+    return;
+  }
+
+  // Slur detection
+  const detectedInTitle = detectSlur(title);
+  const detectedInBody = detectSlur(body);
+  const detected = detectedInTitle || detectedInBody;
+  if (detected) {
+    const reason = `Slur detected in post: "${detected}"`;
+    const snippet = `${title}\n\n${body}`.slice(0, 200);
+    const result = await issueWarningForContent(reason, snippet);
+    const newCount = result ? result.warning_count : (userModerationStatus.warning_count + 1);
+    const inCooldown = result && result.cooldown_until && new Date(result.cooldown_until) > new Date();
+    showWarningModal(detected, newCount, inCooldown, result?.cooldown_until);
+    return;
+  }
+
   const btn = document.getElementById('postSubmitBtn');
   btn.disabled = true;
   btn.textContent = 'Posting…';
@@ -2628,7 +2861,13 @@ window.submitPost = async function() {
   btn.textContent = 'Post →';
   if (error) {
     if (error.message && error.message.toLowerCase().includes('policy')) {
-      toast('Posting blocked — you may be banned');
+      // Could be banned OR in cooldown
+      await refreshUserStatus();
+      if (userModerationStatus.in_cooldown) {
+        showWarningModal(null, userModerationStatus.warning_count, true, userModerationStatus.cooldown_until);
+      } else {
+        toast('Posting blocked — you may be banned');
+      }
     } else {
       toast('Error: ' + error.message);
     }
@@ -2646,12 +2885,35 @@ window.submitReply = async function(postId) {
   const body = input.value.trim();
   if (!body) return;
   if (Date.now() - lastPostTime < 10000) { toast('Please wait before posting again'); return; }
+
+  // Cooldown check
+  if (userModerationStatus.in_cooldown) {
+    showWarningModal(null, userModerationStatus.warning_count, true, userModerationStatus.cooldown_until);
+    return;
+  }
+
+  // Slur detection
+  const detected = detectSlur(body);
+  if (detected) {
+    const reason = `Slur detected in reply: "${detected}"`;
+    const result = await issueWarningForContent(reason, body.slice(0, 200));
+    const newCount = result ? result.warning_count : (userModerationStatus.warning_count + 1);
+    const inCooldown = result && result.cooldown_until && new Date(result.cooldown_until) > new Date();
+    showWarningModal(detected, newCount, inCooldown, result?.cooldown_until);
+    return;
+  }
+
   const { error } = await supabase.from('discussion_replies').insert({
     post_id: postId, user_id: currentUser.id, body
   });
   if (error) {
     if (error.message && error.message.toLowerCase().includes('policy')) {
-      toast('Posting blocked — you may be banned');
+      await refreshUserStatus();
+      if (userModerationStatus.in_cooldown) {
+        showWarningModal(null, userModerationStatus.warning_count, true, userModerationStatus.cooldown_until);
+      } else {
+        toast('Posting blocked — you may be banned');
+      }
     } else {
       toast('Error: ' + error.message);
     }
@@ -2986,6 +3248,7 @@ document.querySelectorAll('.nav-link').forEach(btn => {
       else renderDiscussionSubjects();
     }
     if (btn.dataset.tab === 'notes') renderNotesSubjects();
+    if (btn.dataset.tab === 'settings') renderModerationHistory();
   });
 });
 
