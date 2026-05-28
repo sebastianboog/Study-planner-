@@ -2750,22 +2750,71 @@ function renderDiscussionSubjects() {
   `).join('');
 }
 
+// Realtime subscription channel for current board (null when not in a board)
+let boardChannel = null;
+
+// Helper to schedule a refresh: debounce so rapid changes don't refresh too often
+let realtimeRefreshTimer = null;
+function scheduleBoardRefresh() {
+  if (realtimeRefreshTimer) return; // already scheduled
+  realtimeRefreshTimer = setTimeout(() => {
+    realtimeRefreshTimer = null;
+    if (currentBoardSubject) loadPosts({ preserveDrafts: true });
+  }, 300);
+}
+
 window.openBoard = async function(subject) {
   currentBoardSubject = subject;
   document.getElementById('currentBoardName').textContent = subject;
   document.getElementById('discussionSubjectList').style.display = 'none';
   document.getElementById('discussionBoardView').style.display = 'block';
   await loadPosts();
+
+  // Clean up any previous subscription before creating a new one
+  if (boardChannel) {
+    supabase.removeChannel(boardChannel);
+    boardChannel = null;
+  }
+
+  // Subscribe to changes on this board's posts and any replies under them
+  boardChannel = supabase
+    .channel(`board-${subject}`)
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'discussion_posts',
+      filter: `subject_name=eq.${subject}`
+    }, () => scheduleBoardRefresh())
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'discussion_replies'
+    }, () => scheduleBoardRefresh())
+    .subscribe();
 };
 
 window.exitBoard = function() {
+  // Unsubscribe to avoid leaving stale channels open
+  if (boardChannel) {
+    supabase.removeChannel(boardChannel);
+    boardChannel = null;
+  }
+  if (realtimeRefreshTimer) { clearTimeout(realtimeRefreshTimer); realtimeRefreshTimer = null; }
   currentBoardSubject = null;
   document.getElementById('discussionSubjectList').style.display = 'block';
   document.getElementById('discussionBoardView').style.display = 'none';
 };
 
-async function loadPosts() {
+async function loadPosts(opts = {}) {
   if (!currentBoardSubject) return;
+  // Snapshot any in-progress text in reply textareas so a realtime refresh
+  // doesn't wipe what the user is typing
+  const draftMap = {};
+  if (opts.preserveDrafts) {
+    document.querySelectorAll('[id^="reply-input-"]').forEach(el => {
+      if (el.value) draftMap[el.id] = el.value;
+    });
+  }
   const { data: posts, error } = await supabase
     .from('discussion_posts')
     .select('*')
@@ -2837,6 +2886,12 @@ async function loadPosts() {
       </div>
     `;
   }).join('');
+
+  // Restore any in-progress reply text we snapshotted at the top of this function
+  Object.entries(draftMap).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  });
 }
 
 function relativeTime(iso) {
