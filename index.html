@@ -375,6 +375,21 @@ textarea::placeholder { color: var(--ink-mute); font-style: italic; }
 .mi-date { font-family: var(--sans); font-size: 11px; color: var(--ink-mute); letter-spacing: 0.05em; margin-bottom: 4px; }
 .mi-reason { font-family: var(--sans); font-size: 13px; color: var(--ink); line-height: 1.5; }
 
+/* ADMIN WARNINGS MANAGEMENT */
+.warning-user-group { padding: 20px 0; border-bottom: 1px solid var(--line); }
+.warning-user-group:last-child { border-bottom: none; }
+.warning-user-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+.warning-user-name { font-family: var(--display); font-size: 22px; font-weight: 400; }
+.warning-user-name em { font-style: italic; color: var(--accent); }
+.warning-user-meta { font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); margin-top: 4px; }
+.warning-row { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; padding: 12px 16px; background: rgba(255,255,255,0.03); margin-bottom: 8px; border-left: 2px solid var(--accent); }
+.warning-row.past { border-left-color: var(--ink-mute); opacity: 0.55; }
+.warning-meta { font-family: var(--sans); font-size: 11px; letter-spacing: 0.05em; color: var(--ink-mute); margin-bottom: 4px; }
+.warning-reason { font-family: var(--sans); font-size: 13px; color: var(--ink); margin-bottom: 6px; font-weight: 500; }
+.warning-snippet { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); font-style: italic; line-height: 1.5; padding: 8px 12px; background: rgba(0,0,0,0.25); border-radius: 2px; word-wrap: break-word; }
+.warning-row .delete-btn { background: #d44; color: white; border: none; font-family: var(--sans); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 12px; cursor: pointer; height: fit-content; white-space: nowrap; }
+.warning-row .delete-btn:hover { background: #b33; }
+
 /* GUIDELINES MODAL */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 2000;
@@ -1202,6 +1217,18 @@ button.ghost:hover { border-color: var(--accent); color: var(--accent); backgrou
       <div class="admin-card">
         <div id="adminReportsList">
           <div class="empty" style="padding:40px;">No open reports.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-header">
+        <h2 class="section-title">Warnings <em>issued</em></h2>
+        <span class="section-meta" id="adminWarningCount">—</span>
+      </div>
+      <div class="admin-card">
+        <div id="adminWarningsList">
+          <div class="empty" style="padding:40px;">Loading…</div>
         </div>
       </div>
     </section>
@@ -3153,8 +3180,9 @@ async function renderAdmin() {
     <div class="admin-type"><div class="num"><em>${typeCounts.task}</em></div><div class="lbl">Tasks</div></div>
   `;
 
-  // Load reports
+  // Load reports and warnings
   await renderAdminReports();
+  await renderAdminWarnings();
 }
 
 async function renderAdminReports() {
@@ -3227,6 +3255,88 @@ window.adminDismissReport = async function(reportId) {
   await supabase.from('post_reports').update({ resolved: true, resolved_at: new Date().toISOString() }).eq('id', reportId);
   await renderAdminReports();
   toast('Report dismissed');
+};
+
+// ============== ADMIN WARNING MANAGEMENT ==============
+async function renderAdminWarnings() {
+  const listEl = document.getElementById('adminWarningsList');
+  const countEl = document.getElementById('adminWarningCount');
+  if (!listEl) return;
+  const { data, error } = await supabase.rpc('admin_list_warnings');
+  if (error) {
+    console.error('Load warnings error:', error);
+    listEl.innerHTML = '<div class="empty" style="padding:40px;">Could not load warnings.</div>';
+    return;
+  }
+  const warnings = data || [];
+  const active = warnings.filter(w => !w.expires_at || new Date(w.expires_at) > new Date());
+  countEl.textContent = `${active.length} active · ${warnings.length} total`;
+
+  if (warnings.length === 0) {
+    listEl.innerHTML = '<div class="empty" style="padding:40px;">No warnings issued.</div>';
+    return;
+  }
+  // Group by display name so admin can see who has multiple
+  const byUser = {};
+  warnings.forEach(w => {
+    if (!byUser[w.display_name]) byUser[w.display_name] = { active: [], past: [], in_cooldown: w.in_cooldown };
+    const isActive = !w.expires_at || new Date(w.expires_at) > new Date();
+    (isActive ? byUser[w.display_name].active : byUser[w.display_name].past).push(w);
+  });
+
+  // Render
+  listEl.innerHTML = Object.entries(byUser).map(([name, info]) => {
+    const allWarnings = [...info.active, ...info.past];
+    return `
+      <div class="warning-user-group">
+        <div class="warning-user-head">
+          <div>
+            <div class="warning-user-name"><em>${escapeHtml(name)}</em></div>
+            <div class="warning-user-meta">${info.active.length} active · ${info.past.length} past${info.in_cooldown ? ' · <span style="color:#d44;">IN COOLDOWN</span>' : ''}</div>
+          </div>
+          ${info.in_cooldown ? `<button class="dismiss-btn" onclick="adminClearCooldown('${name.replace(/'/g, "\\'")}')">Clear cooldown</button>` : ''}
+        </div>
+        ${allWarnings.map(w => {
+          const isActive = !w.expires_at || new Date(w.expires_at) > new Date();
+          const when = new Date(w.issued_at).toLocaleString('en-AU', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          return `
+            <div class="warning-row ${isActive ? '' : 'past'}">
+              <div class="warning-info">
+                <div class="warning-meta">${when}${isActive ? '' : ' · reset'}</div>
+                <div class="warning-reason">${escapeHtml(w.reason)}</div>
+                ${w.content_snippet ? `<div class="warning-snippet">"${escapeHtml(w.content_snippet)}"</div>` : ''}
+              </div>
+              <button class="delete-btn" onclick="adminRedactWarning('${w.warning_id}')">Redact</button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+}
+
+window.adminRedactWarning = async function(warningId) {
+  if (!confirm('Redact this warning? It will be removed from the user\'s record. If they\'re below 3 warnings after this, their cooldown will be lifted.')) return;
+  const { error } = await supabase.rpc('admin_redact_warning', { p_warning_id: warningId });
+  if (error) {
+    console.error('Redact warning error:', error);
+    toast('Could not redact: ' + error.message);
+    return;
+  }
+  await renderAdminWarnings();
+  toast('Warning redacted');
+};
+
+window.adminClearCooldown = async function(displayName) {
+  if (!confirm(`Clear cooldown for ${displayName}? Their warnings will stay on record, but they'll be able to post again immediately.`)) return;
+  const { error } = await supabase.rpc('admin_clear_cooldown', { p_display_name: displayName });
+  if (error) {
+    console.error('Clear cooldown error:', error);
+    toast('Could not clear cooldown: ' + error.message);
+    return;
+  }
+  await renderAdminWarnings();
+  toast('Cooldown cleared');
 };
 
 // ============== TABS ==============
